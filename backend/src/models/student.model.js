@@ -54,12 +54,12 @@ studentSchema.pre("save", async function (next) {
 });
 
 // to verify the password is correct or not for login
-studentSchema.models.isPasswordCorrect = async function (password) {
+studentSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
 // for access Token
-studentSchema.models.generateAccessToken = function () {
+studentSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
       _id: this._id,
@@ -74,7 +74,7 @@ studentSchema.models.generateAccessToken = function () {
 };
 
 // for refresh token
-studentSchema.models.generateRefreshToken = function () {
+studentSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
       _id: this._id,

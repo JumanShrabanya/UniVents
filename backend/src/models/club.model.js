@@ -49,12 +49,12 @@ clubSchema.pre("save", async function (next) {
 });
 
 // for verifying the password for login
-clubSchema.models.isPasswordCorrect = async function (password) {
+clubSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
 // for generating the access token
-clubSchema.models.gerateAcessToken = function () {
+clubSchema.methods.gerateAcessToken = function () {
   return jwt.sign(
     {
       _id: this._id,
@@ -69,7 +69,7 @@ clubSchema.models.gerateAcessToken = function () {
 };
 
 // for generating refresh token
-clubSchema.models.generateRefreshSchema = function () {
+clubSchema.methods.generateRefreshSchema = function () {
   return jwt.sign(
     {
       _id: this._id,
