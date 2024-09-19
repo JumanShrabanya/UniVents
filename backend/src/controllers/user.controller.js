@@ -7,14 +7,14 @@ import { Club } from "../models/club.model.js";
 // for the participant
 const registerParticipant = asyncHandler(async (req, res) => {
   // take the details provided by the user
-  const { name, email, password, college, semister, rollno } = req.body;
+  const { name, email, password, college, semister, rollNo } = req.body;
 
   // verify the details
   console.log(req.body);
 
   if (
-    [name, email, password, college, semister, rollno].some(
-      (field) => !field || field.trim() === ""
+    [name, email, password, college, semister, rollNo].some(
+      (field) => !field || field === ""
     )
   ) {
     throw new ApiError(400, "Please enter all the required credentials");
@@ -41,7 +41,7 @@ const registerParticipant = asyncHandler(async (req, res) => {
     password,
     college,
     semister,
-    rollno,
+    rollNo,
   });
 
   // remove the password from the response
