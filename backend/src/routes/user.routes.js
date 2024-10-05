@@ -2,6 +2,8 @@ import { Router } from "express";
 import {
   registerClub,
   registerParticipant,
+  participantLogin,
+  organizerLogin,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
@@ -17,5 +19,7 @@ router.route("/register-participant").post(
   ]),
   registerParticipant
 );
+router.route("/login-club").post(organizerLogin);
+router.route("/login-participant").post(participantLogin);
 
 export default router;

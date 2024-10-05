@@ -54,7 +54,7 @@ clubSchema.methods.isPasswordCorrect = async function (password) {
 };
 
 // for generating the access token
-clubSchema.methods.gerateAcessToken = function () {
+clubSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
       _id: this._id,
@@ -69,7 +69,7 @@ clubSchema.methods.gerateAcessToken = function () {
 };
 
 // for generating refresh token
-clubSchema.methods.generateRefreshSchema = function () {
+clubSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
       _id: this._id,

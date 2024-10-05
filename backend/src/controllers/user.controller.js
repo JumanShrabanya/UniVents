@@ -4,6 +4,38 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Student } from "../models/student.model.js";
 import { Club } from "../models/club.model.js";
 
+// helper function for generating access and refresh token
+const generateRefreshAccessTokenStudent = async function (userId) {
+  try {
+    const student = await Student.findById(userId);
+    const refreshToken = student.generateRefreshToken();
+    const accessToken = student.generateAccessToken();
+
+    // save the refresh token
+    student.refreshToken = refreshToken;
+    await student.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new ApiError(500, "Something went wrong");
+  }
+};
+
+const generateRefreshAccessTokenOrganizer = async function (userId) {
+  try {
+    const organizer = await Club.findById(userId);
+    const refreshToken = organizer.generateRefreshToken();
+    const accessToken = organizer.generateAccessToken();
+
+    organizer.refreshToken = refreshToken;
+    await organizer.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new ApiError(500, "Something went wrong in organizer!", error);
+  }
+};
+
 // for the participant
 const registerParticipant = asyncHandler(async (req, res) => {
   // take the details provided by the user
@@ -116,4 +148,107 @@ const registerClub = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, createdClub, "Club created successfully"));
 });
 
-export { registerClub, registerParticipant };
+// for participant login
+const participantLogin = asyncHandler(async (req, res) => {
+  // get the user data
+  const { email, password } = req.body;
+  if (!email || !password) {
+    throw new ApiError(400, "Email and password is required");
+  }
+  // check if email already exists or not
+  // find the user
+  const student = await Student.findOne({
+    $or: [{ email }, { password }],
+  });
+
+  if (!student) {
+    throw new ApiError(400, "user does not exist");
+  }
+
+  // check if password is correct or not
+  const validPassword = student.isPasswordCorrect(password);
+  if (!validPassword) {
+    throw new ApiError(401, "Password is incorrect");
+  }
+  // access refresh token
+  const { accessToken, refreshToken } = await generateRefreshAccessTokenStudent(
+    student._id
+  );
+  // send cookie
+  const loggedInStudent = await Student.findById(student._id).select(
+    "-password -refreshToken"
+  );
+
+  // cookies
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+  // if everything is fine then login
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refeshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: loggedInStudent,
+          refreshToken,
+          accessToken,
+        },
+        "participant Logged in successfully"
+      )
+    );
+});
+
+// for organizer login
+const organizerLogin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    throw new ApiError(400, "Please enter email and password");
+  }
+
+  const organizer = await Club.findOne({
+    $or: [{ email }, { password }],
+  });
+  if (!organizer) {
+    throw new ApiError(400, "User does not exist");
+  }
+
+  const validPassword = organizer.isPasswordCorrect(password);
+  if (!validPassword) {
+    throw new ApiError(401, "Password is incorrect!");
+  }
+
+  const { refreshTokenClub, accessTokenClub } =
+    await generateRefreshAccessTokenOrganizer(organizer._id);
+
+  const loggedInOrganizer = await Club.findById(organizer._id).select(
+    "-password -refreshToken"
+  );
+
+  // cookies
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+  // if everything is fine then login
+  return res
+    .status(200)
+    .cookie("accessToken", accessTokenClub, options)
+    .cookie("refeshToken", refreshTokenClub, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: loggedInOrganizer,
+          refreshTokenClub,
+          accessTokenClub,
+        },
+        "organizer Logged in successfully"
+      )
+    );
+});
+
+export { registerClub, registerParticipant, participantLogin, organizerLogin };
