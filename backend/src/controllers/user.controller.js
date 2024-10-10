@@ -36,7 +36,7 @@ const generateRefreshAccessTokenOrganizer = async function (userId) {
   }
 };
 
-// for the participant
+// for the participant registration
 const registerParticipant = asyncHandler(async (req, res) => {
   // take the details provided by the user
   const { name, email, password, college, semister, rollNo } = req.body;
@@ -95,7 +95,7 @@ const registerParticipant = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, createdStudent, "User registered successfully"));
 });
 
-// for the club
+// for the club registration
 const registerClub = asyncHandler(async (req, res) => {
   // get the club details
   const { clubName, collegeName, email, password } = req.body;
@@ -251,4 +251,49 @@ const organizerLogin = asyncHandler(async (req, res) => {
     );
 });
 
-export { registerClub, registerParticipant, participantLogin, organizerLogin };
+// for logging out the participant and organizer
+const logoutUser = asyncHandler(async (req, res) => {
+  // reset the refresh and access token
+  if (req.student) {
+    await Student.findByIdAndUpdate(
+      req.student._id,
+      {
+        $set: {
+          refreshToken: undefined,
+        },
+      },
+      { new: true }
+    );
+  } else {
+    await Club.findByIdAndUpdate(
+      req.club._id,
+      {
+        $set: {
+          refreshToken: undefined,
+        },
+      },
+      { new: true }
+    );
+  }
+
+  // remove the cookies
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User loged out"));
+});
+
+export {
+  registerClub,
+  registerParticipant,
+  participantLogin,
+  organizerLogin,
+  logoutUser,
+};

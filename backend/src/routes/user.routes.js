@@ -4,8 +4,10 @@ import {
   registerParticipant,
   participantLogin,
   organizerLogin,
+  logoutUser,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
+import { verifyJwt } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -21,5 +23,8 @@ router.route("/register-participant").post(
 );
 router.route("/login-club").post(organizerLogin);
 router.route("/login-participant").post(participantLogin);
+
+// secured routes
+router.route("/logout").post(verifyJwt, logoutUser);
 
 export default router;
