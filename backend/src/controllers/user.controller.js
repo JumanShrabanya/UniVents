@@ -3,9 +3,10 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Student } from "../models/student.model.js";
 import { Club } from "../models/club.model.js";
+import jwt from "jsonwebtoken";
 
 // helper function for generating access and refresh token
-const generateRefreshAccessTokenStudent = async function (userId) {
+const generateRefreshAccessTokenStudent = async (userId) => {
   try {
     const student = await Student.findById(userId);
     const refreshToken = student.generateRefreshToken();
@@ -21,7 +22,7 @@ const generateRefreshAccessTokenStudent = async function (userId) {
   }
 };
 
-const generateRefreshAccessTokenOrganizer = async function (userId) {
+const generateRefreshAccessTokenOrganizer = async (userId) => {
   try {
     const organizer = await Club.findById(userId);
     const refreshToken = organizer.generateRefreshToken();
@@ -157,9 +158,7 @@ const participantLogin = asyncHandler(async (req, res) => {
   }
   // check if email already exists or not
   // find the user
-  const student = await Student.findOne({
-    $or: [{ email }, { password }],
-  });
+  const student = await Student.findOne({ email });
 
   if (!student) {
     throw new ApiError(400, "user does not exist");
@@ -209,9 +208,7 @@ const organizerLogin = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please enter email and password");
   }
 
-  const organizer = await Club.findOne({
-    $or: [{ email }, { password }],
-  });
+  const organizer = await Club.findOne({ email });
   if (!organizer) {
     throw new ApiError(400, "User does not exist");
   }
@@ -290,10 +287,99 @@ const logoutUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "User loged out"));
 });
 
+// access refresh Token for Student
+const refreshAcessTokenStudent = asyncHandler(async (req, res) => {
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.body.refreshToken;
+
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, "unauthorized request");
+  }
+
+  try {
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+    const student = await Student.findById(decodedToken?._id);
+    if (!user) {
+      throw new ApiError(401, "Invalid refresh token");
+    }
+    if (incomingRefreshToken !== student?.refreshToken) {
+      throw new ApiError(401, "Refresh token is expired or used");
+    }
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+    const { accessToken, newrefreshToken } =
+      await generateRefreshAccessTokenStudent(student._id);
+    return res
+      .status(201)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", newrefreshToken, options)
+      .json(
+        new ApiResponse(
+          200,
+          { accessToken, refreshToken: newrefreshToken },
+          "access token refreshed successfully"
+        )
+      );
+  } catch (error) {
+    throw new ApiError(401, error.message);
+  }
+});
+
+// access refresh Token for organizer
+const refreshAcessTokenOrganizer = asyncHandler(async (req, res) => {
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.body.refreshToken;
+
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, "unauthorized request");
+  }
+
+  try {
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+    const organizer = await Organizer.findById(decodedToken?._id);
+    if (!user) {
+      throw new ApiError(401, "Invalid refresh token");
+    }
+    if (incomingRefreshToken !== organizer?.refreshToken) {
+      throw new ApiError(401, "Refresh token is expired or used");
+    }
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+    const { accessToken, newrefreshToken } =
+      await generateRefreshAccessTokenOrganizer(organizer._id);
+    return res
+      .status(201)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", newrefreshToken, options)
+      .json(
+        new ApiResponse(
+          200,
+          { accessToken, refreshToken: newrefreshToken },
+          "access token refreshed successfully"
+        )
+      );
+  } catch (error) {
+    throw new ApiError(401, error.message);
+  }
+});
 export {
   registerClub,
   registerParticipant,
   participantLogin,
   organizerLogin,
   logoutUser,
+  refreshAcessTokenStudent,
+  refreshAcessTokenOrganizer,
 };

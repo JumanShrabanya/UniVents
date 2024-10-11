@@ -5,6 +5,8 @@ import {
   participantLogin,
   organizerLogin,
   logoutUser,
+  refreshAcessTokenStudent,
+  refreshAcessTokenOrganizer,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJwt } from "../middlewares/auth.middleware.js";
@@ -26,5 +28,6 @@ router.route("/login-participant").post(participantLogin);
 
 // secured routes
 router.route("/logout").post(verifyJwt, logoutUser);
-
+router.route("/refresh-token-student").post(refreshAcessTokenStudent);
+router.route("/refresh-token-organizer").post(refreshAcessTokenOrganizer);
 export default router;
