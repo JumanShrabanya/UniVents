@@ -218,7 +218,7 @@ const organizerLogin = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Password is incorrect!");
   }
 
-  const { refreshTokenClub, accessTokenClub } =
+  const { refreshToken, accessToken } =
     await generateRefreshAccessTokenOrganizer(organizer._id);
 
   const loggedInOrganizer = await Club.findById(organizer._id).select(
@@ -228,20 +228,22 @@ const organizerLogin = asyncHandler(async (req, res) => {
   // cookies
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: true, // Make sure to only set this to true in production (HTTPS)
+    sameSite: "None", // This can help with cross-site requests
+    maxAge: 24 * 60 * 60 * 1000, // Set cookie expiration time, e.g., 1 day
   };
   // if everything is fine then login
   return res
     .status(200)
-    .cookie("accessToken", accessTokenClub, options)
-    .cookie("refeshToken", refreshTokenClub, options)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
     .json(
       new ApiResponse(
         200,
         {
           user: loggedInOrganizer,
-          refreshTokenClub,
-          accessTokenClub,
+          refreshToken,
+          accessToken,
         },
         "organizer Logged in successfully"
       )
