@@ -13,7 +13,7 @@ import fs from "fs";
 })();
 
 // function to upload a file to cloudinary
-const uoloadToCloudinary = async (localFile) => {
+const uploadToCloudinary = async (localFile) => {
   try {
     if (!localFile) {
       return null;
@@ -21,12 +21,16 @@ const uoloadToCloudinary = async (localFile) => {
     const response = await cloudinary.uploader.upload(localFile, {
       resource_type: "auto",
     });
-    console.log("uploaded", response.url);
+    console.log("uploaded to cloudinary", response.url);
     return response;
   } catch (error) {
     // remove the locally saved file if the upload fails
-    fs.unlinkSync(localFile);
+    console.error("Cloudinary upload failed:", error.message);
+    if (fs.existsSync(localFile)) {
+      fs.unlinkSync(localFile);
+    }
+    throw new Error("Failed to upload to Cloudinary");
   }
 };
 
-export { uoloadToCloudinary };
+export { uploadToCloudinary };

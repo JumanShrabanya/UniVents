@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Event } from "../models/event.model.js";
 import { Category } from "../models/category.model.js";
+import { uploadToCloudinary } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
 
 const showEvents = asyncHandler(async (req, res) => {
@@ -16,12 +17,7 @@ const showEvents = asyncHandler(async (req, res) => {
 
 // to handle the creation of a event
 const createEvent = asyncHandler(async (req, res) => {
-  // get the event details
-  // get the club id from the cookies
-  // check if the details are given or not
-  // check if the category is predefined or not
-  // make an entry of that event in the database
-
+  // Validate token
   const token = req.cookies.accessToken;
   if (!token) {
     throw new ApiError(401, "No token provided. Authorization denied.");
@@ -29,31 +25,64 @@ const createEvent = asyncHandler(async (req, res) => {
   const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   const organizerId = decoded._id;
 
+  // Destructure request body
   const { title, description, eventDate, venue, category } = req.body;
 
+  // Validate required fields
   if (!title || !description || !eventDate || !venue || !category) {
-    throw new ApiError(400, "All the fields are required");
-  }
-  const allCategories = Category.getPredefinedCategories();
-  if (!allCategories.includes(category)) {
-    throw new ApiError(400, "Invalid Category");
+    throw new ApiError(400, "All fields are required.");
   }
 
+  // Validate the category
+  const allCategories = Category.getPredefinedCategories();
+  if (!allCategories.includes(category)) {
+    throw new ApiError(400, "Invalid category.");
+  }
+
+  // Fetch or create category
   let categoryDoc = await Category.findOne({ categoryTitle: category });
   if (!categoryDoc) {
     categoryDoc = await Category.create({ categoryTitle: category });
   }
+
+  // Ensure a cover image is provided
+  if (!req.file) {
+    throw new ApiError(400, "Cover image is required!");
+  }
+
+  let coverImgUrl = "";
+  try {
+    const tempFilePath = `./public/temp/${req.file.originalname}`;
+
+    // Write the file buffer to a temporary location
+    fs.writeFileSync(tempFilePath, req.file.buffer);
+
+    // Upload to Cloudinary
+    const result = await uploadToCloudinary(tempFilePath);
+    coverImgUrl = result.secure_url;
+
+    // Cleanup the temp file after successful upload
+    fs.unlinkSync(tempFilePath);
+  } catch (error) {
+    // Clean up in case of any errors
+    if (fs.existsSync(tempFilePath)) {
+      fs.unlinkSync(tempFilePath);
+    }
+    throw new ApiError(500, "Failed to upload the cover image.");
+  }
+
+  // Create the event
   const newEvent = await Event.create({
     title,
     description,
     eventDate,
     venue,
+    coverImg: coverImgUrl, // Store the Cloudinary image URL
     organizer: organizerId,
     category: categoryDoc._id,
   });
-  await newEvent.save();
-
-  res.status(200).json(new ApiResponse("Event created Successfully", newEvent));
+  // Send the response
+  res.status(200).json(new ApiResponse("Event created successfully", newEvent));
 });
 
 // to handle event by search query
@@ -79,4 +108,10 @@ const searchEvent = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse("Found events: ", matchingEvents));
 });
 
-export { showEvents, createEvent, searchEvent };
+// to register for an event
+const registerForEvent = asyncHandler(async (req, res) => {
+  // get the logged in student data from the cookies
+  // get the student id and create a new document on the registration schema
+  // get the event id and enter that into the schema
+});
+export { showEvents, createEvent, searchEvent, registerForEvent };

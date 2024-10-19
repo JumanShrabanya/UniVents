@@ -35,6 +35,10 @@ const eventSchema = new Schema(
       ref: "Category",
       required: true,
     },
+    coverImg: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
