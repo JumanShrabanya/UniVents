@@ -131,4 +131,21 @@ const registerForEvent = asyncHandler(async (req, res) => {
   // get the student id and create a new document on the registration schema
   // get the event id and enter that into the schema
 });
-export { showEvents, createEvent, searchEvent, registerForEvent };
+
+// show categories
+const showCategories = asyncHandler(async (req, res) => {
+  // get the categories
+  let categories = await Category.find({}, "categoryTitle");
+  if (categories) {
+    res.status(200).json(new ApiResponse("Categories: ", categories));
+  } else {
+    res.status(404).json(new ApiError("No categories found!"));
+  }
+});
+export {
+  showEvents,
+  createEvent,
+  searchEvent,
+  registerForEvent,
+  showCategories,
+};

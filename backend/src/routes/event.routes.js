@@ -4,6 +4,7 @@ import {
   createEvent,
   searchEvent,
   registerForEvent,
+  showCategories,
 } from "../controllers/event.controller.js";
 import Authentication from "../middlewares/authentication.middleware.js";
 import Authorization from "../middlewares/authorization.middleware.js";
@@ -18,5 +19,5 @@ router.route("/").get(searchEvent); //http://localhost:8000/api/v1/event?search=
 router
   .route("/events/events-register")
   .post(Authentication, Authorization("student"), registerForEvent);
-
+router.route("/categories").get(Authentication, showCategories);
 export default router;

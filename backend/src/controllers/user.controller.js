@@ -432,7 +432,7 @@ const updateProfile = asyncHandler(async (req, res) => {
   }
 
   await user.save();
-  res.status(200).json(new ApiResponse(200, "Updates successfully", user));
+  res.status(200).json(new ApiResponse("Updates successfully", user));
 });
 
 export {

@@ -137,7 +137,7 @@ const showCreatedEvents = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, "all the created events:", createdEvents));
 });
 // Schedule the cron job to run every hour for checking the events available for registration or not
-cron.schedule("0 * * * *", async (req, res) => {
+cron.schedule("* * * * *", async () => {
   // fetch the events where the event date is still in past and registrationAvailable is set to TRUE
   // update the registrationAvailable to FALSE
 
