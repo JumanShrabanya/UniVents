@@ -155,4 +155,4 @@ cron.schedule("0 * * * *", async (req, res) => {
     console.error("Error updating event registration status:", error);
   }
 });
-export { showRegisteredParticipants, editEventDetails, createdEvents };
+export { showRegisteredParticipants, editEventDetails, showCreatedEvents };

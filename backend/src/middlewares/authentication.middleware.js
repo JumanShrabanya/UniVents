@@ -1,5 +1,4 @@
-import { ApiError } from "../utils/ApiError";
-import { asyncHandler } from "../utils/asyncHandler";
+import { ApiError } from "../utils/ApiError.js";
 import jwt from "jsonwebtoken";
 
 const Authentication = (req, res, next) => {

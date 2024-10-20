@@ -378,6 +378,63 @@ const refreshAcessTokenOrganizer = asyncHandler(async (req, res) => {
     throw new ApiError(401, error.message);
   }
 });
+
+// view profile
+const viewProfile = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const role = req.user.role;
+
+  let user;
+
+  if (role === "student") {
+    user = await Student.findById(userId).select("-password -refreshToken");
+  } else if (role === "organizer") {
+    user = await Organizer.findById(userId).select("-password -refreshToken");
+  }
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  res.status(200).json(new ApiResponse(200, user));
+});
+
+// edit prifile details
+const updateProfile = asyncHandler(async (req, res) => {
+  // get the user id
+  // get the user details,
+  // get the updated fields form the body
+  // check if user exists or not
+  // if its a student then update on the student
+  // if its a organizer then update on the organizer
+
+  const userId = req.user._id;
+  const role = req.user.role;
+  const { ...updatedFields } = req.body;
+
+  let user;
+  if (role === "student") {
+    user = await Student.findById(userId);
+  } else if (role === "organizer") {
+    user = await Organizer.findById(userId);
+  }
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  if (Object.keys(updatedFields).length > 0) {
+    Object.keys(updatedFields).forEach((key) => {
+      if (user[key] !== updatedFields[key]) {
+        user[key] = updatedFields[key];
+      }
+    });
+  }
+
+  await user.save();
+  res.status(200).json(new ApiResponse(200, "Updates successfully", user));
+});
+
 export {
   registerClub,
   registerParticipant,
@@ -386,4 +443,6 @@ export {
   logoutUser,
   refreshAcessTokenStudent,
   refreshAcessTokenOrganizer,
+  viewProfile,
+  updateProfile,
 };

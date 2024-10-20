@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   showRegisteredParticipants,
   editEventDetails,
-  createdEvents,
+  showCreatedEvents,
 } from "../controllers/organizer.controller.js";
 import Authentication from "../middlewares/authentication.middleware.js";
 import Authorization from "../middlewares/authorization.middleware.js";
@@ -17,6 +17,6 @@ router
   .patch(Authentication, Authorization("organizer"), editEventDetails);
 router
   .route("/created-events")
-  .get(Authentication, Authorization("organizer"), createdEvents);
+  .get(Authentication, Authorization("organizer"), showCreatedEvents);
 
 export default router;
