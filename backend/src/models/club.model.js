@@ -20,6 +20,11 @@ const clubSchema = new Schema(
       lowercase: true,
       unique: true,
     },
+    role: {
+      type: String,
+      default: "student", // Hardcoded to 'student'
+      enum: ["student", "organizer"], // Ensures only valid roles are set
+    },
     password: {
       type: String,
       required: true,

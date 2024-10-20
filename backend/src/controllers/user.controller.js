@@ -74,6 +74,7 @@ const registerParticipant = asyncHandler(async (req, res) => {
     password,
     college,
     semister,
+    role: "student",
     rollNo,
   });
 
@@ -129,6 +130,7 @@ const registerClub = asyncHandler(async (req, res) => {
     clubName,
     collegeName,
     email,
+    role: "organizer",
     password,
   });
 

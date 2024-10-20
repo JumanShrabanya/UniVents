@@ -30,6 +30,11 @@ const studentSchema = new Schema(
       type: String,
       required: true,
     },
+    role: {
+      type: String,
+      default: "student", // Hardcoded to 'student'
+      enum: ["student", "organizer"], // Ensures only valid roles are set
+    },
     avatarImg: {
       type: String,
     },

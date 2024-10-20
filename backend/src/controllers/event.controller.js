@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Event } from "../models/event.model.js";
+import { Club } from "../models/club.model.js";
 import { Category } from "../models/category.model.js";
 import { uploadToCloudinary } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
@@ -22,8 +23,20 @@ const createEvent = asyncHandler(async (req, res) => {
   if (!token) {
     throw new ApiError(401, "No token provided. Authorization denied.");
   }
-  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+  let decoded;
+  try {
+    decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  } catch (error) {
+    throw new ApiError(401, "Invalid token provided. Authorization denied.");
+  }
+
   const organizerId = decoded._id;
+
+  const isOrganizer = await Club.findById(organizerId);
+  if (isOrganizer.role !== "organizer") {
+    throw new ApiError(400, "Not an organizer! Access denied.");
+  }
 
   // Destructure request body
   const { title, description, eventDate, venue, category } = req.body;
@@ -51,9 +64,9 @@ const createEvent = asyncHandler(async (req, res) => {
   }
 
   let coverImgUrl = "";
-  try {
-    const tempFilePath = `./public/temp/${req.file.originalname}`;
+  const tempFilePath = `./public/temp/${req.file.originalname}`;
 
+  try {
     // Write the file buffer to a temporary location
     fs.writeFileSync(tempFilePath, req.file.buffer);
 
@@ -81,8 +94,9 @@ const createEvent = asyncHandler(async (req, res) => {
     organizer: organizerId,
     category: categoryDoc._id,
   });
+
   // Send the response
-  res.status(200).json(new ApiResponse("Event created successfully", newEvent));
+  res.status(201).json(new ApiResponse("Event created successfully", newEvent));
 });
 
 // to handle event by search query
@@ -98,7 +112,10 @@ const searchEvent = asyncHandler(async (req, res) => {
   }
 
   const matchingEvents = await Event.find({
-    title: { $regex: search, $options: "i" },
+    $and: [
+      { title: { $regex: search, $options: "i" } },
+      { registrationAvailable: true },
+    ],
   });
 
   if (matchingEvents.length === 0) {
