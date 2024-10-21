@@ -13,3 +13,6 @@ body {
   height: 100%;
   width: 100%;
 }
+::placeholder {
+  font-weight: 400;
+}
