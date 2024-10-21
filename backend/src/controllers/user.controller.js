@@ -435,6 +435,38 @@ const updateProfile = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse("Updates successfully", user));
 });
 
+// to check user is logged in or not
+const checkAuthStatus = asyncHandler(async (req, res) => {
+  // get the user id
+  // generate the token
+  // verify the user with the token
+  // return the response
+
+  const userId = req.user._id;
+  console.log("id:   ", userId);
+
+  const token = req.cookies.accessToken;
+  if (!token) {
+    throw new ApiError(401, "No token provided. Authorization denied.");
+  }
+
+  let decoded;
+  try {
+    decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+    let user = await Student.findById(userId).select("-password -refreshToken");
+    if (!user) {
+      user = await Club.findById(userId).select("-password -refreshToken");
+    }
+    return res.status(200).json(new ApiResponse(200, { role: user.role }));
+  } catch (error) {
+    throw new ApiError(
+      401,
+      "Invalid token provided. Authorization denied.",
+      error
+    );
+  }
+});
 export {
   registerClub,
   registerParticipant,
@@ -445,4 +477,5 @@ export {
   refreshAcessTokenOrganizer,
   viewProfile,
   updateProfile,
+  checkAuthStatus,
 };

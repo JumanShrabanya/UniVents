@@ -4,8 +4,8 @@ import {
   editEventDetails,
   showCreatedEvents,
 } from "../controllers/organizer.controller.js";
-import Authentication from "../middlewares/authentication.middleware.js";
-import Authorization from "../middlewares/authorization.middleware.js";
+import Authentication from "../middlewares/Authentication.middleware.js";
+import Authorization from "../middlewares/Authorization.middleware.js";
 
 const router = Router();
 

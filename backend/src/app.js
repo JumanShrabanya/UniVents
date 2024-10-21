@@ -1,6 +1,14 @@
+import cors from "cors";
 import express from "express";
 import cookieParser from "cookie-parser";
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Your frontend origin
+    credentials: true, // Allow credentials like cookies
+  })
+);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -17,4 +25,5 @@ app.use("/api/v1/event", eventRoutes);
 app.use("/app", studentDashboardRoutes);
 app.use("/dashboard-organizer", orgDashboardRoutes);
 // localhost:8000/api/v1/users/registerClub
+
 export { app };
