@@ -4,7 +4,7 @@ import axios from "axios";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [logedIn, setLogedIn] = useState(false);
+  const [logedIn, setLogedIn] = useState(true);
   const [role, setRole] = useState("");
 
   useEffect(() => {
