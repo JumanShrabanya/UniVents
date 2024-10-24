@@ -18,7 +18,6 @@ const NavBar = () => {
   // to toggle the menu open and close
   const handleMenuToggle = () => {
     setMenuOpen((prev) => !prev);
-    console.log(isMenuOpen);
   };
 
   return (

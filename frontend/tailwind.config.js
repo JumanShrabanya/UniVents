@@ -6,6 +6,8 @@ export default {
       colors: {
         indigo: "#00335E",
         lightBlue: "#BDE0FE",
+        lightBlueHover: "#A5D5FF",
+        indigoHover: "#002646",
       },
       fontFamily: {
         mainFont: ["Nunito", "sans-serif"],

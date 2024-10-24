@@ -1,11 +1,11 @@
 import { AuthProvider } from "../src/contexts/Authcontext";
-import NavBar from "./components/NavBar";
+import HomePage from "./pages/HomePage";
 
 const App = () => {
   return (
     <AuthProvider>
       <main className="h-full">
-        <NavBar></NavBar>
+        <HomePage></HomePage>
       </main>
     </AuthProvider>
   );
