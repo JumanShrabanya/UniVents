@@ -16,3 +16,9 @@ body {
 ::placeholder {
   font-weight: 400;
 }
+.links {
+  transition: all linear 0.3s;
+}
+.links:hover {
+  color: #00335e;
+}

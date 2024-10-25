@@ -5,9 +5,11 @@ export default {
     extend: {
       colors: {
         indigo: "#00335E",
+        yellow: "#FFE4BF",
         lightBlue: "#BDE0FE",
         lightBlueHover: "#A5D5FF",
         indigoHover: "#002646",
+        footer: "#EBF5F7",
       },
       fontFamily: {
         mainFont: ["Nunito", "sans-serif"],
