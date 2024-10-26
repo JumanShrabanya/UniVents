@@ -11,7 +11,7 @@ import { faCopyright } from "@fortawesome/free-regular-svg-icons";
 const FooterSection = () => {
   const { logedIn, role } = useContext(AuthContext);
   return (
-    <section className="bg-footer px-[4vw] py-[1.2rem] md:pt-[2rem] mt-20 ">
+    <section className="bg-footer px-[4vw] py-[1.2rem] md:pt-[2rem] ">
       {/* for the content area */}
       <div className="flex flex-col md:flex-row justify-between items-start gap-[2rem]">
         {/* left part */}
