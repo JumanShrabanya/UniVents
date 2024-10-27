@@ -8,12 +8,16 @@ import {
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../contexts/Authcontext";
+import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
   // calling context to get the user loged in or not and the role
   const { logedIn, role } = useContext(AuthContext);
   // to know if the menu is open or not
   const [isMenuOpen, setMenuOpen] = useState(false);
+
+  // use Navigate hook
+  const navigate = useNavigate();
 
   // to toggle the menu open and close
   const handleMenuToggle = () => {
@@ -43,7 +47,10 @@ const NavBar = () => {
             </button>
           </li>
           <li className="max-sm:hidden cursor-pointer">
-            <button className="bg-lightBlue py-[.75vw] px-[1.75vw] rounded-lg outline-none border-none hover:bg-indigo hover:text-zinc-50 duration-200 transition-all ease-linear">
+            <button
+              onClick={() => navigate("/registration")}
+              className="bg-lightBlue py-[.75vw] px-[1.75vw] rounded-lg outline-none border-none hover:bg-indigo hover:text-zinc-50 duration-200 transition-all ease-linear"
+            >
               Register
             </button>
           </li>
