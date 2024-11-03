@@ -18,11 +18,11 @@ const studentSchema = new Schema(
       type: String,
       required: true,
     },
-    college: {
+    collegeName: {
       type: String,
       required: true,
     },
-    semister: {
+    semester: {
       type: Number,
       required: true,
     },

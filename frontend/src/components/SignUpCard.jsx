@@ -2,7 +2,7 @@ import React from "react";
 
 const SignUpCard = ({ title, paragraph, btnText, onClick }) => {
   return (
-    <div className="rounded-lg bg-white py-[2.5rem] px-[1.2rem] flex flex-col gap-5 justify-center items-center lg:w-[40%] md:w-[60%] w-[100%] hover:scale-[1.009] transition-all duration-150 ease-linear">
+    <div className="rounded-lg bg-white py-[2.5rem] px-[1.2rem] flex flex-col gap-5 justify-center items-center lg:w-[40%] md:w-[60%] w-[100%] hover:scale-[1.009] transition-all duration-150 ease-linear cursor-pointer">
       <h2 className="text-[1.4rem] font-mainFont capitalize">{title}</h2>
       <p className="text-[16px] w-[90%] text-center text-zinc-600 md:text-[.9rem] lg:text-[1rem]">
         {paragraph}

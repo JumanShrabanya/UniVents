@@ -1,6 +1,7 @@
 import { AuthProvider } from "../src/contexts/Authcontext";
 import { UserTypeProvider } from "./contexts/UserTypeContext";
 import DashBoard from "./pages/DashBoard";
+import EventsPage from "./pages/EventsPage";
 import HomePage from "./pages/HomePage";
 import RegistrationPage from "./pages/RegistrationPage";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
@@ -21,6 +22,7 @@ const App = () => {
                 path="/dashboard"
                 element={<DashBoard></DashBoard>}
               ></Route>
+              <Route path="/events" element={<EventsPage></EventsPage>}></Route>
             </Routes>
           </main>
         </Router>

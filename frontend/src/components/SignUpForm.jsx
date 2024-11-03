@@ -8,12 +8,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/Authcontext";
+import { registerUser } from "../services/RegisterUser";
 
 const SignUpForm = () => {
   // to know to which form to open organi zer or participant based on the user click
   const { userType, selectUserType } = useUserType();
   const [passwordType, setPasswordType] = useState(true);
 
+  // to set that the user is logged in
+  const { logedIn, role, setLogedIn, setRole } = useContext(AuthContext);
   // useNavigate hook
   const navigate = useNavigate();
 
@@ -25,9 +29,9 @@ const SignUpForm = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [semester, setSemester] = useState(null);
-  const [rollno, setRollno] = useState("");
-  const [college, setCollege] = useState("");
+  const [semester, setSemester] = useState(0);
+  const [rollNo, setRollno] = useState("");
+  const [collegeName, setCollege] = useState("");
   const [clubName, setClubName] = useState("");
   // to hold the errors
   const [errors, setErrors] = useState({});
@@ -49,9 +53,39 @@ const SignUpForm = () => {
     }
     console.log("Form submitted successfully");
 
-    // after successfull submission navigate to dashboard
-    navigate("/dashboard");
-    selectUserType("");
+    // send the data to the backend
+    try {
+      if (userType === "organizer") {
+        const response = registerUser(
+          {
+            email,
+            password,
+            collegeName,
+            clubName,
+          },
+          userType
+        );
+        console.log(response.Object.data);
+      }
+      if (userType === "participant") {
+        registerUser(
+          {
+            email,
+            password,
+            collegeName,
+            semester,
+            name,
+            rollNo,
+          },
+          userType
+        );
+      }
+      // after successfull submission navigate to dashboard
+      navigate("/dashboard");
+      setLogedIn(true);
+    } catch (err) {
+      console.log("Registration failed", err);
+    }
   };
 
   return (
@@ -127,7 +161,7 @@ const SignUpForm = () => {
               <input
                 id="college"
                 type="text"
-                value={college}
+                value={collegeName}
                 onChange={(e) => setCollege(e.target.value)}
                 required
                 className="w-full border-none outline-none bg-zinc-200 px-4 py-3 rounded-lg mt-1"
@@ -177,7 +211,7 @@ const SignUpForm = () => {
                 <input
                   id="rollno"
                   type="text"
-                  value={rollno}
+                  value={rollNo}
                   onChange={(e) => setRollno(e.target.value)}
                   required
                   className="w-full border-none outline-none bg-zinc-200 px-4 py-3 rounded-lg mt-1"

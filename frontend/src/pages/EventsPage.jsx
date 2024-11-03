@@ -1,8 +1,10 @@
 import React from "react";
-import EventCard from "./EventCard";
-import { useNavigate } from "react-router-dom";
+import NavBar from "../components/NavBar";
+import EventCard from "../components/EventCard";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-const LatestEventsSections = () => {
+const EventsPage = () => {
   const eventData = [
     {
       headerImage:
@@ -71,30 +73,62 @@ const LatestEventsSections = () => {
       college: "University of Delhi",
     },
   ];
-
-  const navigate = useNavigate();
-  const handleExploreMoreEvent = () => {
-    navigate("/events");
-  };
   return (
-    <section className="px-[4vw] py-[2.5rem]">
-      <h2 className="text-indigo text-[1.6rem] mb-5">Latest Events</h2>
-      <div className="flex justify-center items-center flex-wrap gap-10">
-        {eventData.map((item, index) => (
-          <EventCard key={index} item={item}></EventCard>
-        ))}
-      </div>
-      {/* explore more button */}
-      <div className="w-full flex justify-center items-center pt-10">
-        <button
-          onClick={handleExploreMoreEvent}
-          className="bg-lightBlue py-[1.8vw] px-[3vw] lg:py-[.75vw] lg:px-[1.75vw] text-[.9rem] lg:text-[1rem] rounded-lg outline-none border-none hover:bg-indigo hover:text-zinc-50 duration-200 transition-all ease-linear"
-        >
-          Explore More
-        </button>
-      </div>
-    </section>
+    <div>
+      <NavBar></NavBar>
+      {/* main section */}
+      <section className="py-[2rem] px-[4vw]">
+        {/* saerch bar inputs section */}
+        <div className="flex justify-between items-center gap-[2rem] ">
+          <div className="flex border-[1px] border-gray-500 rounded-lg pl-3 flex-1 justify-between items-center h-[3rem] overflow-hidden">
+            <FontAwesomeIcon
+              icon={faSearch}
+              className="text-gray-800 mr-4"
+            ></FontAwesomeIcon>
+            <input
+              type="text"
+              placeholder="search for events"
+              className="outline-none border-none h-full flex-1"
+            />
+            <button className="text-white px-4 h-full bg-indigo border-none outline-none hover:bg-indigoHover duration-150 ease-linear ">
+              Search
+            </button>
+          </div>
+          <p className="text-[16px]">or</p>
+          <div className="flex border-[1px] border-gray-500 rounded-lg pl-3 flex-1 justify-between items-center h-[3rem] overflow-hidden">
+            <FontAwesomeIcon
+              icon={faSearch}
+              className="text-gray-800 mr-4"
+            ></FontAwesomeIcon>
+            <input
+              type="text"
+              placeholder="search events by college name"
+              className="outline-none border-none h-full flex-1"
+            />
+            <button className="text-white px-4 h-full bg-indigo  border-none outline-none hover:bg-indigoHover duration-150 ease-linear">
+              Search
+            </button>
+          </div>
+        </div>
+        {/* display events section */}
+        <div className="py-[2rem]">
+          {/* heading */}
+          <h2 className="text-[1.4rem] font-semibold font-mainFont capitalize">
+            Matching Results for{" "}
+            <span className="text-zinc-500 font-normal text-[1rem] italic">
+              {"Make a thon"}
+            </span>
+          </h2>
+          {/*  */}
+          <div className="py-[2rem] flex items-center flex-wrap gap-[2rem] justify-center">
+            {eventData.map((item, index) => (
+              <EventCard key={index} item={item}></EventCard>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 };
 
-export default LatestEventsSections;
+export default EventsPage;
