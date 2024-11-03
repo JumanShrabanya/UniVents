@@ -8,6 +8,7 @@ import {
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../contexts/Authcontext";
+import { useLoginCard } from "../contexts/LoginCardContext";
 import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
@@ -18,6 +19,9 @@ const NavBar = () => {
 
   // use Navigate hook
   const navigate = useNavigate();
+
+  // to hide and show the login card component
+  const { openLogin } = useLoginCard();
 
   // to toggle the menu open and close
   const handleMenuToggle = () => {
@@ -42,7 +46,10 @@ const NavBar = () => {
             color="gray"
           />
           <li className="max-sm:hidden cursor-pointer">
-            <button className="outline-none border-none hover:text-indigo duration-100 transition-all ease-linear">
+            <button
+              onClick={openLogin}
+              className="outline-none border-none hover:text-indigo duration-100 transition-all ease-linear"
+            >
               Login
             </button>
           </li>
