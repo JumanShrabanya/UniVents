@@ -40,13 +40,13 @@ const generateRefreshAccessTokenOrganizer = async (userId) => {
 // for the participant registration
 const registerParticipant = asyncHandler(async (req, res) => {
   // take the details provided by the user
-  const { name, email, password, college, semister, rollNo } = req.body;
+  const { name, email, password, collegeName, semester, rollNo } = req.body;
 
   // verify the details
   console.log(req.body);
 
   if (
-    [name, email, password, college, semister, rollNo].some(
+    [name, email, password, collegeName, semester, rollNo].some(
       (field) => !field || field === ""
     )
   ) {
@@ -72,8 +72,8 @@ const registerParticipant = asyncHandler(async (req, res) => {
     name,
     email,
     password,
-    college,
-    semister,
+    collegeName,
+    semester,
     role: "student",
     rollNo,
   });
