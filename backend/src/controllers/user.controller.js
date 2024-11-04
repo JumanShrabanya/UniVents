@@ -151,90 +151,50 @@ const registerClub = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, createdClub, "Club created successfully"));
 });
 
-// for participant login
-const participantLogin = asyncHandler(async (req, res) => {
-  // get the user data
+// login controller for both participant and organizer
+const userLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) {
-    throw new ApiError(400, "Email and password is required");
-  }
-  // check if email already exists or not
-  // find the user
-  const student = await Student.findOne({ email });
 
-  if (!student) {
-    throw new ApiError(400, "user does not exist");
-  }
-
-  // check if password is correct or not
-  const validPassword = student.isPasswordCorrect(password);
-  if (!validPassword) {
-    throw new ApiError(401, "Password is incorrect");
-  }
-  // access refresh token
-  const { accessToken, refreshToken } = await generateRefreshAccessTokenStudent(
-    student._id
-  );
-  // send cookie
-  const loggedInStudent = await Student.findById(student._id).select(
-    "-password -refreshToken"
-  );
-
-  // cookies
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
-  // if everything is fine then login
-  return res
-    .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refeshToken", refreshToken, options)
-    .json(
-      new ApiResponse(
-        200,
-        {
-          user: loggedInStudent,
-          refreshToken,
-          accessToken,
-        },
-        "participant Logged in successfully"
-      )
-    );
-});
-
-// for organizer login
-const organizerLogin = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
   if (!email || !password) {
     throw new ApiError(400, "Please enter email and password");
   }
 
-  const organizer = await Club.findOne({ email });
-  if (!organizer) {
+  // to set the role
+  let user = await Club.findOne({ email });
+  let role = "organizer";
+
+  if (!user) {
+    user = await Student.findOne({ email });
+    role = "student";
+  }
+
+  // if neither of them exists
+  if (!user) {
     throw new ApiError(400, "User does not exist");
   }
 
-  const validPassword = organizer.isPasswordCorrect(password);
+  const validPassword = await user.isPasswordCorrect(password);
   if (!validPassword) {
     throw new ApiError(401, "Password is incorrect!");
   }
 
   const { refreshToken, accessToken } =
-    await generateRefreshAccessTokenOrganizer(organizer._id);
+    role === "organizer"
+      ? await generateRefreshAccessTokenOrganizer(user._id)
+      : await generateRefreshAccessTokenStudent(user._id);
 
-  const loggedInOrganizer = await Club.findById(organizer._id).select(
-    "-password -refreshToken"
-  );
+  const loggedInUser =
+    role === "organizer"
+      ? await Club.findById(user._id).select("-password -refreshToken")
+      : await Student.findById(user._id).select("-password -refreshToken");
 
-  // cookies
   const options = {
     httpOnly: true,
     secure: true, // Make sure to only set this to true in production (HTTPS)
     sameSite: "None", // This can help with cross-site requests
     maxAge: 24 * 60 * 60 * 1000, // Set cookie expiration time, e.g., 1 day
   };
-  // if everything is fine then login
+
   return res
     .status(200)
     .cookie("accessToken", accessToken, options)
@@ -243,11 +203,11 @@ const organizerLogin = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         {
-          user: loggedInOrganizer,
+          user: loggedInUser,
           refreshToken,
           accessToken,
         },
-        "organizer Logged in successfully"
+        `${role} logged in successfully`
       )
     );
 });
@@ -470,8 +430,7 @@ const checkAuthStatus = asyncHandler(async (req, res) => {
 export {
   registerClub,
   registerParticipant,
-  participantLogin,
-  organizerLogin,
+  userLogin,
   logoutUser,
   refreshAcessTokenStudent,
   refreshAcessTokenOrganizer,

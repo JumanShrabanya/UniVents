@@ -2,8 +2,7 @@ import { Router } from "express";
 import {
   registerClub,
   registerParticipant,
-  participantLogin,
-  organizerLogin,
+  userLogin,
   logoutUser,
   refreshAcessTokenStudent,
   refreshAcessTokenOrganizer,
@@ -27,8 +26,7 @@ router.route("/register-participant").post(
   ]),
   registerParticipant
 );
-router.route("/login-club").post(organizerLogin);
-router.route("/login-participant").post(participantLogin);
+router.route("/login").post(userLogin);
 router.route("/profile").get(Authentication, viewProfile);
 router.route("/update-profile").get(Authentication, updateProfile);
 router.route("/check-auth-status").get(Authentication, checkAuthStatus);

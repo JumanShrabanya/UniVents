@@ -37,7 +37,7 @@ const SignUpForm = () => {
   const [errors, setErrors] = useState({});
 
   // for the submition of the form
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const error = {};
     if (password.length < 8) {
@@ -55,8 +55,9 @@ const SignUpForm = () => {
 
     // send the data to the backend
     try {
+      let response;
       if (userType === "organizer") {
-        const response = registerUser(
+        response = await registerUser(
           {
             email,
             password,
@@ -65,10 +66,9 @@ const SignUpForm = () => {
           },
           userType
         );
-        console.log(response.Object.data);
       }
       if (userType === "participant") {
-        registerUser(
+        response = await registerUser(
           {
             email,
             password,
@@ -82,7 +82,7 @@ const SignUpForm = () => {
       }
       // after successfull submission navigate to dashboard
       navigate("/dashboard");
-      setLogedIn(true);
+      // setLogedIn(true);
     } catch (err) {
       console.log("Registration failed", err);
     }
