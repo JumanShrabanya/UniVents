@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLoginCard } from "../contexts/LoginCardContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { LoginUser } from "../services/LoginUser";
+import { AuthContext } from "../contexts/Authcontext";
 
 const LoginCard = () => {
   const { isLoginOpen, closeLogin } = useLoginCard();
+  const { setLogedIn } = useContext(AuthContext);
   const [passwordType, setPasswordType] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,7 +44,11 @@ const LoginCard = () => {
 
     try {
       const response = await LoginUser({ email, password });
-      console.log("User logged in successfully:", response.data);
+      if (response.data) {
+        console.log("User logged in successfully:", response.data);
+        setLogedIn(true);
+        closeLogin();
+      }
     } catch (error) {
       setErrors({ incorrect: "Email or password is incorrect" });
     }

@@ -2,10 +2,21 @@ import React from "react";
 import { faCalendarCheck } from "@fortawesome/free-regular-svg-icons";
 import { faLocationDot, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRegisterCard } from "../contexts/RegisterCardContext";
 
 const EventCard = ({ item }) => {
+  const { isRegisterCardOpen, openRegisterCard, closeRegisterCard, eventData } =
+    useRegisterCard();
+
+  // to handle the opening od the event data
+  const handleOpenRegisterCard = (item) => {
+    openRegisterCard(item);
+  };
   return (
-    <div className="rounded-lg border-[1px] border-zinc-700 w-[100%] lg:w-[45%] h-[12rem] lg:h-[15rem] p-2 flex gap-4  hover:scale-[1.009] transition-all duration-150 ease-linear cursor-pointer">
+    <div
+      onClick={() => handleOpenRegisterCard(item)}
+      className="rounded-lg border-[1px] border-zinc-700 w-[100%] lg:w-[45%] h-[12rem] lg:h-[15rem] p-2 flex gap-4  hover:scale-[1.009] transition-all duration-150 ease-linear cursor-pointer"
+    >
       {/* left side image div */}
       <div className="w-[40%] h-full">
         <img

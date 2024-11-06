@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { heroImage } from "../assetImports.js";
 import { AuthContext } from "../contexts/Authcontext.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,6 +7,8 @@ import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 const HeroSection = () => {
   // to get the values from the authContext if the user is logged in or not and the role of the user
   const { logedIn, role } = useContext(AuthContext);
+
+  const navigate = useNavigate();
   return (
     <section className="px-[4vw] py-[1.2rem] md:py-[2rem] w-full bg-[#EBF5F7] flex lg:flex-row flex-col justify-between h-auto items-center">
       {!logedIn ? (
@@ -60,7 +63,12 @@ const HeroSection = () => {
             {/* cta buttons */}
             <div className="flex flex-col lg:flex-row gap-5 items-center mt-2">
               {/* for the explore events button */}
-              <div className="flex w-full lg:justify-normal justify-center lg:w-auto items-center gap-3 bg-lightBlue px-7 py-4 rounded-lg border-none outline-none text-[14px] lg:text-[13px] xl:text-[14px] cursor-pointer hover:bg-lightBlueHover duration-200 ease-linear select-none">
+              <div
+                onClick={() => {
+                  navigate("/events");
+                }}
+                className="flex w-full lg:justify-normal justify-center lg:w-auto items-center gap-3 bg-lightBlue px-7 py-4 rounded-lg border-none outline-none text-[14px] lg:text-[13px] xl:text-[14px] cursor-pointer hover:bg-lightBlueHover duration-200 ease-linear select-none"
+              >
                 <button className="rounded-lg border-none outline-none text-[14px] lg:text-[13px] xl:text-[14px]">
                   Explore Events
                 </button>
