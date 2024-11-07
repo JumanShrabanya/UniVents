@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClose,
@@ -10,6 +10,7 @@ import {
 import { AuthContext } from "../contexts/Authcontext";
 import { useLoginCard } from "../contexts/LoginCardContext";
 import { useNavigate } from "react-router-dom";
+import ViewProfileCard from "./ViewProfileCard";
 
 const NavBar = () => {
   // calling context to get the user loged in or not and the role
@@ -28,8 +29,31 @@ const NavBar = () => {
     setMenuOpen((prev) => !prev);
   };
 
+  // to show the profile and dashboard option card
+  const [showProfile, setShowProfile] = useState(false);
+
+  // handle the show and hide of the show profile card
+  const handleShowProfile = () => {
+    setShowProfile((prev) => !prev);
+  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".profile-toggle") && showProfile) {
+        setShowProfile(false);
+      }
+    };
+
+    document.body.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.body.removeEventListener("click", handleClickOutside);
+    };
+  }, [showProfile]);
+
   return (
-    <nav className="px-[4vw] py-[1rem] bg-zinc-50 flex items-center justify-between">
+    <nav className="relative px-[4vw] py-[1rem] bg-zinc-50 flex items-center justify-between">
+      {/* show profile card */}
+      {showProfile ? <ViewProfileCard></ViewProfileCard> : null}
       {/* logo */}
       <a href="#">
         <h2 className="text-[1.3rem] max-lg:text-[1.2rem] max-md:text-[1rem] max-sm:text-[1rem] tracking-[.3em] text-indigo font-normal font-sans select-none">
@@ -88,12 +112,12 @@ const NavBar = () => {
             className="cursor-pointer text-[1.2vw] max-sm:hidden"
             color="gray"
           />
-          <div className="w-[2.3rem] h-[2.3rem] bg-indigo rounded-full flex items-center justify-center max-sm:hidden">
-            <FontAwesomeIcon
-              icon={faUser}
-              className="cursor-pointer"
-              color="white"
-            />
+          {/* user profile */}
+          <div
+            onClick={handleShowProfile}
+            className="w-[2.3rem] h-[2.3rem] bg-indigo rounded-full flex items-center justify-center max-sm:hidden cursor-pointer profile-toggle"
+          >
+            <FontAwesomeIcon icon={faUser} className="" color="white" />
           </div>
         </ul>
       )}

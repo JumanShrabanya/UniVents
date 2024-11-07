@@ -10,6 +10,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import LoginCard from "./components/LoginCard";
 import RegisterEventComponent from "./components/RegisterEventComponent";
 import { RegisterCardProvider } from "./contexts/RegisterCardContext";
+import ProfilePage from "./pages/ProfilePage";
 
 const App = () => {
   return (
@@ -32,6 +33,10 @@ const App = () => {
                   <Route
                     path="/events"
                     element={<EventsPage></EventsPage>}
+                  ></Route>
+                  <Route
+                    path="/profile"
+                    element={<ProfilePage></ProfilePage>}
                   ></Route>
                 </Routes>
                 {/* login card component */}

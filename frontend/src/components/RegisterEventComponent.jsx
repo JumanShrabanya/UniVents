@@ -80,11 +80,11 @@ const RegisterEventComponent = () => {
             </p>
           </div>
           {/* for the register event button */}
-          {role === "student" ? (
+          {role === "organizer" ? null : (
             <div className="flex w-full bg-indigo text-white rounded-md overflow-hidden py-3 hover:bg-indigoHover">
               <button className="flex-1 text-[1.2rem]">Register</button>
             </div>
-          ) : null}
+          )}
         </div>
       </div>
     </div>

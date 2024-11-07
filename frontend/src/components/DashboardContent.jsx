@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import EventCard from "../components/EventCard";
+import { AuthContext } from "../contexts/Authcontext";
 
 const DashboardContent = () => {
   // to know which tab is active
   const { activeTab, setActiveTab } = useActiveTab();
+
+  // to get the user role data
+  const { role } = useContext(AuthContext);
   // dummy data
   const eventData = [
     {
@@ -42,7 +46,7 @@ const DashboardContent = () => {
     },
   ];
 
-  return (
+  return role === "participant" ? (
     <section className="p-[2rem]">
       {/* for the registered events */}
       {activeTab === "registered-events" && (
@@ -56,6 +60,29 @@ const DashboardContent = () => {
       {activeTab === "notifications" && (
         <div>
           <p>Notifications</p>
+        </div>
+      )}
+    </section>
+  ) : (
+    <section className="p-[2rem]">
+      {/* for the registered events */}
+      {activeTab === "registered-events" && (
+        <div className="flex gap-[2rem] flex-wrap">
+          {eventData.map((item, index) => (
+            <EventCard key={index} item={item}></EventCard>
+          ))}
+        </div>
+      )}
+      {/* for the notifications */}
+      {activeTab === "notifications" && (
+        <div>
+          <p>Notifications</p>
+        </div>
+      )}
+      {/* for the create new event */}
+      {activeTab === "organize-event" && (
+        <div>
+          <p>Org new event</p>
         </div>
       )}
     </section>
