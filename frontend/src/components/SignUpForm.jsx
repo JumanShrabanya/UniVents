@@ -10,6 +10,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/Authcontext";
 import { registerUser } from "../services/RegisterUser";
+import { useRegisterCard } from "../contexts/RegisterCardContext";
 
 const SignUpForm = () => {
   // to know to which form to open organi zer or participant based on the user click
@@ -35,6 +36,10 @@ const SignUpForm = () => {
   const [clubName, setClubName] = useState("");
   // to hold the errors
   const [errors, setErrors] = useState({});
+
+  // register card context
+  const { isRegisterCardOpen, openRegisterCard, closeRegisterCard, eventData } =
+    useRegisterCard();
 
   // for the submition of the form
   const handleSubmit = async (e) => {
@@ -81,10 +86,17 @@ const SignUpForm = () => {
         );
       }
       // after successfull submission navigate to dashboard
-      navigate("/dashboard");
-      // setLogedIn(true);
+      if (response.statusCode === 201) {
+        setRole(userType);
+        setLogedIn(true);
+        closeRegisterCard();
+        navigate("/dashboard");
+      }
     } catch (err) {
-      console.log("Registration failed", err);
+      // console.error("Registration failed", err);
+      setErrors({
+        message: err.message,
+      });
     }
   };
 
@@ -253,6 +265,15 @@ const SignUpForm = () => {
             {`Register as ${userType}`}
           </button>
         </div>
+        {/* to show the message */}
+        {errors.message ? (
+          <div className="flex items-center justify-center mt-2 gap-2">
+            <p className="text-red-600">{errors.message}.</p>
+            <p className="text-black underline text-[16px] cursor-pointer">
+              Login
+            </p>
+          </div>
+        ) : null}
       </form>
     </section>
   );

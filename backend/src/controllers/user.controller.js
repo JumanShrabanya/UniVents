@@ -64,7 +64,12 @@ const registerParticipant = asyncHandler(async (req, res) => {
     email,
   });
   if (existedUser) {
-    throw new ApiError(400, "An email ID already exists");
+    return res.status(400).json({
+      statusCode: 400,
+      message: "Participant already exists with this email",
+      success: false,
+      errors: [],
+    });
   }
 
   // create the participant object in DB
@@ -78,6 +83,10 @@ const registerParticipant = asyncHandler(async (req, res) => {
     rollNo,
   });
 
+  // refresh and access token for participant
+  const { refreshToken, accessToken } = await generateRefreshAccessTokenStudent(
+    student._id
+  );
   // remove the password from the response
   const createdStudent = await Student.findById(student._id).select(
     "-password"
@@ -91,10 +100,26 @@ const registerParticipant = asyncHandler(async (req, res) => {
     );
   }
 
+  // cookies option
+  const options = {
+    httpOnly: true,
+    secure: true, // Make sure to only set this to true in production (HTTPS)
+    sameSite: "None", // This can help with cross-site requests
+    maxAge: 24 * 60 * 60 * 1000, // Set cookie expiration time, e.g., 1 day
+  };
+
   // return response
   return res
     .status(201)
-    .json(new ApiResponse(201, createdStudent, "User registered successfully"));
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        201,
+        { createdStudent, refreshToken, accessToken },
+        "User registered successfully"
+      )
+    );
 });
 
 // for the club registration
@@ -122,7 +147,12 @@ const registerClub = asyncHandler(async (req, res) => {
     email,
   });
   if (existedClub) {
-    throw new ApiError(400, "Club already exists with this email");
+    return res.status(400).json({
+      statusCode: 400,
+      message: "Club already exists with this email",
+      success: false,
+      errors: [],
+    });
   }
 
   // create the club entry in DB
@@ -133,6 +163,9 @@ const registerClub = asyncHandler(async (req, res) => {
     role: "organizer",
     password,
   });
+
+  const { refreshToken, accessToken } =
+    await generateRefreshAccessTokenOrganizer(club._id);
 
   // remove the password from response
   const createdClub = await Club.findById(club._id).select("-password");
@@ -145,10 +178,26 @@ const registerClub = asyncHandler(async (req, res) => {
     );
   }
 
+  // cookies
+  const options = {
+    httpOnly: true,
+    secure: true, // Make sure to only set this to true in production (HTTPS)
+    sameSite: "None", // This can help with cross-site requests
+    maxAge: 24 * 60 * 60 * 1000, // Set cookie expiration time, e.g., 1 day
+  };
+
   // return success response
   return res
     .status(201)
-    .json(new ApiResponse(201, createdClub, "Club created successfully"));
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        201,
+        { createdClub, refreshToken, accessToken },
+        "Club created successfully"
+      )
+    );
 });
 
 // login controller for both participant and organizer
