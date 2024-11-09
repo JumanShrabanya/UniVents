@@ -9,6 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../contexts/Authcontext";
 import { useLoginCard } from "../contexts/LoginCardContext";
+import { useActiveTab } from "../contexts/ActiveTabContext";
 import { useNavigate } from "react-router-dom";
 import ViewProfileCard from "./ViewProfileCard";
 
@@ -55,7 +56,7 @@ const NavBar = () => {
       {/* show profile card */}
       {showProfile ? <ViewProfileCard></ViewProfileCard> : null}
       {/* logo */}
-      <a href="#">
+      <a href="/">
         <h2 className="text-[1.3rem] max-lg:text-[1.2rem] max-md:text-[1rem] max-sm:text-[1rem] tracking-[.3em] text-indigo font-normal font-sans select-none">
           UNIVENTS
         </h2>
@@ -88,27 +89,27 @@ const NavBar = () => {
         </ul>
       ) : (
         <ul className="flex items-center w-[45%] justify-end gap-[5vw] text-[clamp(0.8rem,1vw,1.2rem)] ">
+          {/* seach bar and icon */}
+          <FontAwesomeIcon
+            onClick={() => {
+              navigate("/events");
+            }}
+            icon={faMagnifyingGlass}
+            className="cursor-pointer"
+          />
           <FontAwesomeIcon
             onClick={handleMenuToggle}
             icon={faBars}
             className="cursor-pointer sm:hidden block text-[1.1rem]"
             color="gray"
           />
-          {/* seach bar and icon */}
-          {/* <form className="flex-1 justify-between items-center py-2 bg-transparent gap-2 sm:flex hidden ">
-            <input
-              type="text"
-              placeholder="Search for events"
-              className="w-full bg-transparent outline-none border-b-2 h-full "
-            />
-            <FontAwesomeIcon
-              icon={faMagnifyingGlass}
-              className="cursor-pointer"
-            />
-          </form> */}
+
           {/* notification icon */}
           <FontAwesomeIcon
             icon={faBell}
+            onClick={() => {
+              navigate("/dashboard");
+            }}
             className="cursor-pointer text-[1.2vw] max-sm:hidden"
             color="gray"
           />
@@ -133,23 +134,46 @@ const NavBar = () => {
           {logedIn ? (
             <ul className="flex flex-col items-start justify-between mt-10 max-sm:text-[.8rem] gap-2">
               {/* notification icon */}
-              <div className="flex w-full border-2 py-2 rounded-sm bg-gray-200 pl-2">
+              <div
+                onClick={() => {
+                  navigate("/dashboard");
+                }}
+                className="flex w-full border-2 py-2 rounded-md bg-gray-200 pl-2"
+              >
                 <p>Notification</p>
               </div>
-              <div className="flex bg- w-full border-2 py-2 rounded-sm bg-gray-200 pl-2">
+              <div
+                onClick={() => {
+                  navigate("/dashboard");
+                }}
+                className="flex bg- w-full border-2 py-2 rounded-md bg-gray-200 pl-2"
+              >
                 <p>DashBoard</p>
               </div>
-              <div className="flex bg- w-full  border-2 py-2 rounded-sm bg-gray-200 pl-2">
+              <div
+                onClick={() => {
+                  navigate("/profile");
+                }}
+                className="flex bg- w-full  border-2 py-2 rounded-md bg-gray-200 pl-2"
+              >
                 <p>Profile</p>
               </div>
             </ul>
           ) : (
             <ul className="flex flex-col items-start justify-between mt-10 max-sm:text-[.8rem] gap-2">
               {/* notification icon */}
-              <button className="outline-none border-2 w-full py-2 hover:text-indigo duration-100 transition-all ease-linear ">
+              <button
+                onClick={openLogin}
+                className="outline-none border-2 w-full py-2 hover:text-indigo duration-100 transition-all ease-linear  rounded-md"
+              >
                 Login
               </button>
-              <button className="bg-lightBlue py-2 rounded-sm w-full outline-none border-none hover:bg-indigo hover:text-zinc-50 duration-200 transition-all ease-linear">
+              <button
+                onClick={() => {
+                  navigate("/registration");
+                }}
+                className="bg-lightBlue py-2 w-full outline-none border-none hover:bg-indigo hover:text-zinc-50 duration-200 transition-all ease-linear rounded-md"
+              >
                 Register
               </button>
             </ul>

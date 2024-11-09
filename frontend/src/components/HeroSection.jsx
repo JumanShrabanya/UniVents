@@ -67,7 +67,7 @@ const HeroSection = () => {
                 onClick={() => {
                   navigate("/events");
                 }}
-                className="flex w-full lg:justify-normal justify-center lg:w-auto items-center gap-3 bg-lightBlue px-7 py-4 rounded-lg border-none outline-none text-[14px] lg:text-[13px] xl:text-[14px] cursor-pointer hover:bg-lightBlueHover duration-200 ease-linear select-none"
+                className="flex w-full lg:justify-normal justify-center lg:w-auto items-center gap-3 bg-lightBlue px-7 py-4 rounded-lg border-none outline-none text-[14px] lg:text-[13px] xl:text-[14px] cursor-pointer hover:bg-indigo hover:text-white duration-200 ease-linear select-none"
               >
                 <button className="rounded-lg border-none outline-none text-[14px] lg:text-[13px] xl:text-[14px]">
                   Explore Events

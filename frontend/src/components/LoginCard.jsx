@@ -60,7 +60,7 @@ const LoginCard = () => {
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center h-full w-full">
       <form
         onSubmit={handleLogin}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white w-[50%] px-[2rem] py-[2rem] rounded-lg"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white w-[90%] md:w-[50%] px-[1rem] md:px-[2rem] py-[2rem] rounded-lg"
       >
         <FontAwesomeIcon
           onClick={closeLogin}
@@ -126,7 +126,7 @@ const LoginCard = () => {
         <div className="flex justify-center items-center">
           <button
             type="submit"
-            className="mt-2 bg-indigo text-white md:text-[.9rem] md:py-[.9rem] md:px-[1.9rem] lg:text-[1rem] lg:py-[.75vw] lg:px-[1.75vw] py-[2.7vw] px-[4vw] rounded-lg outline-none border-none hover:bg-indigoHover duration-200 transition-all ease-linear capitalize"
+            className="mt-2 bg-indigo text-white md:text-[.9rem] md:py-[.9rem] md:px-[1.9rem] lg:text-[1rem] lg:py-[.75vw] lg:px-[1.75vw] py-[2vw] px-[9vw] rounded-lg outline-none border-none hover:bg-indigoHover duration-200 transition-all ease-linear capitalize"
           >
             Login
           </button>
