@@ -20,15 +20,17 @@ const EventCard = ({ item }) => {
       {/* left side image div */}
       <div className="w-[40%] h-full">
         <img
-          src={item.headerImage}
+          src={item.coverImg}
           alt={item.title}
           className="object-cover w-full h-full rounded-lg object-center"
         />
       </div>
       {/* right side info div */}
       <div className="w-[60%] flex flex-col gap-1 overflow-hidden">
-        <h3 className="text-[1.1rem] text-indigo md:mb-2">{item.title}</h3>
-        <p className="text-[11px] text-gray-700 line-clamp-3 md:line-clamp-5 flex-shrink-0">
+        <h3 className="text-[1.1rem] text-indigo md:mb-2 line-clamp-1">
+          {item.title}
+        </h3>
+        <p className="text-[11px] text-gray-700 line-clamp-3 md:line-clamp-2 flex-shrink-0">
           {item.description}
         </p>
         <div className="flex gap-2 items-center mt-2">
@@ -37,7 +39,7 @@ const EventCard = ({ item }) => {
             color="gray"
             className="md:text-[12px] text-[10px]"
           ></FontAwesomeIcon>
-          <p className="text-[11px] md:text-[14px] text-indigo">{`Venue: ${item.venue}`}</p>
+          <p className="text-[11px] md:text-[14px] text-indigo line-clamp-1">{`Venue: ${item.venue}`}</p>
         </div>
         <div className="flex gap-2 items-center">
           <FontAwesomeIcon
@@ -45,15 +47,15 @@ const EventCard = ({ item }) => {
             color="gray"
             className="text-[12px]"
           ></FontAwesomeIcon>
-          <p className="text-[11px] md:text-[14px] text-indigo">{`Date: ${item.eventDate}`}</p>
+          <p className="text-[11px] md:text-[14px] text-indigo line-clamp-1">{`Date: ${item.eventDate}`}</p>
         </div>
-        <div className="flex gap-2 items-center flex-wrap">
+        <div className="flex gap-2 items-center">
           <FontAwesomeIcon
             icon={faUserGroup}
             color="gray"
             className="text-[12px]"
           ></FontAwesomeIcon>
-          <p className="text-[11px] md:text-[14px] text-indigo">{`Organizer: ${item.organizer}`}</p>
+          <p className="text-[11px] md:text-[14px] text-indigo line-clamp-1">{`Organizer: ${item.organizer}`}</p>
         </div>
       </div>
     </div>

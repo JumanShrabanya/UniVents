@@ -12,7 +12,7 @@ const SideNavigation = () => {
   const { role } = useContext(AuthContext);
   // console.log(activeTab);
 
-  return role === "participant" ? (
+  return role === "student" ? (
     <div className="lg:w-[20%] xl:w-[15%] w-full flex lg:flex-col flex-row items-center py-[2rem] bg-transparent h-auto lg:h-screen gap-[1rem] select-none flex-shrink-0">
       <div
         onClick={() => {

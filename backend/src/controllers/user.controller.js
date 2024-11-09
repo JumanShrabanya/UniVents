@@ -419,25 +419,29 @@ const updateProfile = asyncHandler(async (req, res) => {
 
   const userId = req.user._id;
   const role = req.user.role;
-  const { ...updatedFields } = req.body;
+  const { name, clubName, semester, rollNo, collegeName } = req.body;
+
+  console.log(role);
 
   let user;
   if (role === "student") {
     user = await Student.findById(userId);
   } else if (role === "organizer") {
-    user = await Organizer.findById(userId);
+    user = await Club.findById(userId);
   }
 
   if (!user) {
     throw new ApiError(404, "User not found");
   }
 
-  if (Object.keys(updatedFields).length > 0) {
-    Object.keys(updatedFields).forEach((key) => {
-      if (user[key] !== updatedFields[key]) {
-        user[key] = updatedFields[key];
-      }
-    });
+  if (role === "student") {
+    if (name !== undefined) user.name = name;
+    if (collegeName !== undefined) user.collegeName = collegeName;
+    if (semester !== undefined) user.semester = semester;
+    if (rollNo !== undefined) user.rollNo = rollNo;
+  } else if (role === "organizer") {
+    if (clubName !== undefined) user.clubName = clubName;
+    if (collegeName !== undefined) user.collegeName = collegeName;
   }
 
   await user.save();
@@ -467,7 +471,9 @@ const checkAuthStatus = asyncHandler(async (req, res) => {
     if (!user) {
       user = await Club.findById(userId).select("-password -refreshToken");
     }
-    return res.status(200).json(new ApiResponse(200, { role: user.role }));
+    return res
+      .status(200)
+      .json(new ApiResponse(200, { role: user.role, user }));
   } catch (error) {
     throw new ApiError(
       401,

@@ -6,6 +6,7 @@ import { Club } from "../models/club.model.js";
 import { Category } from "../models/category.model.js";
 import { uploadToCloudinary } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
+import fs from "fs";
 
 const showEvents = asyncHandler(async (req, res) => {
   const events = await Event.find({});
@@ -64,23 +65,15 @@ const createEvent = asyncHandler(async (req, res) => {
   }
 
   let coverImgUrl = "";
-  const tempFilePath = `./public/temp/${req.file.originalname}`;
 
   try {
-    // Write the file buffer to a temporary location
-    fs.writeFileSync(tempFilePath, req.file.buffer);
-
-    // Upload to Cloudinary
-    const result = await uploadToCloudinary(tempFilePath);
+    // Upload to Cloudinary using the file buffer
+    const result = await uploadToCloudinary(
+      req.file.buffer,
+      req.file.originalname
+    );
     coverImgUrl = result.secure_url;
-
-    // Cleanup the temp file after successful upload
-    fs.unlinkSync(tempFilePath);
   } catch (error) {
-    // Clean up in case of any errors
-    if (fs.existsSync(tempFilePath)) {
-      fs.unlinkSync(tempFilePath);
-    }
     throw new ApiError(500, "Failed to upload the cover image.");
   }
 
@@ -96,7 +89,9 @@ const createEvent = asyncHandler(async (req, res) => {
   });
 
   // Send the response
-  res.status(201).json(new ApiResponse("Event created successfully", newEvent));
+  res
+    .status(201)
+    .json(new ApiResponse(201, newEvent, "Event created successfully"));
 });
 
 // to handle event by search query

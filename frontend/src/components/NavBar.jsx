@@ -95,7 +95,7 @@ const NavBar = () => {
             color="gray"
           />
           {/* seach bar and icon */}
-          <form className="flex-1 justify-between items-center py-2 bg-transparent gap-2 sm:flex hidden ">
+          {/* <form className="flex-1 justify-between items-center py-2 bg-transparent gap-2 sm:flex hidden ">
             <input
               type="text"
               placeholder="Search for events"
@@ -105,7 +105,7 @@ const NavBar = () => {
               icon={faMagnifyingGlass}
               className="cursor-pointer"
             />
-          </form>
+          </form> */}
           {/* notification icon */}
           <FontAwesomeIcon
             icon={faBell}

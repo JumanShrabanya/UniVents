@@ -1,7 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import EventCard from "../components/EventCard";
 import { AuthContext } from "../contexts/Authcontext";
+import OrganizeEventForm from "./OrganizeEventForm";
+import { CreatedEvents } from "../services/CreatedEvents";
 
 const DashboardContent = () => {
   // to know which tab is active
@@ -46,8 +48,21 @@ const DashboardContent = () => {
     },
   ];
 
+  // to get the event
+  const handleShowCreatedEvents = async () => {
+    try {
+      const response = await CreatedEvents();
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    handleShowCreatedEvents();
+  }, []);
+
   return role === "participant" ? (
-    <section className="p-[2rem]">
+    <section className="p-[2rem] lg:w-[80%] xl:w-[85%]">
       {/* for the registered events */}
       {activeTab === "registered-events" && (
         <div className="flex gap-[2rem] flex-wrap">
@@ -64,7 +79,7 @@ const DashboardContent = () => {
       )}
     </section>
   ) : (
-    <section className="p-[2rem]">
+    <section className="p-[2rem] lg:w-[80%] xl:w-[85%]">
       {/* for the registered events */}
       {activeTab === "registered-events" && (
         <div className="flex gap-[2rem] flex-wrap">
@@ -81,8 +96,8 @@ const DashboardContent = () => {
       )}
       {/* for the create new event */}
       {activeTab === "organize-event" && (
-        <div>
-          <p>Org new event</p>
+        <div className="w-full">
+          <OrganizeEventForm></OrganizeEventForm>
         </div>
       )}
     </section>

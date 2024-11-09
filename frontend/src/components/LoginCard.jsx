@@ -7,7 +7,7 @@ import { AuthContext } from "../contexts/Authcontext";
 
 const LoginCard = () => {
   const { isLoginOpen, closeLogin } = useLoginCard();
-  const { setLogedIn } = useContext(AuthContext);
+  const { setLogedIn, setUserDetails, setRole } = useContext(AuthContext);
   const [passwordType, setPasswordType] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -45,8 +45,10 @@ const LoginCard = () => {
     try {
       const response = await LoginUser({ email, password });
       if (response.data) {
-        console.log("User logged in successfully:", response.data);
+        console.log("User logged in successfully:", response.data.user);
         setLogedIn(true);
+        setUserDetails(response.data.user);
+        setRole(response.data.user.role);
         closeLogin();
       }
     } catch (error) {

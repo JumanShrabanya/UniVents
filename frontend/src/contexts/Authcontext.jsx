@@ -6,6 +6,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [logedIn, setLogedIn] = useState(false);
   const [role, setRole] = useState("");
+  const [userDetails, setUserDetails] = useState();
 
   const checkAuthStatus = async () => {
     try {
@@ -18,7 +19,10 @@ export const AuthProvider = ({ children }) => {
       if (response.status === 200) {
         setLogedIn(true);
         setRole(response.data.data.role);
+        setUserDetails(response.data.data.user);
+
         console.log("User logged in");
+        console.log(role);
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -35,8 +39,23 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus();
   }, []);
 
+  useEffect(() => {
+    if (userDetails) {
+      // console.log("Updated user details:", userDetails);
+    }
+  }, [userDetails, logedIn]);
+
   return (
-    <AuthContext.Provider value={{ logedIn, role, setLogedIn, setRole }}>
+    <AuthContext.Provider
+      value={{
+        logedIn,
+        role,
+        setLogedIn,
+        setRole,
+        userDetails,
+        setUserDetails,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

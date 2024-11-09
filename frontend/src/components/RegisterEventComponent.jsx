@@ -38,7 +38,7 @@ const RegisterEventComponent = () => {
           ></FontAwesomeIcon>
           {/* header image */}
           <img
-            src={eventData.headerImage}
+            src={eventData.coverImg}
             alt="headerImage"
             className="rounded-xl w-full h-[30rem] object-cover"
           />

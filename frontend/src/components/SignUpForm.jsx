@@ -206,6 +206,7 @@ const SignUpForm = () => {
                 <input
                   id="semester"
                   type="number"
+                  min={1}
                   value={semester}
                   onChange={(e) => setSemester(e.target.value)}
                   required

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { AuthProvider } from "../src/contexts/Authcontext";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext, AuthProvider } from "../src/contexts/Authcontext";
 import { UserTypeProvider } from "./contexts/UserTypeContext";
 import { LoginCardProvider } from "./contexts/LoginCardContext";
 import DashBoard from "./pages/DashBoard";
@@ -11,6 +11,7 @@ import LoginCard from "./components/LoginCard";
 import RegisterEventComponent from "./components/RegisterEventComponent";
 import { RegisterCardProvider } from "./contexts/RegisterCardContext";
 import ProfilePage from "./pages/ProfilePage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
   return (
@@ -28,7 +29,11 @@ const App = () => {
                   ></Route>
                   <Route
                     path="/dashboard"
-                    element={<DashBoard></DashBoard>}
+                    element={
+                      <ProtectedRoute
+                        element={<DashBoard></DashBoard>}
+                      ></ProtectedRoute>
+                    }
                   ></Route>
                   <Route
                     path="/events"
@@ -36,7 +41,11 @@ const App = () => {
                   ></Route>
                   <Route
                     path="/profile"
-                    element={<ProfilePage></ProfilePage>}
+                    element={
+                      <ProtectedRoute
+                        element={<ProfilePage></ProfilePage>}
+                      ></ProtectedRoute>
+                    }
                   ></Route>
                 </Routes>
                 {/* login card component */}

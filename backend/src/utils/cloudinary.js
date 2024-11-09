@@ -1,34 +1,49 @@
 import { v2 as cloudinary } from "cloudinary";
-import { log } from "console";
-import { response } from "express";
 import fs from "fs";
+import { Readable } from "stream";
 
-(async function () {
-  // Configuration
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET, // Click 'View API Keys' above to copy your API secret
-  });
-})();
+// Cloudinary configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-// function to upload a file to cloudinary
-const uploadToCloudinary = async (localFile) => {
+// Function to upload a file to Cloudinary
+const uploadToCloudinary = async (fileBuffer, fileName) => {
   try {
-    if (!localFile) {
-      return null;
+    if (!fileBuffer) {
+      throw new Error("No file provided for upload.");
     }
-    const response = await cloudinary.uploader.upload(localFile, {
-      resource_type: "auto",
+
+    // Convert buffer to a stream
+    const stream = Readable.from(fileBuffer);
+
+    // Create a promise to handle the upload stream
+    const uploadPromise = new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: "auto", // Automatically detect the file type
+          public_id: fileName, // Use the original file name (this will be URL encoded)
+        },
+        (error, result) => {
+          if (error) {
+            reject(new Error("Cloudinary upload failed: " + error.message));
+          } else {
+            resolve(result);
+          }
+        }
+      );
+
+      // Pipe the buffer stream to the upload stream
+      stream.pipe(uploadStream);
     });
-    console.log("uploaded to cloudinary", response.url);
-    return response;
+
+    const result = await uploadPromise;
+    console.log("Uploaded to Cloudinary:", result.secure_url);
+    return result;
   } catch (error) {
-    // remove the locally saved file if the upload fails
     console.error("Cloudinary upload failed:", error.message);
-    if (fs.existsSync(localFile)) {
-      fs.unlinkSync(localFile);
-    }
     throw new Error("Failed to upload to Cloudinary");
   }
 };

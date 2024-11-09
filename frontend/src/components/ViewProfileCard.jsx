@@ -11,9 +11,9 @@ import React from "react";
 const ViewProfileCard = () => {
   const navigate = useNavigate();
   return (
-    <div className="absolute top-[100%] right-[2%] w-auto h-auto px-[1.2rem] py-[1.5rem] bg-white border-[1px] border-gray-200 rounded-lg">
+    <div className="absolute top-[100%] right-[2%] w-auto h-auto px-[1.2rem] py-[1.5rem] bg-white border-[1px] border-gray-200 rounded-lg z-10">
       {/* profile */}
-      <div className="flex gap-4 items-center w-full rounded-md cursor-pointer hover:bg-indigoHover hover:text-white px-3 py-1 transition-all duration-200 ease-linear mb-4">
+      <div className="flex gap-4 items-center w-full rounded-md cursor-pointer hover:bg-indigoHover hover:text-white px-3 py-2 transition-all duration-200 ease-linear mb-4">
         <FontAwesomeIcon
           icon={faUser}
           className="text-[12px]"
@@ -31,7 +31,7 @@ const ViewProfileCard = () => {
         onClick={() => {
           navigate("/dashboard");
         }}
-        className="flex gap-4 items-center w-full rounded-md cursor-pointer hover:bg-indigoHover hover:text-white px-3 py-1 transition-all duration-200 ease-linear"
+        className="flex gap-4 items-center w-full rounded-md cursor-pointer hover:bg-indigoHover hover:text-white px-3 py-2 transition-all duration-200 ease-linear"
       >
         <FontAwesomeIcon
           icon={faColumns}

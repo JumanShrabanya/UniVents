@@ -131,10 +131,11 @@ const showCreatedEvents = asyncHandler(async (req, res) => {
       .status(404)
       .json(new ApiResponse(404, "No events found for this organizer."));
   }
+  console.log("events:", createdEvents);
 
   res
     .status(200)
-    .json(new ApiResponse(201, "all the created events:", createdEvents));
+    .json(new ApiResponse(200, "all the created events:", createdEvents));
 });
 // Schedule the cron job to run every hour for checking the events available for registration or not
 cron.schedule("* * * * *", async () => {
