@@ -9,7 +9,7 @@ import jwt from "jsonwebtoken";
 import fs from "fs";
 
 const showEvents = asyncHandler(async (req, res) => {
-  const events = await Event.find({});
+  const events = await Event.find({}).sort({ createdAt: -1 });
 
   if (!events || events.length === 0) {
     throw new ApiError(404, "No events found");

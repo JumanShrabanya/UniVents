@@ -27,14 +27,20 @@ const HeroSection = () => {
             {/* cta buttons */}
             <div className="flex flex-col lg:flex-row gap-5 items-center mt-2">
               {/* for the organizer button */}
-              <div className="flex w-full lg:justify-normal justify-center lg:w-auto items-center gap-3 bg-lightBlue px-7 py-4 rounded-lg border-none outline-none text-[14px] lg:text-[13px] xl:text-[14px] cursor-pointer hover:bg-lightBlueHover duration-200 ease-linear select-none">
+              <div
+                onClick={() => navigate("/registration")}
+                className="flex w-full lg:justify-normal justify-center lg:w-auto items-center gap-3 bg-lightBlue px-7 py-4 rounded-lg border-none outline-none text-[14px] lg:text-[13px] xl:text-[14px] cursor-pointer hover:bg-lightBlueHover duration-200 ease-linear select-none"
+              >
                 <button className="rounded-lg border-none outline-none text-[14px] lg:text-[13px] xl:text-[14px]">
                   For Organizers
                 </button>
                 <FontAwesomeIcon icon={faChevronRight}></FontAwesomeIcon>
               </div>
               {/* for the participant button */}
-              <div className="flex w-full lg:justify-normal justify-center items-center lg:w-auto gap-3 bg-indigo px-7 py-4 rounded-lg border-none outline-none text-[14px] text-white cursor-pointer hover:bg-indigoHover duration-200 ease-linear select-none lg:text-[13px] xl:text-[14px]">
+              <div
+                onClick={() => navigate("/registration")}
+                className="flex w-full lg:justify-normal justify-center items-center lg:w-auto gap-3 bg-indigo px-7 py-4 rounded-lg border-none outline-none text-[14px] text-white cursor-pointer hover:bg-indigoHover duration-200 ease-linear select-none lg:text-[13px] xl:text-[14px]"
+              >
                 <button className="bg-transparent rounded-lg border-none outline-none text-[14px] lg:text-[13px] xl:text-[14px]">
                   For Participants
                 </button>

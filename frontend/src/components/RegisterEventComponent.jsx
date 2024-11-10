@@ -27,10 +27,10 @@ const RegisterEventComponent = () => {
     };
   }, [isRegisterCardOpen]);
   return isRegisterCardOpen ? (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
-      <div className="fixed top-0 right-0 -translate-x-0 -translate-y-0 w-[57%] h-[100vh] bg-white overflow-auto transition-transform duration-300 ease-out">
+    <div className="fixed inset-0 bg-black lg:p-0 p-[3rem] bg-opacity-50 z-50">
+      <div className="fixed top-0 right-0 -translate-x-0 -translate-y-0 w-[90%] lg:w-[57%] h-[100vh] bg-white overflow-auto transition-transform duration-300 ease-out">
         {/* content area */}
-        <div className="relative flex flex-col gap-[1.5rem] p-[1rem] pl-6 items-start">
+        <div className="relative flex flex-col gap-[1.5rem] p-[1.2rem] lg:p-[2rem]  items-start">
           <FontAwesomeIcon
             icon={faClose}
             onClick={closeRegisterCard}
@@ -40,44 +40,47 @@ const RegisterEventComponent = () => {
           <img
             src={eventData.coverImg}
             alt="headerImage"
-            className="rounded-xl w-full h-[30rem] object-cover"
+            className="rounded-xl w-full h-[27rem] lg:h-[30rem] object-cover"
           />
           {/* event title */}
           <h2 className="font-mainFont font-semibold text-[1.8rem]">
             {eventData.title}
           </h2>
-          <p className="text-zinc-600">{eventData.description}</p>
+          <p className="text-zinc-600 lg:text-base text-sm text-justify">
+            {eventData.description}
+          </p>
           {/* event location */}
-          <div className="flex gap-4 items-center">
-            <FontAwesomeIcon
-              icon={faLocationDot}
-              className="text-zinc-600"
-            ></FontAwesomeIcon>
-            <p className="text-zinc-600">
-              Venue:<span className="text-black">{` ${eventData.venue}`}</span>
-            </p>
+          <div className="flex flex-row gap-4 items-start justify-between  lg:items-center w-full">
+            <div className="flex items-center gap-2 lg:gap-4 w-[30%] md:w-[17%] lg:w-[20%] xl:w-[17%]">
+              <FontAwesomeIcon
+                icon={faLocationDot}
+                className="text-zinc-600"
+              ></FontAwesomeIcon>
+              <p className="text-zinc-600">Venue:</p>
+            </div>
+            <p className="text-black font-semibold w-[70%] lg:w-auto flex-wrap flex-1">{` ${eventData.venue}`}</p>
           </div>
           {/* event date */}
-          <div className="flex gap-4 items-center">
-            <FontAwesomeIcon
-              icon={faCalendarCheck}
-              className="text-zinc-600"
-            ></FontAwesomeIcon>
-            <p className="text-zinc-600">
-              Date:
-              <span className="text-black">{` ${eventData.eventDate}`}</span>
-            </p>
+          <div className="flex flex-row  gap-4 items-start lg:items-center w-full ">
+            <div className="flex items-center gap-2 lg:gap-4 w-[30%] md:w-[17%] lg:w-[20%] xl:w-[17%]  ">
+              <FontAwesomeIcon
+                icon={faCalendarCheck}
+                className="text-zinc-600"
+              ></FontAwesomeIcon>
+              <p className="text-zinc-600">Date:</p>
+            </div>
+            <p className="text-black font-semibold flex-wrap">{` ${eventData.eventDate}`}</p>
           </div>
           {/* organizer name */}
-          <div className="flex gap-4 items-center">
-            <FontAwesomeIcon
-              icon={faUserGroup}
-              className="text-zinc-600"
-            ></FontAwesomeIcon>
-            <p className="text-zinc-600">
-              Organizer:
-              <span className="text-black">{` ${eventData.organizer}`}</span>
-            </p>
+          <div className="flex flex-row  gap-4 items-start lg:items-center w-full">
+            <div className="flex items-center gap-2 lg:gap-4 w-[30%] md:w-[17%] lg:w-[20%] xl:w-[17%]">
+              <FontAwesomeIcon
+                icon={faUserGroup}
+                className="text-zinc-600"
+              ></FontAwesomeIcon>
+              <p className="text-zinc-600">Organizer:</p>
+            </div>
+            <p className="text-black font-semibold w-[70%] lg:w-auto flex-wrap">{` ${eventData.organizer}`}</p>
           </div>
           {/* for the register event button */}
           {role === "organizer" ? null : (
