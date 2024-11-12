@@ -6,6 +6,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { categoryEnum } from "../assetImports.js";
 import { CreateEvent } from "../services/CreateEvent.js";
+import LoaderAnimation from "./LoaderAnimation.jsx";
 const OrganizeEventForm = () => {
   const {
     isOrgEventOpen,
@@ -19,8 +20,11 @@ const OrganizeEventForm = () => {
   const [description, setdescription] = useState("");
   const [eventDate, seteventDate] = useState(new Date());
   const [venue, setvenue] = useState("");
-  const [category, setcategory] = useState("");
+  const [category, setcategory] = useState(categoryEnum[0]);
   const [coverImg, setcoverImg] = useState(null);
+
+  // to handle the indication of the event being created
+  const [creatingEvent, setCreatingEvent] = useState(false);
 
   //   to handle cover image
   const handleImageChange = (e) => {
@@ -40,6 +44,7 @@ const OrganizeEventForm = () => {
   const handleCreateEvent = async (e) => {
     e.preventDefault();
     // console.log("created");
+    setCreatingEvent(true);
 
     try {
       const response = await CreateEvent({
@@ -50,10 +55,11 @@ const OrganizeEventForm = () => {
         category,
         coverImg,
       });
-      if (response && response.data && response.statusCode === 201) {
+      if (response.status === 201) {
         console.log(response);
 
         console.log("event Created successfully");
+        // setCreatingEvent(false);
         closeOrgEventForm();
       }
     } catch (error) {
@@ -68,6 +74,7 @@ const OrganizeEventForm = () => {
           onSubmit={handleCreateEvent}
           className="relative w-[100%] md:px-[2rem] px-[1.3rem] py-[3rem]  bg-white rounded-lg  border-[1px] border-gray-200"
         >
+          {/*  */}
           {/* close icon section */}
           <FontAwesomeIcon
             onClick={() => {
@@ -189,13 +196,17 @@ const OrganizeEventForm = () => {
               </select>
             </div>
           </div>
-          <div className="flex justify-center items-center">
-            <button
-              type="submit"
-              className="py-3 px-12 text-white bg-indigo rounded-lg hover:bg-indigoHover duration-200 ease-linear"
-            >
-              Create Event
-            </button>
+          <div className="flex justify-center items-center ">
+            {!creatingEvent ? (
+              <button
+                type="submit"
+                className="py-3 px-12 text-white bg-indigo rounded-lg hover:bg-indigoHover duration-200 ease-linear"
+              >
+                Create Event
+              </button>
+            ) : (
+              <LoaderAnimation></LoaderAnimation>
+            )}
           </div>
         </form>
       ) : (

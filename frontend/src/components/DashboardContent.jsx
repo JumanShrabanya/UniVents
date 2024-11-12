@@ -57,9 +57,9 @@ const DashboardContent = () => {
       console.log(error);
     }
   };
-  useEffect(() => {
-    handleShowCreatedEvents();
-  }, []);
+  // useEffect(() => {
+  //   handleShowCreatedEvents();
+  // }, []);
 
   return role === "participant" ? (
     <section className="p-[2rem] lg:w-[80%] xl:w-[85%]">

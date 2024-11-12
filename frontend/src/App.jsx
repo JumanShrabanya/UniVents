@@ -12,51 +12,54 @@ import RegisterEventComponent from "./components/RegisterEventComponent";
 import { RegisterCardProvider } from "./contexts/RegisterCardContext";
 import ProfilePage from "./pages/ProfilePage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { CheckRegistrationProvider } from "./contexts/CheckRegistrationContext";
 
 const App = () => {
   return (
     <AuthProvider>
-      <UserTypeProvider>
-        <LoginCardProvider>
-          <RegisterCardProvider>
-            <Router>
-              <main className="relative h-full">
-                <Routes>
-                  <Route path="/" element={<HomePage></HomePage>}></Route>
-                  <Route
-                    path="/registration"
-                    element={<RegistrationPage></RegistrationPage>}
-                  ></Route>
-                  <Route
-                    path="/dashboard"
-                    element={
-                      <ProtectedRoute
-                        element={<DashBoard></DashBoard>}
-                      ></ProtectedRoute>
-                    }
-                  ></Route>
-                  <Route
-                    path="/events"
-                    element={<EventsPage></EventsPage>}
-                  ></Route>
-                  <Route
-                    path="/profile"
-                    element={
-                      <ProtectedRoute
-                        element={<ProfilePage></ProfilePage>}
-                      ></ProtectedRoute>
-                    }
-                  ></Route>
-                </Routes>
-                {/* login card component */}
-                <LoginCard></LoginCard>
-                {/* side view card component for complete detailed view of the event */}
-                <RegisterEventComponent></RegisterEventComponent>
-              </main>
-            </Router>
-          </RegisterCardProvider>
-        </LoginCardProvider>
-      </UserTypeProvider>
+      <CheckRegistrationProvider>
+        <UserTypeProvider>
+          <LoginCardProvider>
+            <RegisterCardProvider>
+              <Router>
+                <main className="relative h-full">
+                  <Routes>
+                    <Route path="/" element={<HomePage></HomePage>}></Route>
+                    <Route
+                      path="/registration"
+                      element={<RegistrationPage></RegistrationPage>}
+                    ></Route>
+                    <Route
+                      path="/dashboard"
+                      element={
+                        <ProtectedRoute
+                          element={<DashBoard></DashBoard>}
+                        ></ProtectedRoute>
+                      }
+                    ></Route>
+                    <Route
+                      path="/events"
+                      element={<EventsPage></EventsPage>}
+                    ></Route>
+                    <Route
+                      path="/profile"
+                      element={
+                        <ProtectedRoute
+                          element={<ProfilePage></ProfilePage>}
+                        ></ProtectedRoute>
+                      }
+                    ></Route>
+                  </Routes>
+                  {/* login card component */}
+                  <LoginCard></LoginCard>
+                  {/* side view card component for complete detailed view of the event */}
+                  <RegisterEventComponent></RegisterEventComponent>
+                </main>
+              </Router>
+            </RegisterCardProvider>
+          </LoginCardProvider>
+        </UserTypeProvider>
+      </CheckRegistrationProvider>
     </AuthProvider>
   );
 };

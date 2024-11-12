@@ -8,12 +8,17 @@ import {
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../contexts/Authcontext";
+import axios from "axios";
+import { checkRegistration } from "../services/CheckRegistration";
+import { useCheckRegistration } from "../contexts/CheckRegistrationContext";
 
 const RegisterEventComponent = () => {
   // to get the role
-  const { role } = useContext(AuthContext);
+  const { role, userDetails } = useContext(AuthContext);
   const { isRegisterCardOpen, openRegisterCard, closeRegisterCard, eventData } =
     useRegisterCard();
+  // to check the registration
+  const { isRegistered, setRegistered } = useCheckRegistration();
 
   const toggleEvent = () => {
     closeRegisterCard();
@@ -26,6 +31,29 @@ const RegisterEventComponent = () => {
       document.body.style.overflow = "auto";
     };
   }, [isRegisterCardOpen]);
+
+  // to handle the registration
+  const handleRegistration = async (eventId) => {
+    const apiUrl = "http://localhost:8000/api/v1/event/events-register";
+    try {
+      const response = await axios.post(
+        apiUrl,
+        { eventId, studentId: userDetails._id },
+        { withCredentials: true }
+      );
+      console.log(userDetails._id);
+      closeRegisterCard();
+      if (response.status === 201) {
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.log("error registering in the event", error);
+    }
+    // console.log(eventId, userDetails._id);
+  };
+
+  // to chekt the registration status
+
   return isRegisterCardOpen ? (
     <div className="fixed inset-0 bg-black lg:p-0 p-[3rem] bg-opacity-50 z-50">
       <div className="fixed top-0 right-0 -translate-x-0 -translate-y-0 w-[90%] lg:w-[57%] h-[100vh] bg-white overflow-auto transition-transform duration-300 ease-out">
@@ -84,8 +112,28 @@ const RegisterEventComponent = () => {
           </div>
           {/* for the register event button */}
           {role === "organizer" ? null : (
-            <div className="flex w-full bg-indigo text-white rounded-md overflow-hidden py-3 hover:bg-indigoHover">
-              <button className="flex-1 text-[1.2rem]">Register</button>
+            <div
+              onClick={() => {
+                handleRegistration(eventData._id);
+              }}
+              className={`flex w-full text-white rounded-md overflow-hidden py-3 ${
+                eventData.registrationAvailable
+                  ? "bg-indigo hover:bg-indigoHover"
+                  : "bg-gray-400 hover:bg-gray-400 transition-all duration-0 cursor-not-allowed"
+              }`}
+            >
+              <button
+                disabled={eventData.registrationAvailable ? false : true}
+                className={`flex-1 text-[1.2rem] select-none ${
+                  eventData.registrationAvailable
+                    ? "cursor-pointer"
+                    : "bg-gray-400 hover:bg-gray-400 transition-all duration-0 cursor-not-allowed"
+                }`}
+              >
+                {eventData.registrationAvailable
+                  ? "Register"
+                  : "Registration Closed"}
+              </button>
             </div>
           )}
         </div>

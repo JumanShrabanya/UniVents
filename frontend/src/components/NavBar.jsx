@@ -70,6 +70,14 @@ const NavBar = () => {
             className="cursor-pointer sm:hidden block text-[1.1rem]"
             color="gray"
           />
+          {/* search icon */}
+          <FontAwesomeIcon
+            onClick={() => {
+              navigate("/events");
+            }}
+            icon={faMagnifyingGlass}
+            className="cursor-pointer"
+          />
           <li className="max-sm:hidden cursor-pointer">
             <button
               onClick={openLogin}
