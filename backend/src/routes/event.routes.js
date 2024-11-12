@@ -22,7 +22,7 @@ router
   );
 router.route("/").get(searchEvent); //http://localhost:8000/api/v1/event?search=coding
 router
-  .route("/events/events-register")
+  .route("/events-register")
   .post(Authentication, Authorization("student"), registerForEvent);
 router.route("/categories").get(Authentication, showCategories);
 export default router;

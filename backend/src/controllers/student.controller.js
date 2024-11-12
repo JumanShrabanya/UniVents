@@ -5,48 +5,47 @@ import { Event } from "../models/event.model.js";
 import { Registration } from "../models/registration.model.js";
 
 const registerEvent = asyncHandler(async (req, res) => {
-  // get the student details from the middleware
-  // check if its a student or not
-  // get the event details that the student clicked on
-  // check if the student is already registered
-
+  // Get the student details from the middleware
   const role = req.user.role;
   const userId = req.user._id;
   const { eventId } = req.body;
 
-  // role checking
+  // Role check
   if (role !== "student") {
     throw new ApiError(403, "Only students are allowed to register for events");
   }
 
-  //   get the event
+  // Check if event exists
   const event = await Event.findById(eventId);
   if (!event) {
-    throw new ApiError(404, "event does not exist!");
+    throw new ApiError(404, "Event does not exist!");
   }
 
-  //   check if the student has already registered
+  // Check if the student is already registered
   const isRegistered = await Registration.findOne({
-    eventId: eventId,
+    eventId,
     studentId: userId,
   });
-
   if (isRegistered) {
     throw new ApiError(400, "You have already registered for the event");
   }
 
-  //   check if registration available
+  // Check if registration is available
   if (!event.registrationAvailable) {
     throw new ApiError(400, "Registrations for this event are closed");
   }
 
-  //   register the student
+  // Register the student
   const register = await Registration.create({
     studentId: userId,
-    eventId: eventId,
+    eventId,
   });
 
-  res.status(200).json({ message: "Registration successfull" }, register);
+  return res.status(201).json({
+    statusCode: 201,
+    message: "Registration successful",
+    data: register,
+  });
 });
 
 // to showcase all the registered events by the student

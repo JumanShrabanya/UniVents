@@ -5,6 +5,7 @@ import { Event } from "../models/event.model.js";
 import { Club } from "../models/club.model.js";
 import { Category } from "../models/category.model.js";
 import { uploadToCloudinary } from "../utils/cloudinary.js";
+import { Registration } from "../models/registration.model.js";
 import jwt from "jsonwebtoken";
 import fs from "fs";
 
@@ -122,9 +123,33 @@ const searchEvent = asyncHandler(async (req, res) => {
 
 // to register for an event
 const registerForEvent = asyncHandler(async (req, res) => {
-  // get the logged in student data from the cookies
-  // get the student id and create a new document on the registration schema
-  // get the event id and enter that into the schema
+  const { eventId, studentId } = req.body;
+  if (!eventId || !studentId) {
+    throw new ApiError(404, "Please provide the student id and event id");
+  }
+
+  // Check if the student has already registered for the specific event
+  const alreadyRegistered = await Registration.findOne({ studentId, eventId });
+
+  if (alreadyRegistered) {
+    return res.status(400).json({
+      statusCode: 400,
+      message: "Already registered",
+      success: false,
+      errors: [],
+    });
+  }
+
+  // Register the student for the event
+  const registerEvent = await Registration.create({ studentId, eventId });
+
+  if (!registerEvent) {
+    throw new ApiError(500, "Something went wrong during registration");
+  }
+
+  return res
+    .status(201)
+    .json(new ApiResponse(201, { registerEvent }, "Registered successfully"));
 });
 
 // show categories

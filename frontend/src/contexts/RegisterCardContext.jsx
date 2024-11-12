@@ -4,15 +4,16 @@ const RegisterCardContext = createContext();
 
 export const RegisterCardProvider = ({ children }) => {
   const [isRegisterCardOpen, setRegisterCardOpen] = useState(false);
-  const [eventData, setEventData] = useState({});
+  const [eventData, setEventData] = useState([]);
 
-  const openRegisterCard = (data) => {
+  const openRegisterCard = (item) => {
     setRegisterCardOpen(true);
-    setEventData(data);
+    setEventData(item);
   };
   const closeRegisterCard = () => {
     setRegisterCardOpen(false);
   };
+
   return (
     <RegisterCardContext.Provider
       value={{

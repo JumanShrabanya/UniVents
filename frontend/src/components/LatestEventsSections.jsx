@@ -24,7 +24,6 @@ const LatestEventsSections = () => {
       setEvents([]); // Handle errors
     }
   };
-
   useEffect(() => {
     latestEvent();
   }, []);
@@ -32,7 +31,7 @@ const LatestEventsSections = () => {
   return (
     <section className="px-[4vw] py-[2.5rem]">
       <h2 className="text-indigo text-[1.6rem] mb-5">Latest Events</h2>
-      <div className="flex justify-center items-center flex-wrap gap-10">
+      <div className="flex lg:justify-between xl:justify-center items-center flex-wrap gap-10">
         {events.map((item, index) => (
           <EventCard key={index} item={item}></EventCard>
         ))}
