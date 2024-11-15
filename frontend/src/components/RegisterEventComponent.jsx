@@ -9,11 +9,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../contexts/Authcontext";
 import axios from "axios";
-<<<<<<< HEAD
+
 import { checkRegistration } from "../services/CheckRegistration";
 import { useCheckRegistration } from "../contexts/CheckRegistrationContext";
-=======
->>>>>>> a6470e759f385bb5c6b79e7eb9ce353d727696e4
 
 const RegisterEventComponent = () => {
   // to get the role
@@ -46,10 +44,7 @@ const RegisterEventComponent = () => {
       );
       console.log(userDetails._id);
       closeRegisterCard();
-<<<<<<< HEAD
-=======
 
->>>>>>> a6470e759f385bb5c6b79e7eb9ce353d727696e4
       if (response.status === 201) {
         console.log(response.data);
       }
@@ -59,11 +54,6 @@ const RegisterEventComponent = () => {
     // console.log(eventId, userDetails._id);
   };
 
-<<<<<<< HEAD
-  // to chekt the registration status
-
-=======
->>>>>>> a6470e759f385bb5c6b79e7eb9ce353d727696e4
   return isRegisterCardOpen ? (
     <div className="fixed inset-0 bg-black lg:p-0 p-[3rem] bg-opacity-50 z-50">
       <div className="fixed top-0 right-0 -translate-x-0 -translate-y-0 w-[90%] lg:w-[57%] h-[100vh] bg-white overflow-auto transition-transform duration-300 ease-out">
