@@ -34,7 +34,7 @@ const EventCard = ({ item }) => {
   return (
     <div
       onClick={() => handleOpenRegisterCard(item)}
-      className="rounded-lg border-[1px] border-zinc-700 w-[100%] lg:flex-1 xl:flex-none xl:w-[45%] h-[12rem] md:h-[14rem] xl:h-[18rem] p-2 flex md:gap-4 gap-2  hover:scale-[1.009] transition-all duration-150 ease-linear cursor-pointer"
+      className="rounded-lg border-[1px] border-zinc-700 w-[100%] lg:w-[45%] xl:flex-none xl:w-[45%] h-[12rem] md:h-[14rem] xl:h-[18rem] p-2 flex md:gap-4 gap-2  hover:scale-[1.009] transition-all duration-150 ease-linear cursor-pointer"
     >
       {/* left side image div */}
       <div className="w-[40%] h-full relative overflow-hidden">
@@ -101,7 +101,7 @@ const EventCard = ({ item }) => {
               ></FontAwesomeIcon>
               <p className="text-[11px] md:text-[14px] text-black">{`Organizer: `}</p>
             </div>
-            <p className="text-[11px] md:text-[14px] text-indigo line-clamp-1">{`${item.organizer}`}</p>
+            <p className="text-[11px] md:text-[14px] text-indigo line-clamp-1">{`${item.organizer.clubName}`}</p>
           </div>
         </div>
       </div>

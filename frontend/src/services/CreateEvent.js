@@ -9,7 +9,22 @@ export const CreateEvent = async ({
   venue,
   category,
   coverImg,
+  availableFor,
+  availableSeats,
+  collegeName,
 }) => {
+  console.log(
+    title,
+    description,
+    eventDate,
+    venue,
+    category,
+    coverImg,
+    availableFor,
+    availableSeats,
+    collegeName
+  );
+
   try {
     const formData = new FormData();
     formData.append("title", title);
@@ -17,6 +32,9 @@ export const CreateEvent = async ({
     formData.append("eventDate", eventDate);
     formData.append("venue", venue);
     formData.append("category", category);
+    formData.append("availableFor", availableFor);
+    formData.append("availableSeats", availableSeats);
+    formData.append("collegeName", collegeName);
 
     // Append the cover image file if it exists
 

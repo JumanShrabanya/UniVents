@@ -20,6 +20,7 @@ const LatestEventsSections = () => {
 
       // Slice the first 10 events
       setEvents(response.data.data.slice(0, 10));
+      console.log(response);
     } catch (error) {
       setEvents([]); // Handle errors
     }

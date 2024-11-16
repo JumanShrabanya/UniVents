@@ -12,6 +12,15 @@ const eventSchema = new Schema(
       required: true,
       trim: true,
     },
+    availableSeats: {
+      type: Number,
+      min: 0,
+    },
+    availableFor: {
+      type: String,
+      enum: ["For Everyone", "College Only"],
+      default: "For Everyone",
+    },
     registrationAvailable: {
       type: Boolean,
       default: true,
@@ -35,10 +44,15 @@ const eventSchema = new Schema(
       ref: "Category",
       required: true,
     },
-    // collegeName: {
-    //   type: String,
-    //   required: true,
-    // },
+    counterSeats: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    collegeName: {
+      type: String,
+      required: true,
+    },
     coverImg: {
       type: String,
       required: true,

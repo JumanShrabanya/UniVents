@@ -18,7 +18,7 @@ const HeroSection = () => {
             <h1 className="text-[1.5rem] text-center lg:text-left sm:text-[2.2rem] md:text-[2.7rem] lg:text-[2rem] font-semibold font-mainFont leading-[1.1] sm:leading-[1.3] text-indigo">
               Explore, Organize & Register for College Events
             </h1>
-            <p className="text-sm sm:text-[16px] text-zinc-800 text-center lg:text-left w-[100%] lg:w-[90%] leading-[1.3] lg:px-0 px-6">
+            <p className="text-sm sm:text-[16px] text-zinc-800 lg:text-left w-[100%] lg:w-[90%] leading-[1.3] lg:px-0 px-6 text-justify">
               Discover a variety of campus events tailored for you—workshops,
               club meetings, festivals, and more. Easily explore, organize, and
               register for events with just a click. Stay engaged and make the

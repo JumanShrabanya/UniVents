@@ -108,7 +108,7 @@ const RegisterEventComponent = () => {
               ></FontAwesomeIcon>
               <p className="text-zinc-600">Organizer:</p>
             </div>
-            <p className="text-black font-semibold w-[70%] lg:w-auto flex-wrap">{` ${eventData.organizer}`}</p>
+            <p className="text-black font-semibold w-[70%] lg:w-auto flex-wrap">{` ${eventData.organizer.clubName}`}</p>
           </div>
           {/* for the register event button */}
           {role === "organizer" ? null : (
