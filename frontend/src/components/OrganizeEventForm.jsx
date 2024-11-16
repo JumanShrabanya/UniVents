@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useOrgEventForm } from "../contexts/OrganizeEventContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -7,7 +7,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import { categoryEnum } from "../assetImports.js";
 import { CreateEvent } from "../services/CreateEvent.js";
 import LoaderAnimation from "./LoaderAnimation.jsx";
+import { AuthContext } from "../contexts/Authcontext.jsx";
 const OrganizeEventForm = () => {
+  // to get the the organizer college data
+  const { userDetails } = useContext(AuthContext);
   const {
     isOrgEventOpen,
     setIsOrgEventOpen,
@@ -21,10 +24,14 @@ const OrganizeEventForm = () => {
   const [eventDate, seteventDate] = useState(new Date());
   const [venue, setvenue] = useState("");
   const [category, setcategory] = useState(categoryEnum[0]);
+  const [availableSeats, setAvailableSeats] = useState(0);
+  const [availableFor, setAvailableFor] = useState("For Everyone");
   const [coverImg, setcoverImg] = useState(null);
 
   // to handle the indication of the event being created
   const [creatingEvent, setCreatingEvent] = useState(false);
+
+  let collegeName = userDetails.collegeName;
 
   //   to handle cover image
   const handleImageChange = (e) => {
@@ -54,6 +61,9 @@ const OrganizeEventForm = () => {
         venue,
         category,
         coverImg,
+        availableFor,
+        availableSeats,
+        collegeName,
       });
       if (response.status === 201) {
         console.log(response);
@@ -98,7 +108,7 @@ const OrganizeEventForm = () => {
           <div className="mt-[1.5rem] w-full ">
             <div className="mb-10 flex flex-col">
               <label htmlFor="coverImage" className="mb-4">
-                Event Header Image *
+                Event Poster *
               </label>
               {/* header image input */}
               <input
@@ -141,21 +151,21 @@ const OrganizeEventForm = () => {
                 placeholder="Describe your event details"
               />
             </div>
-            {/* event date */}
-            <div className="mb-10 flex flex-col w-[20%]">
-              <label htmlFor="date" className="mb-4">
-                Event Date *
+            {/* event registration seats */}
+            <div className="mb-10">
+              <label htmlFor="availableSeats" className="mb-10">
+                Available Seats *
               </label>
-              {/* date input */}
-              <DatePicker
-                id="date"
-                selected={eventDate}
-                onChange={(date) => seteventDate(date)}
-                dateFormat="yyyy/MM/dd" // Format as you like
-                isClearable // Optional: allows clearing the date
-                showYearDropdown // Optional: show year dropdown for easier selection
-                scrollableYearDropdown // Optional: make the dropdown scrollable
-                className="bg-gray-200 p-2 rounded-md w-[100%]"
+              {/* email input */}
+              <input
+                id="availableSeats"
+                type="Number"
+                min={0}
+                value={availableSeats}
+                required
+                onChange={(e) => setAvailableSeats(e.target.value)}
+                className="w-full border-none outline-none bg-gray-200 px-4 py-3 rounded-lg mt-1"
+                placeholder="Describe your event details"
               />
             </div>
             {/* event venue */}
@@ -174,9 +184,44 @@ const OrganizeEventForm = () => {
                 placeholder="eg: College Conference hall"
               />
             </div>
+            {/* event available for */}
+            <div className="mb-10 flex flex-col ">
+              <label htmlFor="availableFor" className="mb-2">
+                Available For *
+              </label>
+              {/* email input */}
+              <select
+                id="availableFor"
+                value={availableFor}
+                onChange={(e) => {
+                  setAvailableFor(e.target.value);
+                }}
+                className="p-2 h-12 w-[20%] bg-gray-200 outline-none rounded-md "
+              >
+                <option value="For Everyone">For Everyone</option>
+                <option value="College Only">College Only</option>
+              </select>
+            </div>
+            {/* event date */}
+            <div className="mb-10 flex flex-col w-[20%]">
+              <label htmlFor="date" className="mb-2">
+                Event Date *
+              </label>
+              {/* date input */}
+              <DatePicker
+                id="date"
+                selected={eventDate}
+                onChange={(date) => seteventDate(date)}
+                dateFormat="yyyy/MM/dd" // Format as you like
+                isClearable // Optional: allows clearing the date
+                showYearDropdown // Optional: show year dropdown for easier selection
+                scrollableYearDropdown // Optional: make the dropdown scrollable
+                className="bg-gray-200 p-2 rounded-md w-[100%] h-12"
+              />
+            </div>
             {/* event category */}
-            <div className="mb-10 flex flex-col w-[30%]">
-              <label htmlFor="category" className="mb-4">
+            <div className="mb-10 flex flex-col w-[20%]">
+              <label htmlFor="category" className="mb-2">
                 Event Category *
               </label>
 
@@ -186,7 +231,7 @@ const OrganizeEventForm = () => {
                 onChange={(e) => {
                   setcategory(e.target.value);
                 }}
-                className="p-2 bg-gray-200 outline-none rounded-md"
+                className="p-2 bg-gray-200 outline-none rounded-md h-12"
               >
                 {categoryEnum.map((cat, index) => (
                   <option key={index} value={cat}>

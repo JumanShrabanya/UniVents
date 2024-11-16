@@ -124,18 +124,21 @@ const showCreatedEvents = asyncHandler(async (req, res) => {
   const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   const organizerId = decoded._id;
 
-  const createdEvents = await Event.find({ organizer: organizerId });
+  const createdEvents = await Event.find({ organizer: organizerId }).populate({
+    path: "organizer",
+    select: "clubName",
+  });
 
   if (createdEvents.length === 0) {
     return res
       .status(404)
       .json(new ApiResponse(404, "No events found for this organizer."));
   }
-  console.log("events:", createdEvents);
+  console.log("events by the org:", createdEvents);
 
   res
-    .status(200)
-    .json(new ApiResponse(200, "all the created events:", createdEvents));
+    .status(201)
+    .json(new ApiResponse(201, createdEvents, "all the created events:"));
 });
 // Schedule the cron job to run every hour for checking the events available for registration or not
 cron.schedule("* * * * *", async () => {

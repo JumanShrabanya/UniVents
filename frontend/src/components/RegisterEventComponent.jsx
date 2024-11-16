@@ -1,10 +1,11 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useRegisterCard } from "../contexts/RegisterCardContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendarCheck,
   faClose,
   faLocationDot,
+  faPencil,
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../contexts/Authcontext";
@@ -32,6 +33,24 @@ const RegisterEventComponent = () => {
       document.body.style.overflow = "auto";
     };
   }, [isRegisterCardOpen]);
+
+  // state to hold the show and hide value
+  const [showEditBtn, setShowEditBtn] = useState(false);
+
+  // to handle the show of edit button
+  useEffect(() => {
+    // Check if the current user is the event organizer
+    if (eventData?.organizer?._id === userDetails?._id) {
+      setShowEditBtn(true);
+    } else {
+      setShowEditBtn(false);
+    }
+  }, [eventData, userDetails]);
+
+  const handleEditEvent = () => {
+    // Add your logic for editing the event
+    // Example: Navigate to an edit form or modal
+  };
 
   // to handle the registration
   const handleRegistration = async (eventId) => {
@@ -108,7 +127,7 @@ const RegisterEventComponent = () => {
               ></FontAwesomeIcon>
               <p className="text-zinc-600">Organizer:</p>
             </div>
-            <p className="text-black font-semibold w-[70%] lg:w-auto flex-wrap">{` ${eventData.organizer}`}</p>
+            <p className="text-black font-semibold w-[70%] lg:w-auto flex-wrap">{` ${eventData.organizer.clubName}`}</p>
           </div>
           {/* for the register event button */}
           {role === "organizer" ? null : (
@@ -133,6 +152,18 @@ const RegisterEventComponent = () => {
                 {eventData.registrationAvailable
                   ? "Register"
                   : "Registration Closed"}
+              </button>
+            </div>
+          )}
+          {/* for the edit event button */}
+          {showEditBtn && (
+            <div
+              onClick={handleEditEvent}
+              className={`flex items-center justify-center w-full text-black bg-gray-300 cursor-pointer rounded-md overflow-hidden py-3 gap-3 hover:bg-gray-400 duration-200`}
+            >
+              <FontAwesomeIcon icon={faPencil} className="text-[.9rem]" />
+              <button className="text-[1.2rem] select-none">
+                Edit event details
               </button>
             </div>
           )}

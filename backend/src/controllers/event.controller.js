@@ -8,9 +8,16 @@ import { uploadToCloudinary } from "../utils/cloudinary.js";
 import { Registration } from "../models/registration.model.js";
 import jwt from "jsonwebtoken";
 import fs from "fs";
+import { Student } from "../models/student.model.js";
 
+// to show the events
 const showEvents = asyncHandler(async (req, res) => {
-  const events = await Event.find({}).sort({ createdAt: -1 });
+  const events = await Event.find({})
+    .populate({
+      path: "organizer",
+      select: "clubName",
+    })
+    .sort({ createdAt: -1 });
 
   if (!events || events.length === 0) {
     throw new ApiError(404, "No events found");
@@ -41,10 +48,28 @@ const createEvent = asyncHandler(async (req, res) => {
   }
 
   // Destructure request body
-  const { title, description, eventDate, venue, category } = req.body;
+  const {
+    title,
+    description,
+    eventDate,
+    venue,
+    category,
+    availableSeats,
+    availableFor,
+    collegeName,
+  } = req.body;
 
   // Validate required fields
-  if (!title || !description || !eventDate || !venue || !category) {
+  if (
+    !title ||
+    !description ||
+    !eventDate ||
+    !venue ||
+    !category ||
+    !availableSeats ||
+    !availableFor ||
+    !collegeName
+  ) {
     throw new ApiError(400, "All fields are required.");
   }
 
@@ -84,9 +109,12 @@ const createEvent = asyncHandler(async (req, res) => {
     description,
     eventDate,
     venue,
+    availableFor,
+    availableSeats,
     coverImg: coverImgUrl, // Store the Cloudinary image URL
     organizer: organizerId,
     category: categoryDoc._id,
+    collegeName,
   });
 
   // Send the response
@@ -124,32 +152,79 @@ const searchEvent = asyncHandler(async (req, res) => {
 // to register for an event
 const registerForEvent = asyncHandler(async (req, res) => {
   const { eventId, studentId } = req.body;
+
   if (!eventId || !studentId) {
-    throw new ApiError(404, "Please provide the student id and event id");
+    throw new ApiError(400, "Please provide the student ID and event ID.");
   }
 
-  // Check if the student has already registered for the specific event
-  const alreadyRegistered = await Registration.findOne({ studentId, eventId });
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  if (alreadyRegistered) {
-    return res.status(400).json({
-      statusCode: 400,
-      message: "Already registered",
-      success: false,
-      errors: [],
+  try {
+    // Get the event document
+    const event = await Event.findById(eventId).session(session);
+    if (!event) {
+      throw new ApiError(404, "Event not found.");
+    }
+
+    // Get the student document
+    const participant = await Student.findById(studentId).session(session);
+    if (!participant) {
+      throw new ApiError(404, "Student not found.");
+    }
+
+    // Check eligibility
+    if (
+      event.availableFor === "College only" &&
+      participant.collegeName !== event.collegeName
+    ) {
+      throw new ApiError(403, "Student is not from the same college.");
+    }
+
+    // Check if registrations are open
+    if (!event.registrationAvailable) {
+      throw new ApiError(400, "Registrations for this event are closed.");
+    }
+
+    // Check available seats
+    if (event.counterSeats >= event.availableSeats) {
+      throw new ApiError(409, "No available seats left for this event.");
+    }
+
+    // Check if the student is already registered
+    const alreadyRegistered = await Registration.findOne({
+      studentId,
+      eventId,
+    }).session(session);
+    if (alreadyRegistered) {
+      throw new ApiError(400, "Already registered for this event.");
+    }
+
+    // Register the student
+    const registerEvent = await Registration.create([{ studentId, eventId }], {
+      session,
     });
+    if (!registerEvent) {
+      throw new ApiError(500, "Failed to register for the event.");
+    }
+
+    // Increment the counterSeats
+    event.counterSeats += 1;
+    await event.save({ session });
+
+    // Commit the transaction
+    await session.commitTransaction();
+    session.endSession();
+
+    return res
+      .status(201)
+      .json(new ApiResponse(201, { registerEvent }, "Registered successfully"));
+  } catch (error) {
+    // Rollback the transaction in case of an error
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
   }
-
-  // Register the student for the event
-  const registerEvent = await Registration.create({ studentId, eventId });
-
-  if (!registerEvent) {
-    throw new ApiError(500, "Something went wrong during registration");
-  }
-
-  return res
-    .status(201)
-    .json(new ApiResponse(201, { registerEvent }, "Registered successfully"));
 });
 
 // to check if the user registered for that event or not
@@ -169,6 +244,7 @@ const checkRegistration = asyncHandler(async (req, res) => {
       )
     );
 });
+
 // show categories
 const showCategories = asyncHandler(async (req, res) => {
   // get the categories
