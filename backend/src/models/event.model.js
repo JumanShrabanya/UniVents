@@ -57,6 +57,10 @@ const eventSchema = new Schema(
       type: String,
       required: true,
     },
+    winners: {
+      type: [String],
+      default: [""],
+    },
   },
   { timestamps: true }
 );

@@ -134,13 +134,33 @@ const showCreatedEvents = asyncHandler(async (req, res) => {
       .status(404)
       .json(new ApiResponse(404, "No events found for this organizer."));
   }
-  console.log("events by the org:", createdEvents);
 
   res
     .status(201)
     .json(new ApiResponse(201, createdEvents, "all the created events:"));
 });
-// Schedule the cron job to run every hour for checking the events available for registration or not
+
+// to add winners in the db
+const addWinners = asyncHandler(async (req, res) => {
+  // get the event id
+  // get the winner names from the font end
+  // add the winners in the schema
+
+  const { eventId, firstWinner, secondWinner, thirdWinner } = req.body;
+  const event = await Event.findById(eventId);
+
+  if (!event) {
+    throw new ApiError(404, "No event found");
+  }
+  event.winners = [firstWinner, secondWinner, thirdWinner];
+  await event.save();
+  res.status(200).json({
+    success: true,
+    message: "Winners added successfully",
+    data: event.winners,
+  });
+});
+// Schedule the cron job to run for checking the events available for registration or not
 cron.schedule("* * * * *", async () => {
   // fetch the events where the event date is still in past and registrationAvailable is set to TRUE
   // update the registrationAvailable to FALSE

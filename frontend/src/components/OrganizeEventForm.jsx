@@ -186,11 +186,7 @@ const OrganizeEventForm = () => {
             </div>
             {/* event available for */}
             <div className="mb-10 flex flex-col ">
-<<<<<<< HEAD
               <label htmlFor="availableFor" className="mb-2">
-=======
-              <label htmlFor="availableFor" className="mb-4">
->>>>>>> 4c543b5061d0fa684049623545d220e3f5ff9213
                 Available For *
               </label>
               {/* email input */}
@@ -208,11 +204,7 @@ const OrganizeEventForm = () => {
             </div>
             {/* event date */}
             <div className="mb-10 flex flex-col w-[20%]">
-<<<<<<< HEAD
               <label htmlFor="date" className="mb-2">
-=======
-              <label htmlFor="date" className="mb-4">
->>>>>>> 4c543b5061d0fa684049623545d220e3f5ff9213
                 Event Date *
               </label>
               {/* date input */}
@@ -229,11 +221,7 @@ const OrganizeEventForm = () => {
             </div>
             {/* event category */}
             <div className="mb-10 flex flex-col w-[20%]">
-<<<<<<< HEAD
               <label htmlFor="category" className="mb-2">
-=======
-              <label htmlFor="category" className="mb-4">
->>>>>>> 4c543b5061d0fa684049623545d220e3f5ff9213
                 Event Category *
               </label>
 

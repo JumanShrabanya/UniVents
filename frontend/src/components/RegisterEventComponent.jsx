@@ -17,8 +17,13 @@ import { useCheckRegistration } from "../contexts/CheckRegistrationContext";
 const RegisterEventComponent = () => {
   // to get the role
   const { role, userDetails } = useContext(AuthContext);
-  const { isRegisterCardOpen, openRegisterCard, closeRegisterCard, eventData } =
-    useRegisterCard();
+  const {
+    isRegisterCardOpen,
+    openRegisterCard,
+    closeRegisterCard,
+    eventData,
+    setRegisterCardOpen,
+  } = useRegisterCard();
   // to check the registration
   const { isRegistered, setRegistered } = useCheckRegistration();
 
@@ -73,6 +78,32 @@ const RegisterEventComponent = () => {
     // console.log(eventId, userDetails._id);
   };
 
+  // to handle the add winners functionality
+  const [showAddWinnersInput, setshowAddWinnersInput] = useState(false);
+  const [showingWinnerInput, setshowingWinnerInput] = useState(false);
+  // hold the winners
+  const [firstWinner, setFirstWinner] = useState("");
+  const [secondWinner, setSecondWinner] = useState("");
+  const [thirdWinner, setThirdWinner] = useState("");
+
+  // handle save winners
+  const handleSaveWinners = async () => {
+    console.log(firstWinner, secondWinner, thirdWinner);
+  };
+  // to handle the winner submit
+  const handleAddWinners = () => {
+    setshowAddWinnersInput(!showAddWinnersInput);
+    setshowingWinnerInput(true);
+  };
+  // to handle the cancel of adding of the winners
+  const handleCancelWinners = () => {
+    setshowAddWinnersInput(false);
+    setshowingWinnerInput(false);
+    setFirstWinner("");
+    setSecondWinner("");
+    setThirdWinner("");
+  };
+
   return isRegisterCardOpen ? (
     <div className="fixed inset-0 bg-black lg:p-0 p-[3rem] bg-opacity-50 z-50">
       <div className="fixed top-0 right-0 -translate-x-0 -translate-y-0 w-[90%] lg:w-[57%] h-[100vh] bg-white overflow-auto transition-transform duration-300 ease-out">
@@ -80,7 +111,14 @@ const RegisterEventComponent = () => {
         <div className="relative flex flex-col gap-[1.5rem] p-[1.2rem] lg:p-[2rem]  items-start">
           <FontAwesomeIcon
             icon={faClose}
-            onClick={closeRegisterCard}
+            onClick={() => {
+              setRegisterCardOpen(false);
+              setshowingWinnerInput(false);
+              setshowAddWinnersInput(false);
+              setFirstWinner("");
+              setSecondWinner("");
+              setThirdWinner("");
+            }}
             className="sticky top-5 left-0 cursor-pointer text-[1.5rem] text-zinc-700 w-7 h-7 bg-white rounded-full z-10"
           ></FontAwesomeIcon>
           {/* header image */}
@@ -93,6 +131,7 @@ const RegisterEventComponent = () => {
           <h2 className="font-mainFont font-semibold text-[1.8rem]">
             {eventData.title}
           </h2>
+
           <p className="text-zinc-600 lg:text-base text-sm text-justify">
             {eventData.description}
           </p>
@@ -155,6 +194,80 @@ const RegisterEventComponent = () => {
               </button>
             </div>
           )}
+          {/* Event winners list */}
+          {showAddWinnersInput && (
+            <div className="w-[100%]">
+              {/* first */}
+              <div className="h-10 flex rounded-md mb-2">
+                <div className="border-[1px] border-[#ff9500] rounded-l-md px-3 py-2 bg-[#FFD700]  min-w-[15%]">
+                  <label htmlFor="first">1st Position</label>
+                </div>
+                <input
+                  value={firstWinner}
+                  onChange={(e) => {
+                    setFirstWinner(e.target.value);
+                  }}
+                  type="text"
+                  className="px-3 h-full border-[1px] border-gray-400 outline-none rounded-r-md  flex-1"
+                />
+              </div>
+              {/* second */}
+              <div className="h-10 flex rounded-md mb-2">
+                <div className="border-[1px] border-[#8d8d8d] rounded-l-md px-3 py-2 bg-[#C0C0C0] min-w-[15%]">
+                  <label htmlFor="first">2nd Position</label>
+                </div>
+                <input
+                  value={secondWinner}
+                  onChange={(e) => {
+                    setSecondWinner(e.target.value);
+                  }}
+                  type="text"
+                  className="px-3 h-full border-[1px] border-gray-400 outline-none rounded-r-md  flex-1"
+                />
+              </div>
+              {/* third */}
+              <div className="h-10 flex rounded-md mb-2">
+                <div className="border-[1px] border-[#5f3e1e] rounded-l-md px-3 py-2 bg-[#CD7F32] min-w-[15%]">
+                  <label htmlFor="first">3rd Position</label>
+                </div>
+                <input
+                  value={thirdWinner}
+                  onChange={(e) => {
+                    setThirdWinner(e.target.value);
+                  }}
+                  type="text"
+                  className="px-3 h-full border-[1px] border-gray-400 outline-none rounded-r-md  flex-1"
+                />
+              </div>
+              {/* cancel button */}
+              <div
+                onClick={handleCancelWinners}
+                className="bg-zinc-200 text-black rounded-md py-3 hover:bg-zinc-300 duration-200 mb-2"
+              >
+                <button className="w-full flex justify-center items-center flex-1 ">
+                  Cancel
+                </button>
+              </div>
+              {/* save button */}
+              <div
+                onClick={handleSaveWinners}
+                className="bg-zinc-800 text-white rounded-md py-3 hover:bg-zinc-900 duration-200 "
+              >
+                <button className="w-full flex justify-center items-center flex-1">
+                  Save
+                </button>
+              </div>
+            </div>
+          )}
+          {/* to show the add winners list option */}
+          {showEditBtn && !showingWinnerInput && (
+            <div
+              onClick={handleAddWinners}
+              className={`flex items-center justify-center w-full text-white bg-zinc-800 cursor-pointer rounded-md overflow-hidden py-3 gap-3 hover:bg-zinc-900 duration-200`}
+            >
+              <button className="text-[1.2rem] select-none">Add Winners</button>
+            </div>
+          )}
           {/* for the edit event button */}
           {showEditBtn && (
             <div
@@ -163,7 +276,7 @@ const RegisterEventComponent = () => {
             >
               <FontAwesomeIcon icon={faPencil} className="text-[.9rem]" />
               <button className="text-[1.2rem] select-none">
-                Edit event details
+                Update event details
               </button>
             </div>
           )}

@@ -21,6 +21,7 @@ export const RegisterCardProvider = ({ children }) => {
         openRegisterCard,
         closeRegisterCard,
         eventData,
+        setRegisterCardOpen,
       }}
     >
       {children}
