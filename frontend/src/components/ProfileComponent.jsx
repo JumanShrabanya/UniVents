@@ -18,18 +18,25 @@ const ProfileComponent = () => {
   //  to disable the profile detail inputs
   const [inputDisable, setInputDisable] = useState(true);
 
-  // to toggle the editing state
-  const handleToggleEditingState = () => {
-    setEditing(!isEditing);
-    setInputDisable(!inputDisable);
-  };
-
   // states to handle the new change inputs
   const [name, setName] = useState(userDetails?.name);
   const [semester, setSemester] = useState(userDetails?.semester);
   const [rollNo, setRollNo] = useState(userDetails?.rollNo);
   const [clubName, setClubName] = useState(userDetails?.clubName);
   const [collegeName, setCollegeName] = useState(userDetails?.collegeName);
+
+  // to toggle the editing state
+  const handleToggleEditingState = () => {
+    setEditing(!isEditing);
+    setInputDisable(!inputDisable);
+
+    // so that the fields will have the same values as before
+    setName(userDetails?.name);
+    setSemester(userDetails?.semester);
+    setRollNo(userDetails?.rollNo);
+    setClubName(userDetails?.clubName);
+    setCollegeName(userDetails?.collegeName);
+  };
 
   // to handle the detail changes
   const handleProfileUpdate = async () => {

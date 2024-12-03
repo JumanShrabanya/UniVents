@@ -2,7 +2,7 @@ import axios from "axios";
 
 const apiUrl = "http://localhost:8000/api/v1/user/update-profile";
 
-export const UpdateProfile = async (payload) => {
+export const UpdateProfile = async ({ payload }) => {
   try {
     // Send API request with the payload
     const response = await axios.patch(apiUrl, payload, {

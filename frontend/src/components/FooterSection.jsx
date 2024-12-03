@@ -72,7 +72,7 @@ const FooterSection = () => {
           <div className="flex flex-col md:items-start items-center gap-2 md:text-left text-center">
             <p className="text-[1.2rem] text-indigo">Connect</p>
             <ul className="text-[.9rem] flex flex-col justify-items-start gap-2">
-              <li className="flex items-center md:justify-normal justify-center gap-2 hover:text-indigo transition-all duration-100 ease-linear">
+              <li className="flex items-center md:justify-normal justify-center gap-2 hover:text-indigo transition-all duration-100 ease-linear cursor-pointer">
                 <FontAwesomeIcon
                   icon={faXTwitter}
                   className="text-[14px] "
@@ -81,7 +81,7 @@ const FooterSection = () => {
                   Twitter
                 </a>
               </li>
-              <li className="flex items-center gap-2 hover:text-indigo transition-all duration-100 ease-linear">
+              <li className="flex items-center gap-2 hover:text-indigo transition-all duration-100 ease-linear cursor-pointer">
                 <FontAwesomeIcon
                   icon={faInstagram}
                   className="text-[14px] "
@@ -90,7 +90,7 @@ const FooterSection = () => {
                   Instagram
                 </a>
               </li>
-              <li className="flex items-center gap-2 hover:text-indigo transition-all duration-100 ease-linear">
+              <li className="flex items-center gap-2 hover:text-indigo transition-all duration-100 ease-linear cursor-pointer">
                 <FontAwesomeIcon
                   icon={faFacebook}
                   className="text-[14px] "

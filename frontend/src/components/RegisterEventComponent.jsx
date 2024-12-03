@@ -148,7 +148,7 @@ const RegisterEventComponent = () => {
           <img
             src={eventData.coverImg}
             alt="headerImage"
-            className="rounded-xl w-full h-[27rem] lg:h-[30rem] object-fit"
+            className="rounded-xl w-full h-full object-cover"
           />
           {/* event title */}
           <h2 className="font-mainFont font-semibold text-[1.8rem]">
