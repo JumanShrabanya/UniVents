@@ -21,6 +21,8 @@ const studentSchema = new Schema(
     collegeName: {
       type: String,
       required: true,
+      lowercase: true,
+      trim: true,
     },
     semester: {
       type: Number,

@@ -55,6 +55,7 @@ const LoginCard = () => {
         closeLogin();
         setEmail("");
         setPassword("");
+        setErrors({});
       }
     } catch (error) {
       setErrors({ incorrect: "Email or password is incorrect" });
@@ -72,6 +73,7 @@ const LoginCard = () => {
             closeLogin();
             setEmail("");
             setPassword("");
+            setErrors({});
           }}
           icon={faClose}
           className="absolute top-5 md:top-7 right-2 md:right-5 -translate-x-1/2 -translate-y-1/2 text-[1rem] md:text-[1.3rem] cursor-pointer"
