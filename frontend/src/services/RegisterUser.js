@@ -19,7 +19,7 @@ export const registerUser = async (
       );
       console.log(response.data);
 
-      return response.data;
+      return response;
     }
     if (userType === "participant") {
       const response = await axios.post(
@@ -30,7 +30,7 @@ export const registerUser = async (
         }
       );
       console.log(response.data);
-      return response.data;
+      return response;
     }
   } catch (error) {
     throw error.response ? error.response.data : error;

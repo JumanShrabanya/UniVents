@@ -165,7 +165,7 @@ const OrganizeEventForm = () => {
                 required
                 onChange={(e) => setAvailableSeats(e.target.value)}
                 className="w-full border-none outline-none bg-gray-200 px-4 py-3 rounded-lg mt-1"
-                placeholder="Describe your event details"
+                placeholder="Total number of seats available"
               />
             </div>
             {/* event venue */}

@@ -8,7 +8,7 @@ export const CreatedEvents = async () => {
     );
 
     if (response) {
-      console.log(response.data);
+      // console.log(response.data);
       return response.data;
     }
   } catch (err) {

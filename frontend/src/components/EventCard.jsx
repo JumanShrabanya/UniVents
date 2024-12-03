@@ -52,7 +52,7 @@ const EventCard = ({ item }) => {
         <img
           src={item.coverImg}
           alt={item.title}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 object-cover w-full h-full rounded-lg object-center"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full rounded-lg object-cover"
         />
       </div>
       {/* right side info div */}

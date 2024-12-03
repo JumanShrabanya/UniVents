@@ -20,14 +20,14 @@ const DashboardContent = () => {
     try {
       const response = await RegisteredEvents();
       if (response.status === 201) {
-        console.log(response.data.data);
+        // console.log(response.data.data);
         setregisteredEvents(response.data.data);
       }
     } catch (error) {
       console.log(error);
     }
   };
-  console.log("events:", registeredEvents);
+  // console.log("events:", registeredEvents);
 
   // to get the event
   const handleShowCreatedEvents = async () => {

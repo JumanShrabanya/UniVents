@@ -48,9 +48,15 @@ const SignUpForm = () => {
     if (password.length < 8) {
       error.length = "Password must be at least 8 characters long";
     }
+    if (password.length > 15) {
+      error.maxLength = "Password must be lesser than 16 characters long";
+    }
     const specialCharacters = /[!@#$%^&*()_+\-={}\[\]<>,.?/]/;
     if (!specialCharacters.test(password)) {
       error.specialChar = "Password must contain special characters";
+    }
+    if (password.length > 15) {
+      error.passwordMaxLength = "Password must be less than 16 characters";
     }
     if (Object.keys(error).length > 0) {
       setErrors(error);
@@ -89,7 +95,7 @@ const SignUpForm = () => {
       if (response.statusCode === 201) {
         setRole(userType);
         setLogedIn(true);
-        closeRegisterCard();
+        selectUserType("");
       }
     } catch (err) {
       // console.error("Registration failed", err);
@@ -242,6 +248,7 @@ const SignUpForm = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  max={15}
                   className="px-4 py-3 w-[95%] bg-transparent border-none outline-none"
                 />
                 <FontAwesomeIcon
@@ -253,6 +260,7 @@ const SignUpForm = () => {
               <div className="flex flex-col gap-1 mt-2 text-red-600">
                 <p className="text-[11px]">{errors.length}</p>
                 <p className="text-[11px]">{errors.specialChar}</p>
+                <p className="text-[11px]">{errors.maxLength}</p>
               </div>
             </div>
           </div>
@@ -269,7 +277,7 @@ const SignUpForm = () => {
         {errors.message ? (
           <div className="flex items-center justify-center mt-2 gap-2">
             <p className="text-red-600">{errors.message}.</p>
-            <p className="text-black underline text-[16px] cursor-pointer">
+            <p className=" underline text-[16px] cursor-pointer text-indigo">
               Login
             </p>
           </div>

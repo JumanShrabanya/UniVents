@@ -152,7 +152,7 @@ const ProfileComponent = () => {
                 disabled={inputDisable}
                 type="text"
                 id="nameInput"
-                className={`rounded-lg  lg:w-[40%] outline-none border-[1px] border-gray-200 h-10 md:h-[3rem] pl-4 ${
+                className={`rounded-lg capitalize lg:w-[40%] outline-none border-[1px] border-gray-200 h-10 md:h-[3rem] pl-4 ${
                   inputDisable && "bg-zinc-100"
                 }`}
                 onChange={(e) => {
@@ -175,7 +175,7 @@ const ProfileComponent = () => {
                 disabled={inputDisable}
                 type="text"
                 id="nameInput"
-                className={`rounded-lg  lg:w-[40%] outline-none border-[1px] border-gray-200 h-10 md:h-[3rem] pl-4 ${
+                className={`rounded-lg capitalize  lg:w-[40%] outline-none border-[1px] border-gray-200 h-10 md:h-[3rem] pl-4 ${
                   inputDisable && "bg-zinc-100"
                 }`}
                 onChange={(e) => {
@@ -201,7 +201,7 @@ const ProfileComponent = () => {
               disabled={inputDisable}
               type="text"
               id="nameInput"
-              className={`rounded-lg  lg:w-[40%] outline-none border-[1px] border-gray-200 h-10 md:h-[3rem] pl-4 ${
+              className={`rounded-lg capitalize  lg:w-[40%] outline-none border-[1px] border-gray-200 h-10 md:h-[3rem] pl-4 ${
                 inputDisable && "bg-zinc-100"
               }`}
               onChange={(e) => {

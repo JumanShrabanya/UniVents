@@ -148,7 +148,7 @@ const RegisterEventComponent = () => {
           <img
             src={eventData.coverImg}
             alt="headerImage"
-            className="rounded-xl w-full h-[27rem] lg:h-[30rem] object-cover"
+            className="rounded-xl w-full h-[27rem] lg:h-[30rem] object-fit"
           />
           {/* event title */}
           <h2 className="font-mainFont font-semibold text-[1.8rem]">
@@ -316,7 +316,7 @@ const RegisterEventComponent = () => {
               onClick={handleAddWinners}
               className={`flex items-center justify-center w-full text-white bg-zinc-800 cursor-pointer rounded-md overflow-hidden py-3 gap-3 hover:bg-zinc-900 duration-200`}
             >
-              <button className="text-[1.2rem] select-none">{`${
+              <button className="text-[1rem] lg:text-[1.2rem] select-none ">{`${
                 eventData.winners.length > 1 ? "Update Winners" : "Add Winners"
               }`}</button>
             </div>
@@ -327,8 +327,11 @@ const RegisterEventComponent = () => {
               onClick={handleEditEvent}
               className={`flex items-center justify-center w-full text-black bg-gray-300 cursor-pointer rounded-md overflow-hidden py-3 gap-3 hover:bg-gray-400 duration-200`}
             >
-              <FontAwesomeIcon icon={faPencil} className="text-[.9rem]" />
-              <button className="text-[1.2rem] select-none">
+              <FontAwesomeIcon
+                icon={faPencil}
+                className="text-[.7rem] lg:text-[.9rem]"
+              />
+              <button className="text-[1rem] lg:text-[1.2rem] select-none">
                 Update event details
               </button>
             </div>
