@@ -417,35 +417,44 @@ const updateProfile = asyncHandler(async (req, res) => {
   // if its a student then update on the student
   // if its a organizer then update on the organizer
 
-  const userId = req.user._id;
-  const role = req.user.role;
-  const { name, clubName, semester, rollNo, collegeName } = req.body;
+  const updateProfile = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+    const role = req.user.role;
 
-  console.log(role);
+    // Validate role
+    if (!["student", "organizer"].includes(role)) {
+      throw new ApiError(400, "Invalid role");
+    }
 
-  let user;
-  if (role === "student") {
-    user = await Student.findById(userId);
-  } else if (role === "organizer") {
-    user = await Club.findById(userId);
-  }
+    // Fetch user based on role
+    const user =
+      role === "student"
+        ? await Student.findById(userId)
+        : await Club.findById(userId);
 
-  if (!user) {
-    throw new ApiError(404, "User not found");
-  }
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
 
-  if (role === "student") {
-    if (name !== undefined) user.name = name;
-    if (collegeName !== undefined) user.collegeName = collegeName;
-    if (semester !== undefined) user.semester = semester;
-    if (rollNo !== undefined) user.rollNo = rollNo;
-  } else if (role === "organizer") {
-    if (clubName !== undefined) user.clubName = clubName;
-    if (collegeName !== undefined) user.collegeName = collegeName;
-  }
+    // Define allowed fields for each role
+    const allowedFields =
+      role === "student"
+        ? ["name", "semester", "rollNo", "collegeName"]
+        : ["clubName", "collegeName"];
 
-  await user.save();
-  res.status(200).json(new ApiResponse("Updates successfully", user));
+    // Update fields directly from req.body
+    Object.keys(req.body).forEach((key) => {
+      if (allowedFields.includes(key) && req.body[key] !== undefined) {
+        user[key] = req.body[key];
+      }
+    });
+
+    // Save the updated user
+    await user.save();
+
+    // Respond with the updated user details
+    res.status(200).json(new ApiResponse("Updated successfully", user));
+  });
 });
 
 // to check user is logged in or not

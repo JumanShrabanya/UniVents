@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { LoginUser } from "../services/LoginUser";
 import { AuthContext } from "../contexts/Authcontext";
+import { useNavigate } from "react-router-dom";
 
 const LoginCard = () => {
   const { isLoginOpen, closeLogin } = useLoginCard();
@@ -12,6 +13,8 @@ const LoginCard = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isLoginOpen) {
@@ -50,6 +53,8 @@ const LoginCard = () => {
         setUserDetails(response.data.user);
         setRole(response.data.user.role);
         closeLogin();
+        setEmail("");
+        setPassword("");
       }
     } catch (error) {
       setErrors({ incorrect: "Email or password is incorrect" });
@@ -63,7 +68,11 @@ const LoginCard = () => {
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white w-[90%] md:w-[50%] px-[1rem] md:px-[2rem] py-[2rem] rounded-lg"
       >
         <FontAwesomeIcon
-          onClick={closeLogin}
+          onClick={() => {
+            closeLogin();
+            setEmail("");
+            setPassword("");
+          }}
           icon={faClose}
           className="absolute top-5 md:top-7 right-2 md:right-5 -translate-x-1/2 -translate-y-1/2 text-[1rem] md:text-[1.3rem] cursor-pointer"
         />
@@ -123,7 +132,12 @@ const LoginCard = () => {
             )}
           </div>
         </div>
-        <div className="flex justify-center items-center">
+        <div className="mt-[1rem] flex justify-center items-center">
+          {errors.incorrect && (
+            <p className="text-[13px] text-red-600">{errors.incorrect}</p>
+          )}
+        </div>
+        <div className="flex justify-center items-center mb-[1rem]">
           <button
             type="submit"
             className="mt-2 bg-indigo text-white md:text-[.9rem] md:py-[.9rem] md:px-[1.9rem] lg:text-[1rem] lg:py-[.75vw] lg:px-[1.75vw] py-[2vw] px-[9vw] rounded-lg outline-none border-none hover:bg-indigoHover duration-200 transition-all ease-linear capitalize"
@@ -131,10 +145,21 @@ const LoginCard = () => {
             Login
           </button>
         </div>
-        <div className="mt-[1rem] flex justify-center items-center">
-          {errors.incorrect && (
-            <p className="text-[13px] text-red-600">{errors.incorrect}</p>
-          )}
+
+        {/* to show the register page if dont have an account */}
+        <div className="flex justify-center items-center">
+          <p>
+            New to Univents?{" "}
+            <span
+              onClick={() => {
+                navigate("/registration");
+                closeLogin();
+              }}
+              className="text-indigo cursor-pointer underline"
+            >
+              Register
+            </span>
+          </p>
         </div>
       </form>
     </div>

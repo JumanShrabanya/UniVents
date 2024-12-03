@@ -87,12 +87,35 @@ const RegisterEventComponent = () => {
   const [thirdWinner, setThirdWinner] = useState("");
 
   // handle save winners
+  let currentEventId = eventData._id;
+
   const handleSaveWinners = async () => {
-    console.log(firstWinner, secondWinner, thirdWinner);
+    if (firstWinner && secondWinner && thirdWinner) {
+      try {
+        const apiUrl = "http://localhost:8000/dashboard-organizer/add-winners";
+        const response = await axios.post(
+          apiUrl,
+          { currentEventId, firstWinner, secondWinner, thirdWinner },
+          { withCredentials: true }
+        );
+        if (response.status === 200) {
+          console.log("with winners:", response);
+          // Clear input fields
+          setFirstWinner("");
+          setSecondWinner("");
+          setThirdWinner("");
+          setshowAddWinnersInput(false);
+          // setshowingWinnerInput(!showingWinnerInput);
+        }
+      } catch (error) {
+        console.log("error adding the winners", error);
+      }
+    }
   };
+
   // to handle the winner submit
   const handleAddWinners = () => {
-    setshowAddWinnersInput(!showAddWinnersInput);
+    setshowAddWinnersInput(true);
     setshowingWinnerInput(true);
   };
   // to handle the cancel of adding of the winners
@@ -131,7 +154,35 @@ const RegisterEventComponent = () => {
           <h2 className="font-mainFont font-semibold text-[1.8rem]">
             {eventData.title}
           </h2>
-
+          {/* to display the winners */}
+          {eventData.winners.length > 1 && (
+            <div>
+              <h2 className="font-mainFont font-semibold text-[20px] mb-4">
+                Winners List
+              </h2>
+              {/* first */}
+              <div className="flex items-center gap-2 mb-2">
+                <div className="bg-[#FFD700] border-[1px] border-[#ff9500] h-8 w-8 rounded-full  flex justify-center items-center ">
+                  <p className="text-[12px]">1st</p>
+                </div>
+                <p className="capitalize">{eventData.winners[0]}</p>
+              </div>
+              {/* second */}
+              <div className="flex items-center gap-2 mb-2">
+                <div className="bg-[#C0C0C0] border-[1px] border-[#8d8d8d] h-8 w-8 rounded-full  flex justify-center items-center ">
+                  <p className="text-[12px]">2nd</p>
+                </div>
+                <p className="capitalize">{eventData.winners[1]}</p>
+              </div>
+              {/* third*/}
+              <div className="flex items-center gap-2 mb-2">
+                <div className="border-[1px] border-[#5f3e1e] bg-[#CD7F32] h-8 w-8 rounded-full  flex justify-center items-center ">
+                  <p className="text-[12px]">3rd</p>
+                </div>
+                <p className="capitalize">{eventData.winners[2]}</p>
+              </div>
+            </div>
+          )}
           <p className="text-zinc-600 lg:text-base text-sm text-justify">
             {eventData.description}
           </p>
@@ -260,12 +311,14 @@ const RegisterEventComponent = () => {
             </div>
           )}
           {/* to show the add winners list option */}
-          {showEditBtn && !showingWinnerInput && (
+          {showEditBtn && !showAddWinnersInput && (
             <div
               onClick={handleAddWinners}
               className={`flex items-center justify-center w-full text-white bg-zinc-800 cursor-pointer rounded-md overflow-hidden py-3 gap-3 hover:bg-zinc-900 duration-200`}
             >
-              <button className="text-[1.2rem] select-none">Add Winners</button>
+              <button className="text-[1.2rem] select-none">{`${
+                eventData.winners.length > 1 ? "Update Winners" : "Add Winners"
+              }`}</button>
             </div>
           )}
           {/* for the edit event button */}

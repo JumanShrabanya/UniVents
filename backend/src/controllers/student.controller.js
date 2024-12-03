@@ -54,22 +54,24 @@ const registeredEvents = asyncHandler(async (req, res) => {
   // check if the role is student or not
   // fetch all the events with the student id
 
-  const userId = req.user._id;
+  const studentId = req.user._id;
   const role = req.user.role;
 
-  if (role !== "student") {
+  if (role === "organizer") {
     throw new ApiError(403, "Access denied");
   }
 
-  const registrations = await Registration.find({ studentId: userId }).populate(
+  const registrations = await Registration.find({ studentId }).populate(
     "eventId"
   );
 
   if (registrations.length === 0) {
     throw new ApiError(404, "No events found!");
   }
-  res
-    .status(200)
-    .json({ message: "Registered events by the student: " }, registrations);
+  res.status(201).json({
+    statusCode: 201,
+    message: "Registration successful",
+    data: registrations,
+  });
 });
 export { registerEvent, registeredEvents };

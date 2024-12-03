@@ -90,7 +90,6 @@ const SignUpForm = () => {
         setRole(userType);
         setLogedIn(true);
         closeRegisterCard();
-        navigate("/dashboard");
       }
     } catch (err) {
       // console.error("Registration failed", err);

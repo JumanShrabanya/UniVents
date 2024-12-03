@@ -9,6 +9,7 @@ import { Registration } from "../models/registration.model.js";
 import jwt from "jsonwebtoken";
 import fs from "fs";
 import { Student } from "../models/student.model.js";
+import mongoose from "mongoose";
 
 // to show the events
 const showEvents = asyncHandler(async (req, res) => {
@@ -229,7 +230,7 @@ const registerForEvent = asyncHandler(async (req, res) => {
 
 // to check if the user registered for that event or not
 const checkRegistration = asyncHandler(async (req, res) => {
-  const { studentId, eventId } = req.body;
+  const { eventId, studentId } = req.body;
 
   // check
   const isRegistered = await Registration.findOne({ eventId, studentId });

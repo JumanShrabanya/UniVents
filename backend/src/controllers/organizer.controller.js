@@ -146,8 +146,11 @@ const addWinners = asyncHandler(async (req, res) => {
   // get the winner names from the font end
   // add the winners in the schema
 
-  const { eventId, firstWinner, secondWinner, thirdWinner } = req.body;
-  const event = await Event.findById(eventId);
+  const { currentEventId, firstWinner, secondWinner, thirdWinner } = req.body;
+  if (!currentEventId || !firstWinner || !secondWinner || !thirdWinner) {
+    throw new ApiError(400, "All fields are required");
+  }
+  const event = await Event.findById(currentEventId);
 
   if (!event) {
     throw new ApiError(404, "No event found");
@@ -179,4 +182,9 @@ cron.schedule("* * * * *", async () => {
     console.error("Error updating event registration status:", error);
   }
 });
-export { showRegisteredParticipants, editEventDetails, showCreatedEvents };
+export {
+  showRegisteredParticipants,
+  editEventDetails,
+  showCreatedEvents,
+  addWinners,
+};

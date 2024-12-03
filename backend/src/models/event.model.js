@@ -51,7 +51,6 @@ const eventSchema = new Schema(
     },
     collegeName: {
       type: String,
-      required: true,
     },
     coverImg: {
       type: String,

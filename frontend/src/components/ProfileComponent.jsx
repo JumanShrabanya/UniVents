@@ -34,35 +34,26 @@ const ProfileComponent = () => {
   // to handle the detail changes
   const handleProfileUpdate = async () => {
     try {
-      let response;
-      if (role === "student") {
-        response = await UpdateProfile(
-          { role },
-          {
-            name,
-            semester,
-            rollNo,
-            collegeName,
-          }
-        );
-      }
-      if (role === "organizer") {
-        response = await UpdateProfile(
-          { role },
-          {
-            clubName,
-            collegeName,
-          }
-        );
-      }
-      if (response?.status === 201) {
-        alert("Profile Updated Successfully");
+      // Construct payload based on role
+      const payload =
+        role === "student"
+          ? { name, semester, rollNo, collegeName }
+          : { clubName, collegeName };
+
+      // Make the API call
+      const response = await UpdateProfile(payload);
+
+      // Check response status
+      if (response?.status === 200) {
         console.log(response.data.data.user);
         setEditing(false);
         setInputDisable(true);
+      } else {
+        console.log("failed to update the profile", error);
       }
     } catch (error) {
-      console.log("error from the updatation:", error);
+      console.error("Error during profile update:", error);
+      alert("An error occurred. Please try again later.");
     }
   };
 
