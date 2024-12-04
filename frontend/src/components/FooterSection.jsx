@@ -13,9 +13,9 @@ const FooterSection = () => {
   return (
     <section className="bg-footer px-[4vw] py-[1.2rem] md:pt-[2rem] ">
       {/* for the content area */}
-      <div className="flex flex-col md:flex-row justify-between items-start gap-[2rem]">
+      <div className="flex flex-col md:flex-row justify-start items-start gap-[2rem]">
         {/* left part */}
-        <div className="md:w-[40%] w-full md:text-left text-center">
+        <div className="md:w-[40%] w-full md:text-left text-start">
           <a href="#">
             <h2 className="text-[1.3rem] md:text-[1.2rem]  tracking-[.3em] text-indigo font-normal font-sans select-none">
               UNIVENTS
@@ -26,10 +26,10 @@ const FooterSection = () => {
           </h1>
         </div>
         {/* right part */}
-        <div className="flex flex-1 md:flex-row flex-col md:w-[50%] w-full justify-center items-center md:justify-end md:gap-[6rem] gap-[2rem]">
-          <div className="flex flex-col md:items-start items-center gap-2 md:text-left text-center">
+        <div className="flex flex-1 md:flex-row flex-col md:w-[50%] w-full justify-start items-start md:justify-end md:gap-[6rem] gap-[2rem]">
+          <div className="flex flex-col md:items-start items-start gap-2 md:text-left text-center">
             <p className="text-[1.2rem] text-indigo">UniVents</p>
-            <ul className="text-[.9rem] flex flex-col justify-items-start gap-2">
+            <ul className="text-[.9rem] flex flex-col justify-start items-start gap-2 ">
               <li>
                 <a href="#" className="links">
                   About
@@ -48,9 +48,9 @@ const FooterSection = () => {
             </ul>
           </div>
           {/* ///// */}
-          <div className="flex flex-col md:items-start items-center gap-2 md:text-left text-center">
+          <div className="flex flex-col md:items-start items-start gap-2 md:text-left text-start">
             <p className="text-[1.2rem] text-indigo">Events</p>
-            <ul className="text-[.9rem] flex flex-col justify-items-start gap-2">
+            <ul className="text-[.9rem] flex flex-col justify-items-start items-start gap-2">
               <li>
                 <a href="#" className="links">
                   Organizer
@@ -69,9 +69,9 @@ const FooterSection = () => {
             </ul>
           </div>
           {/* ///// */}
-          <div className="flex flex-col md:items-start items-center gap-2 md:text-left text-center">
+          <div className="flex flex-col md:items-start items-start gap-2 md:text-left text-center">
             <p className="text-[1.2rem] text-indigo">Connect</p>
-            <ul className="text-[.9rem] flex flex-col justify-items-start gap-2">
+            <ul className="text-[.9rem] flex flex-col justify-items-start items-start gap-2">
               <li className="flex items-center md:justify-normal justify-center gap-2 hover:text-indigo transition-all duration-100 ease-linear cursor-pointer">
                 <FontAwesomeIcon
                   icon={faXTwitter}
