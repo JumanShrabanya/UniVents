@@ -410,51 +410,45 @@ const viewProfile = asyncHandler(async (req, res) => {
 
 // edit prifile details
 const updateProfile = asyncHandler(async (req, res) => {
-  // get the user id
-  // get the user details,
-  // get the updated fields form the body
-  // check if user exists or not
-  // if its a student then update on the student
-  // if its a organizer then update on the organizer
+  const userId = req.user._id;
+  const role = req.body.role;
 
-  const updateProfile = asyncHandler(async (req, res) => {
-    const userId = req.user._id;
-    const role = req.user.role;
+  console.log("role from the update profile: ", role);
+  console.log("user id from the update profile: ", userId);
 
-    // Validate role
-    if (!["student", "organizer"].includes(role)) {
-      throw new ApiError(400, "Invalid role");
+  // Validate role
+  if (!["student", "organizer"].includes(role)) {
+    throw new ApiError(400, "Invalid role");
+  }
+
+  // Fetch user based on role
+  const user =
+    role === "student"
+      ? await Student.findById(userId)
+      : await Club.findById(userId);
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  // Define allowed fields for each role
+  const allowedFields =
+    role === "student"
+      ? ["name", "semester", "rollNo", "collegeName"]
+      : ["clubName", "collegeName"];
+
+  // Update fields directly from req.body
+  Object.keys(req.body).forEach((key) => {
+    if (allowedFields.includes(key) && req.body[key] !== undefined) {
+      user[key] = req.body[key];
     }
-
-    // Fetch user based on role
-    const user =
-      role === "student"
-        ? await Student.findById(userId)
-        : await Club.findById(userId);
-
-    if (!user) {
-      throw new ApiError(404, "User not found");
-    }
-
-    // Define allowed fields for each role
-    const allowedFields =
-      role === "student"
-        ? ["name", "semester", "rollNo", "collegeName"]
-        : ["clubName", "collegeName"];
-
-    // Update fields directly from req.body
-    Object.keys(req.body).forEach((key) => {
-      if (allowedFields.includes(key) && req.body[key] !== undefined) {
-        user[key] = req.body[key];
-      }
-    });
-
-    // Save the updated user
-    await user.save();
-
-    // Respond with the updated user details
-    res.status(200).json(new ApiResponse("Updated successfully", user));
   });
+
+  // Save the updated user
+  await user.save();
+
+  // Respond with the updated user details
+  res.status(200).json(new ApiResponse("Updated successfully", user));
 });
 
 // to check user is logged in or not

@@ -48,7 +48,7 @@ const ProfileComponent = () => {
           : { clubName, collegeName };
 
       // Make the API call
-      const response = await UpdateProfile(payload);
+      const response = await UpdateProfile({ payload, role });
 
       // Check response status
       if (response?.status === 200) {
@@ -104,10 +104,12 @@ const ProfileComponent = () => {
           {/* circle avatar */}
           <div className="flex items-center gap-[1rem]">
             <div className="select-none bg-indigo p-4 rounded-full w-[3rem] h-[3rem] flex items-center justify-center">
-              <p className="text-white">J</p>
+              <p className="text-white uppercase text-[1.2rem]">
+                {userDetails?.clubName[0] || userDetails?.name[0]}
+              </p>
             </div>
             <div className="flex flex-col">
-              <p className="text-[22px]">
+              <p className="text-[22px] capitalize">
                 {userDetails?.name || userDetails?.clubName}
               </p>
               <p className="text-gray-400 text-[14px]">{userDetails?.email}</p>

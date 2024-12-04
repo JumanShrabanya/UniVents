@@ -28,7 +28,7 @@ router.route("/register-participant").post(
 );
 router.route("/login").post(userLogin);
 router.route("/profile").get(Authentication, viewProfile);
-router.route("/update-profile").get(Authentication, updateProfile);
+router.route("/update-profile").patch(Authentication, updateProfile);
 router.route("/check-auth-status").get(Authentication, checkAuthStatus);
 // router.route("/check-auth-status").get((req, res) => {
 // res.json({ role: "student" });
