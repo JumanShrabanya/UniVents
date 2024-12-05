@@ -15,7 +15,7 @@ const EventCard = ({ item }) => {
   const handleOpenRegisterCard = (item) => {
     const checkRegistrationStatus = async () => {
       const response = await checkRegistration(eventData._id, userDetails._id);
-      console.log(userDetails._id, item._id);
+      // console.log(userDetails._id, item._id);
     };
     openRegisterCard(item);
     console.log(item.registrationAvailable);
@@ -38,7 +38,7 @@ const EventCard = ({ item }) => {
     >
       {/* div to show the edit event details  */}
       {/* left side image div */}
-      <div className="w-[40%] h-full relative overflow-hidden">
+      <div className="w-[45%] h-full relative overflow-hidden">
         {/* to show the registration open or closed  */}
         <div
           className={`absolute top-2 right-0 z-10 py-1 px-4 rounded-l-full ${
@@ -56,7 +56,7 @@ const EventCard = ({ item }) => {
         />
       </div>
       {/* right side info div */}
-      <div className="w-[60%] flex flex-col justify-between gap-1 overflow-hidden">
+      <div className="w-[55%] flex flex-col justify-between gap-1 overflow-hidden">
         {/* title and description */}
         <div>
           <h3 className="text-[1.1rem] text-indigo mb-2 line-clamp-1">

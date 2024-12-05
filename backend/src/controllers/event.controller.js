@@ -16,7 +16,11 @@ const showEvents = asyncHandler(async (req, res) => {
   const events = await Event.find({})
     .populate({
       path: "organizer",
-      select: "clubName",
+      select: "clubName", // Fields you want from the organizer
+    })
+    .populate({
+      path: "category", // Assuming `category` is a reference field in your Event schema
+      select: "categoryTitle", // Fields you want from the category
     })
     .sort({ createdAt: -1 });
 

@@ -5,13 +5,23 @@ import { AuthContext } from "../contexts/Authcontext";
 import OrganizeEventForm from "./OrganizeEventForm";
 import { CreatedEvents } from "../services/CreatedEvents";
 import { RegisteredEvents } from "../services/RegisteredEvents";
+import EditEventComponent from "./EditEventComponent";
+import { useEditEvent } from "../contexts/EditEventContext";
+import { useLocation } from "react-router-dom";
 
 const DashboardContent = () => {
+  // to recieve the data from the edit event button
+  const location = useLocation();
+  const eventData = location.state?.eventData;
+  // console.log("from the dashboard", eventData);
   // to know which tab is active
   const { activeTab, setActiveTab } = useActiveTab();
   // to hold the created events by the org
   const [createdEvents, setcreatedEvents] = useState([]);
   const [registeredEvents, setregisteredEvents] = useState([]);
+
+  // to know should open the editing option or not
+  const { editEventOpen, closeEditEvent, openEditEvent } = useEditEvent();
 
   // to get the user role data
   const { role } = useContext(AuthContext);
@@ -48,7 +58,7 @@ const DashboardContent = () => {
   }, []);
 
   return role === "student" ? (
-    <section className="p-[2rem] lg:w-[80%] xl:w-[85%]">
+    <section className="p-[2rem] lg:w-[80%] xl:w-[85%] ">
       {/* for the registered events */}
       {activeTab === "registered-events" && (
         <div className="flex gap-[2rem] flex-wrap">
@@ -68,10 +78,19 @@ const DashboardContent = () => {
     <section className="p-[2rem] lg:w-[80%] xl:w-[85%]">
       {/* for the registered events */}
       {activeTab === "registered-events" && (
-        <div className="flex gap-[2rem] flex-wrap">
-          {createdEvents.map((item, index) => (
-            <EventCard key={index} item={item}></EventCard>
-          ))}
+        <div>
+          {editEventOpen ? (
+            <div>
+              <div className="mb-[2rem]">
+                <EditEventComponent eventData={eventData}></EditEventComponent>
+              </div>
+            </div>
+          ) : null}
+          <div className="flex gap-[2rem] flex-wrap">
+            {createdEvents.map((item, index) => (
+              <EventCard key={index} item={item}></EventCard>
+            ))}
+          </div>
         </div>
       )}
       {/* for the notifications */}

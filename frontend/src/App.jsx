@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { AuthContext, AuthProvider } from "../src/contexts/Authcontext";
+import { AuthProvider } from "../src/contexts/Authcontext";
+import { EditEventProvider } from "./contexts/EditEventContext";
 import { UserTypeProvider } from "./contexts/UserTypeContext";
 import { LoginCardProvider } from "./contexts/LoginCardContext";
 import DashBoard from "./pages/DashBoard";
@@ -17,49 +18,51 @@ import { CheckRegistrationProvider } from "./contexts/CheckRegistrationContext";
 const App = () => {
   return (
     <AuthProvider>
-      <CheckRegistrationProvider>
-        <UserTypeProvider>
-          <LoginCardProvider>
-            <RegisterCardProvider>
-              <Router>
-                <main className="relative h-full">
-                  <Routes>
-                    <Route path="/" element={<HomePage></HomePage>}></Route>
-                    <Route
-                      path="/registration"
-                      element={<RegistrationPage></RegistrationPage>}
-                    ></Route>
-                    <Route
-                      path="/dashboard"
-                      element={
-                        <ProtectedRoute
-                          element={<DashBoard></DashBoard>}
-                        ></ProtectedRoute>
-                      }
-                    ></Route>
-                    <Route
-                      path="/events"
-                      element={<EventsPage></EventsPage>}
-                    ></Route>
-                    <Route
-                      path="/profile"
-                      element={
-                        <ProtectedRoute
-                          element={<ProfilePage></ProfilePage>}
-                        ></ProtectedRoute>
-                      }
-                    ></Route>
-                  </Routes>
-                  {/* login card component */}
-                  <LoginCard></LoginCard>
-                  {/* side view card component for complete detailed view of the event */}
-                  <RegisterEventComponent></RegisterEventComponent>
-                </main>
-              </Router>
-            </RegisterCardProvider>
-          </LoginCardProvider>
-        </UserTypeProvider>
-      </CheckRegistrationProvider>
+      <EditEventProvider>
+        <CheckRegistrationProvider>
+          <UserTypeProvider>
+            <LoginCardProvider>
+              <RegisterCardProvider>
+                <Router>
+                  <main className="relative h-full">
+                    <Routes>
+                      <Route path="/" element={<HomePage></HomePage>}></Route>
+                      <Route
+                        path="/registration"
+                        element={<RegistrationPage></RegistrationPage>}
+                      ></Route>
+                      <Route
+                        path="/dashboard"
+                        element={
+                          <ProtectedRoute
+                            element={<DashBoard></DashBoard>}
+                          ></ProtectedRoute>
+                        }
+                      ></Route>
+                      <Route
+                        path="/events"
+                        element={<EventsPage></EventsPage>}
+                      ></Route>
+                      <Route
+                        path="/profile"
+                        element={
+                          <ProtectedRoute
+                            element={<ProfilePage></ProfilePage>}
+                          ></ProtectedRoute>
+                        }
+                      ></Route>
+                    </Routes>
+                    {/* login card component */}
+                    <LoginCard></LoginCard>
+                    {/* side view card component for complete detailed view of the event */}
+                    <RegisterEventComponent></RegisterEventComponent>
+                  </main>
+                </Router>
+              </RegisterCardProvider>
+            </LoginCardProvider>
+          </UserTypeProvider>
+        </CheckRegistrationProvider>
+      </EditEventProvider>
     </AuthProvider>
   );
 };

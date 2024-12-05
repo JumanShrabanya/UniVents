@@ -10,11 +10,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../contexts/Authcontext";
 import axios from "axios";
-
 import { checkRegistration } from "../services/CheckRegistration";
 import { useCheckRegistration } from "../contexts/CheckRegistrationContext";
+import { useEditEvent } from "../contexts/EditEventContext";
+import { useNavigate } from "react-router-dom";
 
 const RegisterEventComponent = () => {
+  const navigate = useNavigate();
+  // to open the edit event component in that page
+  const { editEventOpen, closeEditEvent, openEditEvent } = useEditEvent();
   // to get the role
   const { role, userDetails } = useContext(AuthContext);
   const {
@@ -55,6 +59,9 @@ const RegisterEventComponent = () => {
   const handleEditEvent = () => {
     // Add your logic for editing the event
     // Example: Navigate to an edit form or modal
+    navigate("/dashboard", { state: { eventData } });
+    closeRegisterCard();
+    openEditEvent();
   };
 
   // to handle the registration
@@ -324,7 +331,7 @@ const RegisterEventComponent = () => {
           {/* for the edit event button */}
           {showEditBtn && (
             <div
-              onClick={handleEditEvent}
+              onClick={() => handleEditEvent()}
               className={`flex items-center justify-center w-full text-black bg-gray-300 cursor-pointer rounded-md overflow-hidden py-3 gap-3 hover:bg-gray-400 duration-200`}
             >
               <FontAwesomeIcon

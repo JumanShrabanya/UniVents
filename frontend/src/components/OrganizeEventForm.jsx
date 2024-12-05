@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useOrgEventForm } from "../contexts/OrganizeEventContext";
+import { useOrgEventForm } from "../contexts/OrganizeEventContext.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faPlus } from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
@@ -208,16 +208,15 @@ const OrganizeEventForm = () => {
                 Event Date *
               </label>
               {/* date input */}
-              <DatePicker
+              <input
                 id="date"
-                selected={eventDate}
-                onChange={(date) => seteventDate(date)}
-                dateFormat="yyyy/MM/dd" // Format as you like
-                isClearable // Optional: allows clearing the date
-                showYearDropdown // Optional: show year dropdown for easier selection
-                scrollableYearDropdown // Optional: make the dropdown scrollable
+                type="date"
+                value={eventDate}
+                onChange={(e) => {
+                  seteventDate(e.target.value);
+                }}
                 className="bg-gray-200 p-2 rounded-md w-[100%] h-12"
-              />
+              ></input>
             </div>
             {/* event category */}
             <div className="mb-10 flex flex-col w-[20%]">

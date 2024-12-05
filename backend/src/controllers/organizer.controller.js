@@ -124,10 +124,15 @@ const showCreatedEvents = asyncHandler(async (req, res) => {
   const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   const organizerId = decoded._id;
 
-  const createdEvents = await Event.find({ organizer: organizerId }).populate({
-    path: "organizer",
-    select: "clubName",
-  });
+  const createdEvents = await Event.find({ organizer: organizerId })
+    .populate({
+      path: "organizer",
+      select: "clubName",
+    })
+    .populate({
+      path: "category",
+      select: "categoryTitle",
+    });
 
   if (createdEvents.length === 0) {
     return res
