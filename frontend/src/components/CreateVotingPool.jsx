@@ -43,6 +43,17 @@ const CreateVotingPool = () => {
     closeOrgEventForm();
   };
 
+  // to handle the voting pool closing
+  const handleCloseVotingPool = () => {
+    setTitle(""),
+      setDescription(""),
+      setAvailableFor(""),
+      setEndDate(""),
+      setEndTime(""),
+      setOptions([""]),
+      closeCreatePool();
+  };
+
   //   to handle the pool creation
   const handleCreateVotingPool = async (e) => {
     e.preventDefault();
@@ -72,9 +83,7 @@ const CreateVotingPool = () => {
           {/*  */}
           {/* close icon section */}
           <FontAwesomeIcon
-            onClick={() => {
-              closeCreatePool();
-            }}
+            onClick={handleCloseVotingPool}
             icon={faClose}
             className="absolute top-5 md:top-7 right-2 md:right-5  -translate-x-1/2 -translate-y-1/2 text-[1rem] md:text-[1.3rem] cursor-pointer"
           ></FontAwesomeIcon>

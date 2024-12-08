@@ -9,8 +9,8 @@ import { CreateEvent } from "../services/CreateEvent.js";
 import LoaderAnimation from "./LoaderAnimation.jsx";
 import { AuthContext } from "../contexts/Authcontext.jsx";
 import { useCreateVotingPool } from "../contexts/CreateVotingPoolContext.jsx";
+
 const OrganizeEventForm = () => {
-  // to get the the organizer college data
   const { userDetails } = useContext(AuthContext);
   const {
     isOrgEventOpen,
@@ -18,43 +18,36 @@ const OrganizeEventForm = () => {
     closeOrgEventForm,
     openOrgEventForm,
   } = useOrgEventForm();
-  // to close the voting pool if opend
   const { isCreatePoolOpen, closeCreatePool, openCreatePool } =
     useCreateVotingPool();
 
-  //   states to hold the values
   const [title, setTitle] = useState("");
-  const [description, setdescription] = useState("");
-  const [eventDate, seteventDate] = useState(new Date());
-  const [venue, setvenue] = useState("");
-  const [category, setcategory] = useState(categoryEnum[0]);
+  const [description, setDescription] = useState("");
+  const [venue, setVenue] = useState("");
+  const [eventDate, setEventDate] = useState(""); // Ensure it's empty or a default value like today's date
+  const [category, setCategory] = useState(categoryEnum[0]);
   const [availableSeats, setAvailableSeats] = useState(0);
   const [availableFor, setAvailableFor] = useState("For Everyone");
-  const [coverImg, setcoverImg] = useState(null);
-
-  // to handle the indication of the event being created
+  const [coverImg, setCoverImg] = useState(null);
   const [creatingEvent, setCreatingEvent] = useState(false);
 
   let collegeName = userDetails.collegeName;
 
-  //   to handle cover image
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    // Check if file exists
     if (file) {
       if (!file.type.startsWith("image/")) {
         alert("Please select a valid image file.");
         return;
       } else {
-        setcoverImg(file);
+        setCoverImg(file);
       }
     }
   };
 
-  //   to create the event
+  // Event creation handler
   const handleCreateEvent = async (e) => {
     e.preventDefault();
-    // console.log("created");
     setCreatingEvent(true);
 
     try {
@@ -70,10 +63,7 @@ const OrganizeEventForm = () => {
         collegeName,
       });
       if (response.status === 201) {
-        console.log(response);
-
-        console.log("event Created successfully");
-        // setCreatingEvent(false);
+        console.log("Event created successfully");
         closeOrgEventForm();
       }
     } catch (error) {
@@ -81,40 +71,41 @@ const OrganizeEventForm = () => {
     }
   };
 
+  // Format the date
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const formattedDate = `${year}-${month}-${day}`;
+    setEventDate(formattedDate); // Update state to the formatted date
+  };
+
   return (
-    <div className="w-full  md:px-[2rem] px-[1.3rem] py-[1rem] flex justify-center items-center">
+    <div className="w-full md:px-[2rem] px-[1.3rem] py-[1rem] flex justify-center items-center">
       {isOrgEventOpen ? (
         <form
           onSubmit={handleCreateEvent}
-          className="relative w-[100%] md:px-[2rem] px-[1.3rem] py-[3rem]  bg-white rounded-lg  border-[1px] border-gray-200"
+          className="relative w-[100%] md:px-[2rem] px-[1.3rem] py-[3rem] bg-white rounded-lg border-[1px] border-gray-200"
         >
-          {/*  */}
-          {/* close icon section */}
           <FontAwesomeIcon
-            onClick={() => {
-              closeOrgEventForm();
-            }}
+            onClick={() => closeOrgEventForm()}
             icon={faClose}
-            className="absolute top-5 md:top-7 right-2 md:right-5  -translate-x-1/2 -translate-y-1/2 text-[1rem] md:text-[1.3rem] cursor-pointer"
-          ></FontAwesomeIcon>
-          {/* header text section */}
+            className="absolute top-5 md:top-7 right-2 md:right-5 -translate-x-1/2 -translate-y-1/2 text-[1rem] md:text-[1.3rem] cursor-pointer"
+          />
           <div className="flex flex-col items-center">
-            <div className="flex flex-col justify-start">
-              <div className="flex items-center gap-2 text-[1.4rem]">
-                <h2 className="text-[1.4rem]">Orgnaize a new Event</h2>
-              </div>
-              <p className="text-zinc-500 text-[14px]">
-                Please enter all the required credentials
-              </p>
-            </div>
+            <h2 className="text-[1.4rem]">Organize a new Event</h2>
+            <p className="text-zinc-500 text-[14px]">
+              Please enter all the required credentials
+            </p>
           </div>
-          {/* input area */}
-          <div className="mt-[1.5rem] w-full ">
+
+          <div className="mt-[1.5rem] w-full">
+            {/* Event Poster */}
             <div className="mb-10 flex flex-col">
               <label htmlFor="coverImage" className="mb-4">
                 Event Poster *
               </label>
-              {/* header image input */}
               <input
                 id="coverImage"
                 type="file"
@@ -123,12 +114,12 @@ const OrganizeEventForm = () => {
                 className="w-full border-none outline-none bg-gray-200 px-4 py-3 rounded-lg mt-1"
               />
             </div>
-            {/* event title */}
+
+            {/* Event Title */}
             <div className="mb-10">
               <label htmlFor="title" className="mb-10">
                 Event Title *
               </label>
-              {/* email input */}
               <input
                 id="title"
                 type="text"
@@ -136,59 +127,58 @@ const OrganizeEventForm = () => {
                 required
                 onChange={(e) => setTitle(e.target.value)}
                 className="w-full border-none outline-none bg-gray-200 px-4 py-3 rounded-lg mt-1"
-                placeholder="eg: Tech meetup"
+                placeholder="e.g., Tech Meetup"
               />
             </div>
-            {/* event description */}
+
+            {/* Event Description */}
             <div className="mb-10">
               <label htmlFor="description" className="mb-10">
                 Event Description *
               </label>
-              {/* email input */}
               <textarea
                 id="description"
-                type="text"
                 value={description}
                 required
-                onChange={(e) => setdescription(e.target.value)}
+                onChange={(e) => setDescription(e.target.value)}
                 className="w-full border-none outline-none bg-gray-200 px-4 py-3 rounded-lg mt-1"
                 placeholder="Describe your event details"
               />
             </div>
-            {/* event registration seats */}
-            <div className="mb-10">
-              <label htmlFor="availableSeats" className="mb-10">
+            {/* available seats */}
+            <div className="mb-10 flex flex-col ">
+              <label htmlFor="availableseats" className="mb-2">
                 Available Seats *
               </label>
               {/* email input */}
               <input
-                id="availableSeats"
-                type="Number"
-                min={0}
+                type="number"
+                id="availableseats"
                 value={availableSeats}
-                required
-                onChange={(e) => setAvailableSeats(e.target.value)}
-                className="w-full border-none outline-none bg-gray-200 px-4 py-3 rounded-lg mt-1"
-                placeholder="Total number of seats available"
-              />
+                onChange={(e) => {
+                  setAvailableSeats(e.target.value);
+                }}
+                className="p-2 h-12 w-[100%] bg-gray-200 outline-none rounded-md "
+              ></input>
             </div>
             {/* event venue */}
-            <div className="mb-10">
-              <label htmlFor="venue" className="mb-10">
-                Event Venue *
+            <div className="mb-10 flex flex-col ">
+              <label htmlFor="venue" className="mb-2">
+                Venue *
               </label>
-
+              {/* email input */}
               <input
-                id="venue"
                 type="text"
+                id="venue"
                 value={venue}
-                required
-                onChange={(e) => setvenue(e.target.value)}
-                className="w-full border-none outline-none bg-gray-200 px-4 py-3 rounded-lg mt-1"
-                placeholder="eg: College Conference hall"
-              />
+                onChange={(e) => {
+                  setVenue(e.target.value);
+                }}
+                className="p-2 h-12 w-[100%] bg-gray-200 outline-none rounded-md "
+                placeholder="eg: College conference hall"
+              ></input>
             </div>
-            {/* event available for */}
+            {/* available for */}
             <div className="mb-10 flex flex-col ">
               <label htmlFor="availableFor" className="mb-2">
                 Available For *
@@ -206,34 +196,29 @@ const OrganizeEventForm = () => {
                 <option value="College Only">College Only</option>
               </select>
             </div>
-            {/* event date */}
+            {/* Event Date */}
             <div className="mb-10 flex flex-col w-[20%]">
               <label htmlFor="date" className="mb-2">
                 Event Date *
               </label>
-              {/* date input */}
               <input
                 id="date"
                 type="date"
                 value={eventDate}
-                onChange={(e) => {
-                  seteventDate(e.target.value);
-                }}
+                onChange={(e) => formatDate(e.target.value)}
                 className="bg-gray-200 p-2 rounded-md w-[100%] h-12"
-              ></input>
+              />
             </div>
-            {/* event category */}
+
+            {/* Event Category */}
             <div className="mb-10 flex flex-col w-[20%]">
               <label htmlFor="category" className="mb-2">
                 Event Category *
               </label>
-
               <select
                 id="category"
                 value={category}
-                onChange={(e) => {
-                  setcategory(e.target.value);
-                }}
+                onChange={(e) => setCategory(e.target.value)}
                 className="p-2 bg-gray-200 outline-none rounded-md h-12"
               >
                 {categoryEnum.map((cat, index) => (
@@ -244,7 +229,9 @@ const OrganizeEventForm = () => {
               </select>
             </div>
           </div>
-          <div className="flex justify-center items-center ">
+
+          {/* Submit Button */}
+          <div className="flex justify-center items-center">
             {!creatingEvent ? (
               <button
                 type="submit"
@@ -253,7 +240,7 @@ const OrganizeEventForm = () => {
                 Create Event
               </button>
             ) : (
-              <LoaderAnimation></LoaderAnimation>
+              <LoaderAnimation />
             )}
           </div>
         </form>
@@ -263,9 +250,9 @@ const OrganizeEventForm = () => {
             openOrgEventForm();
             closeCreatePool();
           }}
-          className=" py-4 px-10 flex items-center gap-4 cursor-pointer bg-gray-200 rounded-lg hover:bg-indigoHover hover:text-white duration-150 ease-linear"
+          className="py-4 px-10 flex items-center gap-4 cursor-pointer bg-gray-200 rounded-lg hover:bg-indigoHover hover:text-white duration-150 ease-linear"
         >
-          <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
+          <FontAwesomeIcon icon={faPlus} />
           <p>Organize an Event</p>
         </div>
       )}
