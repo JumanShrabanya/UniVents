@@ -14,15 +14,16 @@ import { RegisterCardProvider } from "./contexts/RegisterCardContext";
 import ProfilePage from "./pages/ProfilePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { CheckRegistrationProvider } from "./contexts/CheckRegistrationContext";
+import EmailVerifyPage from "./pages/EmailVerifyPage";
 
 const App = () => {
   return (
     <AuthProvider>
-      <EditEventProvider>
-        <CheckRegistrationProvider>
-          <UserTypeProvider>
-            <LoginCardProvider>
-              <RegisterCardProvider>
+      <RegisterCardProvider>
+        <EditEventProvider>
+          <CheckRegistrationProvider>
+            <UserTypeProvider>
+              <LoginCardProvider>
                 <Router>
                   <main className="relative h-full">
                     <Routes>
@@ -58,11 +59,11 @@ const App = () => {
                     <RegisterEventComponent></RegisterEventComponent>
                   </main>
                 </Router>
-              </RegisterCardProvider>
-            </LoginCardProvider>
-          </UserTypeProvider>
-        </CheckRegistrationProvider>
-      </EditEventProvider>
+              </LoginCardProvider>
+            </UserTypeProvider>
+          </CheckRegistrationProvider>
+        </EditEventProvider>
+      </RegisterCardProvider>
     </AuthProvider>
   );
 };

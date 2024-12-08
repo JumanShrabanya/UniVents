@@ -38,8 +38,13 @@ const SignUpForm = () => {
   const [errors, setErrors] = useState({});
 
   // register card context
-  const { isRegisterCardOpen, openRegisterCard, closeRegisterCard, eventData } =
-    useRegisterCard();
+  const {
+    isRegisterCardOpen,
+    openRegisterCard,
+    closeRegisterCard,
+    eventData,
+    setRegisterCardOpen,
+  } = useRegisterCard();
 
   // for the submition of the form
   const handleSubmit = async (e) => {
@@ -55,50 +60,33 @@ const SignUpForm = () => {
     if (!specialCharacters.test(password)) {
       error.specialChar = "Password must contain special characters";
     }
-    if (password.length > 15) {
-      error.passwordMaxLength = "Password must be less than 16 characters";
-    }
     if (Object.keys(error).length > 0) {
       setErrors(error);
       return;
     }
     console.log("Form submitted successfully");
 
-    // send the data to the backend
     try {
       let response;
       if (userType === "organizer") {
         response = await registerUser(
-          {
-            email,
-            password,
-            collegeName,
-            clubName,
-          },
+          { email, password, collegeName, clubName },
           userType
         );
-      }
-      if (userType === "participant") {
+      } else if (userType === "participant") {
         response = await registerUser(
-          {
-            email,
-            password,
-            collegeName,
-            semester,
-            name,
-            rollNo,
-          },
+          { email, password, collegeName, semester, name, rollNo },
           userType
         );
       }
-      // after successfull submission navigate to dashboard
-      if (response.statusCode === 201) {
+
+      if (response.status === 201) {
         setRole(userType);
-        setLogedIn(true);
-        selectUserType("");
+        setLogedIn(true); // Corrected this line
+        selectUserType(""); // Reset user type
+        navigate("/"); // Navigate to the dashboard
       }
     } catch (err) {
-      // console.error("Registration failed", err);
       setErrors({
         message: err.message,
       });
@@ -113,7 +101,9 @@ const SignUpForm = () => {
       >
         {/* close icon section */}
         <FontAwesomeIcon
-          onClick={() => selectUserType("")}
+          onClick={() => {
+            selectUserType("");
+          }}
           icon={faClose}
           className="absolute top-5 md:top-7 right-2 md:right-5  -translate-x-1/2 -translate-y-1/2 text-[1rem] md:text-[1.3rem] cursor-pointer"
         ></FontAwesomeIcon>

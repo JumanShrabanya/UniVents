@@ -17,6 +17,7 @@ const ProfileComponent = () => {
   const [isEditing, setEditing] = useState(false);
   //  to disable the profile detail inputs
   const [inputDisable, setInputDisable] = useState(true);
+  console.log("userDetails", userDetails);
 
   // states to handle the new change inputs
   const [name, setName] = useState(userDetails?.name);
@@ -77,7 +78,7 @@ const ProfileComponent = () => {
 
       if (response.status === 200) {
         // Clear user details and logout state in the context
-        setUserDetails({});
+
         setRole("");
         setLogedIn(false);
         // Redirect to the homepage or another route after logout
@@ -93,19 +94,14 @@ const ProfileComponent = () => {
       {/* navbar */}
       <NavBar></NavBar>
       <div className="px-[4vw]">
-        {/* heading */}
-        {/* <div className="mt-[1rem]">
-          <h2 className="text-indigo text-[1.5rem] font-semibold font-mainFont">
-            Profile
-          </h2>
-        </div> */}
-        {/* name and the update info */}
         <div className="flex  md:flex-row flex-col justify-between md:gap-0 gap-[2rem] items-start md:items-center py-[2rem]">
           {/* circle avatar */}
           <div className="flex items-center gap-[1rem]">
             <div className="select-none bg-indigo p-4 rounded-full w-[3rem] h-[3rem] flex items-center justify-center">
               <p className="text-white uppercase text-[1.2rem]">
-                {userDetails?.clubName[0] || userDetails?.name[0]}
+                {userDetails.role === "student"
+                  ? userDetails.name[0]
+                  : userDetails.clubName[0]}
               </p>
             </div>
             <div className="flex flex-col">
