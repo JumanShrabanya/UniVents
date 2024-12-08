@@ -8,6 +8,7 @@ import { categoryEnum } from "../assetImports.js";
 import { CreateEvent } from "../services/CreateEvent.js";
 import LoaderAnimation from "./LoaderAnimation.jsx";
 import { AuthContext } from "../contexts/Authcontext.jsx";
+import { useCreateVotingPool } from "../contexts/CreateVotingPoolContext.jsx";
 const OrganizeEventForm = () => {
   // to get the the organizer college data
   const { userDetails } = useContext(AuthContext);
@@ -17,6 +18,9 @@ const OrganizeEventForm = () => {
     closeOrgEventForm,
     openOrgEventForm,
   } = useOrgEventForm();
+  // to close the voting pool if opend
+  const { isCreatePoolOpen, closeCreatePool, openCreatePool } =
+    useCreateVotingPool();
 
   //   states to hold the values
   const [title, setTitle] = useState("");
@@ -78,7 +82,7 @@ const OrganizeEventForm = () => {
   };
 
   return (
-    <div className="w-full  md:px-[2rem] px-[1.3rem] py-[3rem] flex justify-center items-center">
+    <div className="w-full  md:px-[2rem] px-[1.3rem] py-[1rem] flex justify-center items-center">
       {isOrgEventOpen ? (
         <form
           onSubmit={handleCreateEvent}
@@ -257,6 +261,7 @@ const OrganizeEventForm = () => {
         <div
           onClick={() => {
             openOrgEventForm();
+            closeCreatePool();
           }}
           className=" py-4 px-10 flex items-center gap-4 cursor-pointer bg-gray-200 rounded-lg hover:bg-indigoHover hover:text-white duration-150 ease-linear"
         >
