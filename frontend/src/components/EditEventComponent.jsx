@@ -2,31 +2,69 @@ import React from "react";
 import { useEditEvent } from "../contexts/EditEventContext";
 import { useState } from "react";
 import { categoryEnum } from "../assetImports";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { UpdateEventDetails } from "../services/UpdateEventDetails";
 
 const EditEventComponent = ({ eventData }) => {
   // to close the editing pannel
   const { closeEditEvent } = useEditEvent();
 
   // new edited event details
-  const [newTitle, setNewTitle] = useState(eventData.title);
-  const [newDescription, setNewDescription] = useState(eventData.description);
-  const [newVenue, setNewVenue] = useState(eventData.venue);
-  const [newAvailableSeats, setNewAvailableSeats] = useState(
+  const [title, setNewTitle] = useState(eventData.title);
+  const [description, setNewDescription] = useState(eventData.description);
+  const [venue, setNewVenue] = useState(eventData.venue);
+  const [availableSeats, setNewAvailableSeats] = useState(
     eventData.availableSeats
   );
-  const [newAvailableFor, setNewAvailableFor] = useState(
-    eventData.availableFor
-  );
-  const [newEventDate, setNewEventDate] = useState(eventData.eventDate);
-  const [newCategory, setNewCategory] = useState(
-    eventData.category.categoryTitle
-  );
+  const [availableFor, setNewAvailableFor] = useState(eventData.availableFor);
+  const [category, setNewCategory] = useState(eventData.category.categoryTitle);
+
+  // to format the date
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // Preprocess eventDate
+  const formattedDate = formatDate(eventData.eventDate);
+  const [eventDate, setNewEventDate] = useState(formattedDate);
 
   // to cancel the editing mode
   const handleCancelEditing = () => {
     closeEditEvent();
+  };
+
+  const eventId = eventData._id;
+
+  // to handle the event details updation
+  const handleEventDetailsUpdate = async () => {
+    try {
+      // get the data
+      // make the api call to the backend with the data
+      // it everything goes well, then show the new updated content
+
+      try {
+        const response = await UpdateEventDetails(eventId, {
+          title,
+          description,
+          venue,
+          availableSeats,
+          availableFor,
+          category,
+          eventDate,
+        });
+        if (response.status === 200) {
+          console.log("from the update component", response);
+          closeEditEvent();
+        }
+      } catch (error) {
+        console.log("error updating event details");
+      }
+    } catch (error) {
+      console.log("Error updating event details", error);
+    }
   };
 
   return (
@@ -45,7 +83,7 @@ const EditEventComponent = ({ eventData }) => {
           <input
             type="text"
             id="title"
-            value={newTitle}
+            value={title}
             className={`rounded-lg w-full outline-none border-[1px] border-gray-200 h-12 md:h-[3rem] pl-4 bg-zinc-100`}
             placeholder="Title of the event"
             onChange={(e) => {
@@ -64,7 +102,7 @@ const EditEventComponent = ({ eventData }) => {
           <textarea
             type="text"
             id="description"
-            value={newDescription}
+            value={description}
             className={`pt-2 rounded-lg w-full outline-none border-[1px] border-gray-200  pl-4 bg-zinc-100`}
             placeholder="Event description"
             onChange={(e) => {
@@ -83,7 +121,7 @@ const EditEventComponent = ({ eventData }) => {
           <input
             type="number"
             id="availableSeats"
-            value={newAvailableSeats}
+            value={availableSeats}
             className={`rounded-lg w-full outline-none border-[1px] border-gray-200 h-12 md:h-[3rem] pl-4 bg-zinc-100`}
             placeholder="Enter the available seats"
             onChange={(e) => {
@@ -99,7 +137,7 @@ const EditEventComponent = ({ eventData }) => {
           <input
             type="text"
             id="venue"
-            value={newVenue}
+            value={venue}
             className={`rounded-lg w-full outline-none border-[1px] border-gray-200 h-12 md:h-[3rem] pl-4 bg-zinc-100`}
             placeholder="Event venue"
             onChange={(e) => {
@@ -118,7 +156,7 @@ const EditEventComponent = ({ eventData }) => {
           {/* email input */}
           <select
             id="availableFor"
-            value={newAvailableFor}
+            value={availableFor}
             onChange={(e) => {
               setNewAvailableFor(e.target.value);
             }}
@@ -137,11 +175,11 @@ const EditEventComponent = ({ eventData }) => {
           <input
             id="date"
             type="date"
-            value={newEventDate}
+            value={eventDate}
             onChange={(e) => {
               setNewEventDate(e.target.value);
             }}
-            className="rounded-lg outline-none border-[1px] border-gray-200 h-12 md:h-[3rem] pl-4 bg-zinc-100 w-[40%] "
+            className="rounded-lg outline-none border-[1px] border-gray-200 h-12 md:h-[3rem] pl-4 bg-zinc-100 w-[40%]"
           ></input>
         </div>
         {/* category */}
@@ -154,7 +192,7 @@ const EditEventComponent = ({ eventData }) => {
           </label>
           <select
             id="category"
-            value={newCategory}
+            value={category}
             onChange={(e) => {
               setNewCategory(e.target.value);
             }}
@@ -177,7 +215,7 @@ const EditEventComponent = ({ eventData }) => {
           Cancel
         </button>
         <button
-          // onClick={handleProfileUpdate}
+          onClick={handleEventDetailsUpdate}
           className="px-8 py-2 bg-indigo text-white  rounded-lg hover:bg-indigoHover hover:text-white transition-all duration-200 ease-linear hover:border-white "
         >
           Save Changes

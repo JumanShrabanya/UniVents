@@ -5,6 +5,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Registration } from "../models/registration.model.js";
 import jwt from "jsonwebtoken";
 import { Event } from "../models/event.model.js";
+import { Category } from "../models/category.model.js";
 
 const showRegisteredParticipants = asyncHandler(async (req, res) => {
   // Ensure that the organizer requesting the list is the creator of the event.
@@ -47,16 +48,13 @@ const showRegisteredParticipants = asyncHandler(async (req, res) => {
 });
 
 const editEventDetails = asyncHandler(async (req, res) => {
-  // if the event date is passed, then they can not edit
-  //  if not , then check if the event belongs to the organizer or not
-  //  if so, then get the new updated fields
-  //  if there is a change in the event, then update the new changes
-  // if want to change the cover image change that as well
   const { eventId } = req.params;
   const token = req.cookies.accessToken;
+
   if (!token) {
     throw new ApiError(401, "No token provided. Authorization denied!");
   }
+
   let organizerId;
 
   try {
@@ -67,47 +65,47 @@ const editEventDetails = asyncHandler(async (req, res) => {
       .status(401)
       .json({ message: "Invalid token. Authorization denied!" });
   }
-  // details
-  const { eventDate, coverImg, ...updatedFields } = req.body;
 
-  // find the event
+  const { updatedFields } = req.body;
+
   const event = await Event.findById(eventId);
-
   if (!event) {
     return res.status(404).json({ message: "No event found!" });
   }
 
-  if (new Date(event.eventDate) < new Date()) {
-    res
-      .status(400)
-      .json({ message: "Can not edit an event that has already occurred" });
+  if (updatedFields.category) {
+    const categoryTitle = updatedFields.category;
+    let categoryDoc = await Category.findOne({ categoryTitle });
+
+    if (!categoryDoc) {
+      categoryDoc = await Category.create({ categoryTitle });
+    }
+
+    // Replace category title with the resolved category's ID
+    updatedFields.category = categoryDoc._id;
   }
 
-  // Check if the logged-in user is the organizer of the event
+  if (new Date(event.eventDate) < new Date()) {
+    return res.status(400).json({
+      message: "Cannot edit an event that has already occurred",
+    });
+  }
+
   const validOrganizer = await Event.findOne({
     _id: eventId,
     organizer: organizerId,
   });
-  if (!validOrganizer) {
-    return res
-      .status(403)
-      .json({ message: "You are not authorized to edit this event" });
-  }
 
-  // Update event details
-  if (Object.keys(updatedFields).length > 0) {
-    Object.keys(updatedFields).forEach((key) => {
-      if (event[key] !== updatedFields[key]) {
-        event[key] = updatedFields[key]; // Only update if the value has changed
-      }
+  if (!validOrganizer) {
+    return res.status(403).json({
+      message: "You are not authorized to edit this event",
     });
   }
-  // update cover image
-  if (coverImg && coverImg !== event.coverImg) {
-    event.coverImg = coverImg;
+
+  if (Object.keys(updatedFields).length > 0) {
+    Object.assign(event, updatedFields);
   }
 
-  // Save updated event
   await event.save();
   return res.status(200).json({ message: "Event updated successfully", event });
 });

@@ -14,7 +14,6 @@ import { RegisterCardProvider } from "./contexts/RegisterCardContext";
 import ProfilePage from "./pages/ProfilePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { CheckRegistrationProvider } from "./contexts/CheckRegistrationContext";
-import EmailVerifyPage from "./pages/EmailVerifyPage";
 
 const App = () => {
   return (
