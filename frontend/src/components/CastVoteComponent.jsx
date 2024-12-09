@@ -29,7 +29,7 @@ const CastVoteComponent = () => {
 
   return isCastVoteCardOpen ? (
     <div className="fixed inset-0 bg-black lg:p-0 p-[3rem] bg-opacity-50 z-50">
-      <div className="fixed top-0 right-0 -translate-x-0 -translate-y-0 w-[90%] lg:w-[57%] h-[100vh] bg-white overflow-auto transition-transform duration-300 ease-out">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] lg:w-[57%] max-h-[80vh] min-h-[60vh] rounded-lg bg-white overflow-auto transition-transform duration-300 ease-out">
         {/* content area */}
         <div className="relative flex flex-col gap-[1.5rem] p-[1.2rem] lg:p-[2rem]  items-start">
           {/* for the close button */}
@@ -52,22 +52,24 @@ const CastVoteComponent = () => {
           {/* voting options */}
           {votingData.options.map((item, index) => (
             <div key={index} className="flex items-center gap-3">
-              <input
-                type="radio"
-                className="w-5 h-5"
-                name="voteOption" // Ensure all radio buttons belong to the same group
-                value={selectedOption}
-                onChange={() => setSelectedOption(item)} // Optional: capture the value of the selected option
-              />
-              <p className="text-[1.1rem]">{item}</p>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="radio"
+                  className="w-5 h-5"
+                  name="voteOption"
+                  value={item} // Use the actual item value for the radio input
+                  onChange={() => setSelectedOption(item)} // Set the selected option when clicked
+                />
+                <p className="text-[1.1rem]">{item}</p>
+              </label>
             </div>
           ))}
 
           {/* button to caste vote */}
           {selectedOption === "" ? null : (
-            <div className="w-full bg-indigo rounded-md flex">
+            <div className="w-full bg-indigo rounded-md flex hover:bg-indigoHover transition-all duration-200">
               <button className="flex-1 bg-none py-2 text-white">
-                Caste Vote
+                Cast Vote
               </button>
             </div>
           )}
