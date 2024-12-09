@@ -28,6 +28,7 @@ const RegisterEventComponent = () => {
     eventData,
     setRegisterCardOpen,
   } = useRegisterCard();
+
   // to check the registration
   const { isRegistered, setRegistered } = useCheckRegistration();
 

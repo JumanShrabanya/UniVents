@@ -2,7 +2,7 @@ import axios from "axios";
 
 const apiUrl = "http://localhost:8000/voting/create-voting-pool";
 export const CreatePool = async (poolValues) => {
-  console.log(poolValues);
+  console.log(poolValues.organizer);
 
   try {
     const response = await axios.post(

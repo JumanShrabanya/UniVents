@@ -48,6 +48,14 @@ const votingPoolSchema = new Schema(
     endTime: {
       type: Date,
     },
+    organizer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Club",
+    },
+    collegeName: {
+      type: String,
+      required: true,
+    },
     availableFor: {
       type: String,
       enum: ["For Everyone", "College Only"],

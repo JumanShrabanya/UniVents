@@ -1,7 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faPlus } from "@fortawesome/free-solid-svg-icons";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useOrgEventForm } from "../contexts/OrganizeEventContext";
+import { AuthContext } from "../contexts/Authcontext";
 import { useCreateVotingPool } from "../contexts/CreateVotingPoolContext";
 import { counter } from "@fortawesome/fontawesome-svg-core";
 import { CreatePool } from "../services/CreatePool";
@@ -15,12 +16,17 @@ const CreateVotingPool = () => {
     openOrgEventForm,
   } = useOrgEventForm();
 
+  // to get the user details
+  const { userDetails } = useContext(AuthContext);
+
   //   states to hold values
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [availableFor, setAvailableFor] = useState("");
   const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [organizer, setorganizer] = useState(userDetails.clubName);
+  const [collegeName, setcollegeName] = useState(userDetails.collegeName);
   const [options, setOptions] = useState([""]);
 
   // to update the option
@@ -65,6 +71,8 @@ const CreateVotingPool = () => {
         endDate,
         endTime,
         options,
+        collegeName,
+        organizer,
       });
       if (response.status === 201) {
         closeCreatePool();
