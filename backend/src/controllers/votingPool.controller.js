@@ -86,4 +86,53 @@ const showPools = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(201, pools));
 });
 
-export { createVotingPool, showPools };
+// cast vote
+const castVote = asyncHandler(async (req, res) => {
+  // get the value of the vote casted by the user and the poll details
+  // get the user details
+  // find that voting poll
+  // increment the counter for that option in the option counter
+  // send the success message
+
+  const { option, pollTitle } = req.body;
+  const student = req.user;
+
+  if (!option) {
+    throw new ApiError(400, "Please provide the option");
+  }
+
+  console.log("casted vote", option);
+  console.log("voting poll title", pollTitle);
+
+  const poll = await VotingPool.findOne({ title: pollTitle });
+
+  if (!poll) {
+    throw new ApiError(404, "Invalid poll details");
+  }
+
+  if (!poll.isActive) {
+    throw new ApiError(400, "Voting is closed for this poll.");
+  }
+
+  // Find the option in the poll's optionCounters
+  const selectedOption = poll.optionCounters.find(
+    (opt) => opt.option === option
+  );
+
+  selectedOption.count += 1;
+
+  poll.participants.push({
+    studentId: student._id,
+    selectedOption: option,
+  });
+
+  await poll.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Vote cast successfully.",
+    poll,
+  });
+});
+
+export { createVotingPool, showPools, castVote };

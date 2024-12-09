@@ -20,7 +20,7 @@ const RegisterEventComponent = () => {
   // to open the edit event component in that page
   const { editEventOpen, closeEditEvent, openEditEvent } = useEditEvent();
   // to get the role
-  const { role, userDetails } = useContext(AuthContext);
+  const { role, userDetails, logedIn } = useContext(AuthContext);
   const {
     isRegisterCardOpen,
     openRegisterCard,
@@ -228,7 +228,7 @@ const RegisterEventComponent = () => {
             <p className="text-black font-semibold w-[70%] lg:w-auto flex-wrap">{` ${eventData.organizer.clubName}`}</p>
           </div>
           {/* for the register event button */}
-          {role === "organizer" ? null : (
+          {role === "organizer" ? null : logedIn ? (
             <div
               onClick={() => {
                 handleRegistration(eventData._id);
@@ -252,7 +252,7 @@ const RegisterEventComponent = () => {
                   : "Registration Closed"}
               </button>
             </div>
-          )}
+          ) : null}
           {/* Event winners list */}
           {showAddWinnersInput && (
             <div className="w-[100%]">

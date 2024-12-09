@@ -50,18 +50,18 @@ const LatestEventsSections = () => {
   return (
     <section className="px-[4vw] py-[2.5rem]">
       <div className="flex justify-between items-center mb-10">
-        <h2 className="text-indigo text-[1.6rem] mb-5">Latest Events</h2>
+        <h2 className="text-indigo text-[1.6rem]">Latest Events</h2>
         <select
           value={option}
           onChange={(e) => setOption(e.target.value)}
           id="eventORpool"
-          className="p-2 h-12 w-[10%] border-[1px] border-indigo text-black outline-none rounded-md"
+          className="p-2 md:h-12 h-10 md:w-[10%] w-auto border-[1px] border-indigo text-black outline-none rounded-md"
         >
           <option value="Events" className="bg-white text-black">
             Events
           </option>
           <option value="Pools" className="bg-white text-black">
-            Pools
+            Polls
           </option>
         </select>
       </div>
