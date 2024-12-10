@@ -166,6 +166,52 @@ const addWinners = asyncHandler(async (req, res) => {
     data: event.winners,
   });
 });
+
+// to show the registered participants for a event
+const registeredParticipants = asyncHandler(async (req, res) => {
+  const { eventId } = req.body;
+
+  if (!eventId) {
+    return res.status(400).json(new ApiResponse(400, "Event ID is required"));
+  }
+
+  try {
+    // Get the registered students for the event
+    const participants = await Registration.find({ eventId }).populate(
+      "studentId",
+      "name email rollNo semester"
+    ); // Populate with student details
+    console.log("from the get participants", participants);
+
+    if (!participants.length) {
+      return res
+        .status(404)
+        .json(new ApiResponse(404, "No participants found for this event"));
+    }
+
+    // Send the response with participant details
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          participants,
+          "Participants retrieved successfully"
+        )
+      );
+  } catch (error) {
+    return res
+      .status(500)
+      .json(
+        new ApiResponse(
+          500,
+          "An error occurred while fetching participants",
+          error.message
+        )
+      );
+  }
+});
+
 // Schedule the cron job to run for checking the events available for registration or not
 cron.schedule("* * * * *", async () => {
   // fetch the events where the event date is still in past and registrationAvailable is set to TRUE
@@ -190,4 +236,5 @@ export {
   editEventDetails,
   showCreatedEvents,
   addWinners,
+  registeredParticipants,
 };

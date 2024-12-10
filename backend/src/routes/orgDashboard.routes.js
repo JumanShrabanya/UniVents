@@ -4,6 +4,7 @@ import {
   editEventDetails,
   showCreatedEvents,
   addWinners,
+  registeredParticipants,
 } from "../controllers/organizer.controller.js";
 import Authentication from "../middlewares/Authentication.middleware.js";
 import Authorization from "../middlewares/Authorization.middleware.js";
@@ -22,5 +23,8 @@ router
 router
   .route("/add-winners")
   .post(Authentication, Authorization("organizer"), addWinners);
+router
+  .route("/get-registered-participants")
+  .post(Authentication, Authorization("organizer"), registeredParticipants);
 
 export default router;

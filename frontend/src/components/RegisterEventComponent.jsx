@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { useRegisterCard } from "../contexts/RegisterCardContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faArrowDown,
+  faArrowUp,
   faCalendarCheck,
   faClose,
   faLocationDot,
@@ -14,6 +16,7 @@ import { checkRegistration } from "../services/CheckRegistration";
 import { useCheckRegistration } from "../contexts/CheckRegistrationContext";
 import { useEditEvent } from "../contexts/EditEventContext";
 import { useNavigate } from "react-router-dom";
+import { GetRegisteredParticipants } from "../services/GetRegisteredParticipants";
 
 const RegisterEventComponent = () => {
   const navigate = useNavigate();
@@ -46,16 +49,6 @@ const RegisterEventComponent = () => {
 
   // state to hold the show and hide value
   const [showEditBtn, setShowEditBtn] = useState(false);
-
-  // to handle the show of edit button
-  useEffect(() => {
-    // Check if the current user is the event organizer
-    if (eventData?.organizer?._id === userDetails?._id) {
-      setShowEditBtn(true);
-    } else {
-      setShowEditBtn(false);
-    }
-  }, [eventData, userDetails]);
 
   const handleEditEvent = () => {
     // Add your logic for editing the event
@@ -121,6 +114,21 @@ const RegisterEventComponent = () => {
     }
   };
 
+  const [registeredParticipants, setRegisteredParticipants] = useState([]);
+
+  // handle get registered participants
+  const handleGetRegisteredParticipants = async () => {
+    try {
+      const response = await GetRegisteredParticipants(currentEventId);
+      if (response.status === 200) {
+        setRegisteredParticipants(response.data.data);
+      }
+      console.log(response.data.data);
+    } catch (error) {
+      console.log("error fetching the participants ", error);
+    }
+  };
+
   // to handle the winner submit
   const handleAddWinners = () => {
     setshowAddWinnersInput(true);
@@ -134,6 +142,22 @@ const RegisterEventComponent = () => {
     setSecondWinner("");
     setThirdWinner("");
   };
+
+  // to show and hide the participants
+  const [showingParticipant, setshowingParticipant] = useState(false);
+  const handleShowParticipant = () => {
+    setshowingParticipant(!showingParticipant);
+  };
+  // to handle the show of edit button
+  useEffect(() => {
+    // Check if the current user is the event organizer
+    if (eventData?.organizer?._id === userDetails?._id) {
+      setShowEditBtn(true);
+    } else {
+      setShowEditBtn(false);
+    }
+    handleGetRegisteredParticipants();
+  }, [eventData, userDetails, logedIn]);
 
   return isRegisterCardOpen ? (
     <div className="fixed inset-0 bg-black lg:p-0 p-[3rem] bg-opacity-50 z-50">
@@ -344,6 +368,41 @@ const RegisterEventComponent = () => {
               </button>
             </div>
           )}
+          {/* registered participants */}
+          {showEditBtn ? (
+            <div className="w-full">
+              {/* heading */}
+              <div
+                onClick={handleShowParticipant}
+                className="flex items-center gap-3 cursor-pointer bg-indigo px-4 text-white py-1 rounded-md mb-4"
+              >
+                <p className="text-[1.1rem]">Registered Participants</p>
+                <FontAwesomeIcon
+                  icon={showingParticipant ? faArrowUp : faArrowDown}
+                ></FontAwesomeIcon>
+              </div>
+              {/* list of participants */}
+              {showingParticipant ? (
+                <div className="w-full transition-all duration-200">
+                  <div className="flex justify-between items-center font-semibold my-2">
+                    <p>Name</p>
+                    <p>Semester</p>
+                    <p>RollNo</p>
+                  </div>
+                  {registeredParticipants.map((item, index) => (
+                    <div
+                      key={index}
+                      className="py-2 rounded-md bg-gray-200 w-full px-2 flex justify-between items-center mb-2"
+                    >
+                      <p>{item.studentId.name}</p>
+                      <p>{item.studentId.semester}</p>
+                      <p>{item.studentId.rollNo}</p>{" "}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
