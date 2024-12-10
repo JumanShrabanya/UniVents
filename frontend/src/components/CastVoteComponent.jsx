@@ -13,6 +13,7 @@ const CastVoteComponent = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const [alreadyCasted, setAlreadyCasted] = useState(false);
   const [isPollActive, setIsPollActive] = useState(votingData.isActive);
+  const [isFromSameCollge, setIsFromSameCollge] = useState(false);
 
   const handleCastVote = async () => {
     const response = await CastVote(selectedOption, votingData.title);
@@ -39,10 +40,18 @@ const CastVoteComponent = () => {
     } else {
       setAlreadyCasted(false);
     }
+    if (votingData.availableFor === "College Only") {
+      setIsFromSameCollge(userDetails?.collegeName === votingData?.collegeName);
+    }
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isCastVoteCardOpen, votingData.participants, userDetails?._id]);
+  }, [
+    isCastVoteCardOpen,
+    votingData.participants,
+    userDetails?._id,
+    votingData,
+  ]);
 
   useEffect(() => {
     setIsPollActive(votingData.isActive);
@@ -83,13 +92,18 @@ const CastVoteComponent = () => {
           {selectedOption === "" ? null : logedIn ? (
             <div
               className={`w-full rounded-md flex ${
-                alreadyCasted || !isPollActive
+                alreadyCasted || !isPollActive || !isFromSameCollge
                   ? "bg-gray-300"
                   : "bg-indigo hover:bg-indigoHover transition-all duration-200"
               }`}
             >
               <button
-                disabled={alreadyCasted || !isPollActive}
+                disabled={
+                  alreadyCasted ||
+                  !isPollActive ||
+                  (votingData.availableFor === "College Only" &&
+                    !isFromSameCollge)
+                }
                 onClick={handleCastVote}
                 className="flex-1 bg-none py-2 text-white"
               >
@@ -97,6 +111,9 @@ const CastVoteComponent = () => {
                   ? "Poll Closed"
                   : alreadyCasted
                   ? "Already Voted"
+                  : votingData.availableFor === "College Only" &&
+                    !isFromSameCollge
+                  ? "Not Eligible (College Only)"
                   : "Cast Vote"}
               </button>
             </div>
