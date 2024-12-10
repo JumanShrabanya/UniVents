@@ -157,6 +157,13 @@ const registerClub = asyncHandler(async (req, res) => {
     });
   }
 
+  const verificationToken = jwt.sign(
+    { email },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: "1d",
+    }
+  );
   // create the club entry in DB
   const club = await Club.create({
     clubName,
@@ -164,6 +171,7 @@ const registerClub = asyncHandler(async (req, res) => {
     email,
     role: "organizer",
     password,
+    isVerified: false,
   });
 
   const { refreshToken, accessToken } =
@@ -180,7 +188,8 @@ const registerClub = asyncHandler(async (req, res) => {
     );
   }
 
-  // cookies
+  await sendVerificationEmail(email, verificationToken); // Sends an email with the token
+
   const options = {
     httpOnly: true,
     secure: true, // Make sure to only set this to true in production (HTTPS)
