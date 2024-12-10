@@ -168,10 +168,65 @@ const updateVotingPoolStatus = async () => {
   }
 };
 
+// to show the results
+const showResults = asyncHandler(async (req, res) => {
+  const { id } = req.body;
+
+  // Find the voting poll by its ID
+  const poll = await VotingPool.findById(id);
+
+  if (!poll) {
+    throw new ApiError(404, "Poll not found");
+  }
+
+  // Check if the poll is still active
+  if (poll.isActive) {
+    return res.status(400).json({
+      success: false,
+      message: "Poll is still active. Results cannot be calculated yet.",
+    });
+  }
+
+  // Find the winner based on optionCounters
+  const optionCounters = poll.optionCounters;
+  if (!optionCounters || optionCounters.length === 0) {
+    return res.status(400).json({
+      success: false,
+      message: "No votes recorded for this poll.",
+    });
+  }
+
+  let winner = null;
+  let maxVotes = 0;
+
+  optionCounters.forEach((counter) => {
+    if (counter.count > maxVotes) {
+      maxVotes = counter.count;
+      winner = counter.option;
+    }
+  });
+
+  // Handle the case where no votes were cast
+  if (!winner) {
+    return res.status(200).json({
+      success: true,
+      message: "No winner, no votes were cast in this poll.",
+    });
+  }
+
+  // Send the winner and results to the frontend
+  res.status(200).json({
+    success: true,
+    winner,
+    votes: maxVotes,
+    message: `The winning option is '${winner}' with ${maxVotes} votes.`,
+  });
+});
+
 // Schedule the cron job to run every 10 minutes
 cron.schedule("*/10 * * * *", () => {
   console.log("Checking for expired voting polls...");
   updateVotingPoolStatus();
 });
 
-export { createVotingPool, showPools, castVote };
+export { createVotingPool, showPools, castVote, showResults };

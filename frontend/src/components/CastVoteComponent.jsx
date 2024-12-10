@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../contexts/Authcontext";
 import { CastVote } from "../services/CastVote";
+import axios from "axios";
 
 const CastVoteComponent = () => {
   const { isCastVoteCardOpen, closeCastVoteCard, votingData } =
@@ -14,10 +15,14 @@ const CastVoteComponent = () => {
   const [alreadyCasted, setAlreadyCasted] = useState(false);
   const [isPollActive, setIsPollActive] = useState(votingData.isActive);
   const [isFromSameCollge, setIsFromSameCollge] = useState(false);
+  const [winner, setWinner] = useState(null); // State to store the winner
 
   const handleCastVote = async () => {
-    const response = await CastVote(selectedOption, votingData.title);
-    console.log(response);
+    try {
+      await CastVote(selectedOption, votingData.title);
+    } catch (error) {
+      console.error("Error casting vote:", error);
+    }
   };
 
   const isAlreadyCasted = () => {
@@ -33,10 +38,37 @@ const CastVoteComponent = () => {
     }
   };
 
+  const getWinner = async () => {
+    if (!isPollActive) {
+      const apiUrl = "http://localhost:8000/voting/get-poll-results";
+      const id = votingData._id;
+
+      try {
+        const response = await axios.post(
+          apiUrl,
+          { id },
+          { withCredentials: true }
+        );
+
+        if (response.data?.success && response.data?.winner) {
+          setWinner(response.data.winner); // Set the winner if found
+        } else if (response.data?.success) {
+          setWinner("No votes cast for this poll."); // Handle no votes case
+        } else {
+          console.error("Error in response:", response.data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching the winner:", error);
+      }
+    }
+  };
+
   useEffect(() => {
     if (isCastVoteCardOpen) {
       document.body.style.overflow = "hidden";
       isAlreadyCasted();
+      setWinner(null); // Reset the winner when opening the poll
+      getWinner(); // Fetch winner if the poll is closed
     } else {
       setAlreadyCasted(false);
     }
@@ -75,20 +107,26 @@ const CastVoteComponent = () => {
           <p className="text-zinc-600 lg:text-base text-sm text-justify">
             {votingData.description}
           </p>
-          {votingData.options.map((item, index) => (
-            <div key={index} className="flex items-center gap-3">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="radio"
-                  className="w-5 h-5"
-                  name="voteOption"
-                  value={item}
-                  onChange={() => setSelectedOption(item)}
-                />
-                <p className="text-[1.1rem]">{item}</p>
-              </label>
-            </div>
-          ))}
+          {isPollActive ? (
+            votingData.options.map((item, index) => (
+              <div key={index} className="flex items-center gap-3">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="radio"
+                    className="w-5 h-5"
+                    name="voteOption"
+                    value={item}
+                    onChange={() => setSelectedOption(item)}
+                  />
+                  <p className="text-[1.1rem]">{item}</p>
+                </label>
+              </div>
+            ))
+          ) : (
+            <p className="text-[1.2rem] font-bold text-indigo">
+              Winner: {winner ? winner : "No Vote Found..."}
+            </p>
+          )}
           {selectedOption === "" ? null : logedIn ? (
             role === "student" ? (
               <div
