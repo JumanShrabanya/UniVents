@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { VotingPool } from "../models/votingPool.model.js";
 import { Club } from "../models/club.model.js";
+import cron from "node-cron";
 
 const createVotingPool = asyncHandler(async (req, res) => {
   const { poolValues } = req.body;
@@ -133,6 +134,44 @@ const castVote = asyncHandler(async (req, res) => {
     message: "Vote cast successfully.",
     poll,
   });
+});
+
+// Function to update the status of polls
+const updateVotingPoolStatus = async () => {
+  try {
+    const currentDateTime = new Date();
+
+    // Find all active polls where the end time has passed
+    const pollsToUpdate = await VotingPool.find({
+      isActive: true,
+      $or: [
+        { endDate: { $lte: currentDateTime } },
+        { endTime: { $lte: currentDateTime } },
+      ],
+    });
+
+    if (pollsToUpdate.length > 0) {
+      const idsToUpdate = pollsToUpdate.map((poll) => poll._id);
+
+      // Update the `isActive` status for these polls
+      await VotingPool.updateMany(
+        { _id: { $in: idsToUpdate } },
+        { $set: { isActive: false } }
+      );
+
+      console.log(
+        `Updated ${idsToUpdate.length} polls to inactive as their end time has passed.`
+      );
+    }
+  } catch (error) {
+    console.error("Error updating voting pool statuses:", error.message);
+  }
+};
+
+// Schedule the cron job to run every 10 minutes
+cron.schedule("*/10 * * * *", () => {
+  console.log("Checking for expired voting polls...");
+  updateVotingPoolStatus();
 });
 
 export { createVotingPool, showPools, castVote };

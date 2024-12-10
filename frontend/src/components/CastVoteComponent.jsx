@@ -8,7 +8,7 @@ import { CastVote } from "../services/CastVote";
 const CastVoteComponent = () => {
   const { isCastVoteCardOpen, closeCastVoteCard, votingData } =
     useCastVoteCard();
-  const { userDetails, logedIn } = useContext(AuthContext);
+  const { userDetails, logedIn, role } = useContext(AuthContext);
 
   const [selectedOption, setSelectedOption] = useState("");
   const [alreadyCasted, setAlreadyCasted] = useState(false);
@@ -90,33 +90,35 @@ const CastVoteComponent = () => {
             </div>
           ))}
           {selectedOption === "" ? null : logedIn ? (
-            <div
-              className={`w-full rounded-md flex ${
-                alreadyCasted || !isPollActive || !isFromSameCollge
-                  ? "bg-gray-300"
-                  : "bg-indigo hover:bg-indigoHover transition-all duration-200"
-              }`}
-            >
-              <button
-                disabled={
-                  alreadyCasted ||
-                  !isPollActive ||
-                  (votingData.availableFor === "College Only" &&
-                    !isFromSameCollge)
-                }
-                onClick={handleCastVote}
-                className="flex-1 bg-none py-2 text-white"
+            role === "student" ? (
+              <div
+                className={`w-full rounded-md flex ${
+                  alreadyCasted || !isPollActive || !isFromSameCollge
+                    ? "bg-gray-300"
+                    : "bg-indigo hover:bg-indigoHover transition-all duration-200"
+                }`}
               >
-                {!isPollActive
-                  ? "Poll Closed"
-                  : alreadyCasted
-                  ? "Already Voted"
-                  : votingData.availableFor === "College Only" &&
-                    !isFromSameCollge
-                  ? "Not Eligible (College Only)"
-                  : "Cast Vote"}
-              </button>
-            </div>
+                <button
+                  disabled={
+                    alreadyCasted ||
+                    !isPollActive ||
+                    (votingData.availableFor === "College Only" &&
+                      !isFromSameCollge)
+                  }
+                  onClick={handleCastVote}
+                  className="flex-1 bg-none py-2 text-white"
+                >
+                  {!isPollActive
+                    ? "Poll Closed"
+                    : alreadyCasted
+                    ? "Already Voted"
+                    : votingData.availableFor === "College Only" &&
+                      !isFromSameCollge
+                    ? "Not Eligible (College Only)"
+                    : "Cast Vote"}
+                </button>
+              </div>
+            ) : null
           ) : null}
         </div>
       </div>
