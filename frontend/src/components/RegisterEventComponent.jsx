@@ -148,6 +148,20 @@ const RegisterEventComponent = () => {
   const handleShowParticipant = () => {
     setshowingParticipant(!showingParticipant);
   };
+
+  // to handle already registerd case
+  const [alreadyRegistered, setalreadyRegistered] = useState(false);
+  const handleAlreadyRegistered = async () => {
+    const apiUrl = "http://localhost:8000/app/alreadyRegistered";
+    try {
+      const response = await axios.get(
+        apiUrl,
+        { currentEventId },
+        { withCredentials: true }
+      );
+      setalreadyRegistered(response.data);
+    } catch (error) {}
+  };
   // to handle the show of edit button
   useEffect(() => {
     // Check if the current user is the event organizer
@@ -157,7 +171,8 @@ const RegisterEventComponent = () => {
       setShowEditBtn(false);
     }
     handleGetRegisteredParticipants();
-  }, [eventData, userDetails, logedIn]);
+    handleAlreadyRegistered();
+  }, [eventData, logedIn]);
 
   return isRegisterCardOpen ? (
     <div className="fixed inset-0 bg-black lg:p-0 p-[3rem] bg-opacity-50 z-50">
@@ -271,7 +286,9 @@ const RegisterEventComponent = () => {
                     : "bg-gray-400 hover:bg-gray-400 transition-all duration-0 cursor-not-allowed"
                 }`}
               >
-                {eventData.registrationAvailable
+                {alreadyRegistered
+                  ? "Already Registered"
+                  : eventData.registrationAvailable
                   ? "Register"
                   : "Registration Closed"}
               </button>

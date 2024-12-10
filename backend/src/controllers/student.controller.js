@@ -74,4 +74,44 @@ const registeredEvents = asyncHandler(async (req, res) => {
     data: registrations,
   });
 });
-export { registerEvent, registeredEvents };
+
+// to check if the student has already registered for that particular event or not
+const isStudentRegistered = asyncHandler(async (req, res) => {
+  const { eventId } = req.body;
+  const studentId = req.user._id;
+
+  if (!eventId) {
+    return res.status(400).json(new ApiResponse(400, "Event ID is required"));
+  }
+
+  try {
+    // Check if the student is registered for the event
+    const isRegistered = await Registration.findOne({ eventId, studentId });
+
+    if (isRegistered) {
+      return res.status(200).json(
+        new ApiResponse(200, "Student is registered for this event", {
+          isRegistered: true,
+        })
+      );
+    }
+
+    return res.status(200).json(
+      new ApiResponse(200, "Student is not registered for this event", {
+        isRegistered: false,
+      })
+    );
+  } catch (error) {
+    return res
+      .status(500)
+      .json(
+        new ApiResponse(
+          500,
+          "An error occurred while checking registration",
+          error.message
+        )
+      );
+  }
+});
+
+export { registerEvent, registeredEvents, isStudentRegistered };

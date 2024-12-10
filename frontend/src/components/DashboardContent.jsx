@@ -30,6 +30,8 @@ const DashboardContent = () => {
   const showRegisteredEvents = async () => {
     try {
       const response = await RegisteredEvents();
+      console.log("registerd events", response);
+
       if (response.status === 201) {
         // console.log(response.data.data);
         setregisteredEvents(response.data.data);
@@ -57,7 +59,7 @@ const DashboardContent = () => {
     if (role === "student") {
       showRegisteredEvents();
     }
-  }, []);
+  }, [activeTab]);
 
   useEffect(() => {
     handleShowCreatedEvents();
