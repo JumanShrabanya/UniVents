@@ -16,6 +16,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { CheckRegistrationProvider } from "./contexts/CheckRegistrationContext";
 import CastVoteComponent from "./components/CastVoteComponent";
 import { CasteVoteCardProvider } from "./contexts/CastVoteCardContext";
+import VerifyEmail from "./components/VerifiyEmail";
 
 const App = () => {
   return (
@@ -54,6 +55,12 @@ const App = () => {
                             ></ProtectedRoute>
                           }
                         ></Route>
+                        {/* for the email page */}
+                        <Route
+                          path="/verify-email/:token"
+                          element={<VerifyEmail />}
+                        />{" "}
+                        {/* Route for email verification */}
                       </Routes>
                       {/* login card component */}
                       <LoginCard></LoginCard>

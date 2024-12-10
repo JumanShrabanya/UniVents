@@ -112,15 +112,6 @@ const NavBar = () => {
             color="gray"
           />
 
-          {/* notification icon */}
-          <FontAwesomeIcon
-            icon={faBell}
-            onClick={() => {
-              navigate("/dashboard");
-            }}
-            className="cursor-pointer text-[1.2vw] max-sm:hidden"
-            color="gray"
-          />
           {/* user profile */}
           <div
             onClick={handleShowProfile}
@@ -141,15 +132,6 @@ const NavBar = () => {
           ></FontAwesomeIcon>
           {logedIn ? (
             <ul className="flex flex-col items-start justify-between mt-10 max-sm:text-[.8rem] gap-2">
-              {/* notification icon */}
-              <div
-                onClick={() => {
-                  navigate("/dashboard");
-                }}
-                className="flex w-full border-2 py-2 rounded-md bg-gray-200 pl-2"
-              >
-                <p>Notification</p>
-              </div>
               <div
                 onClick={() => {
                   navigate("/dashboard");
@@ -169,7 +151,6 @@ const NavBar = () => {
             </ul>
           ) : (
             <ul className="flex flex-col items-start justify-between mt-10 max-sm:text-[.8rem] gap-2">
-              {/* notification icon */}
               <button
                 onClick={openLogin}
                 className="outline-none border-2 w-full py-2 hover:text-indigo duration-100 transition-all ease-linear  rounded-md"

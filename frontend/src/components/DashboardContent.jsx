@@ -38,6 +38,7 @@ const DashboardContent = () => {
       console.log(error);
     }
   };
+
   // console.log("events:", registeredEvents);
 
   // to get the event
@@ -58,6 +59,10 @@ const DashboardContent = () => {
     }
   }, []);
 
+  useEffect(() => {
+    handleShowCreatedEvents();
+  }, [activeTab]);
+
   return role === "student" ? (
     <section className="p-[2rem] lg:w-[80%] xl:w-[85%] ">
       {/* for the registered events */}
@@ -66,12 +71,6 @@ const DashboardContent = () => {
           {registeredEvents.map((item, index) => (
             <EventCard key={index} item={item.eventId}></EventCard>
           ))}
-        </div>
-      )}
-      {/* for the notifications */}
-      {activeTab === "notifications" && (
-        <div>
-          <p>Notifications</p>
         </div>
       )}
     </section>
@@ -94,12 +93,7 @@ const DashboardContent = () => {
           </div>
         </div>
       )}
-      {/* for the notifications */}
-      {activeTab === "notifications" && (
-        <div>
-          <p>Notifications</p>
-        </div>
-      )}
+
       {/* for the create new event */}
       {activeTab === "organize-event" && (
         <div className="w-full ">

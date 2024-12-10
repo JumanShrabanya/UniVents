@@ -101,7 +101,7 @@ const CastVoteComponent = () => {
             }}
             className="sticky top-5 left-0 cursor-pointer text-[1.5rem] text-zinc-700 w-7 h-7 bg-white rounded-full z-10"
           />
-          <h2 className="font-mainFont font-semibold text-[1.8rem]">
+          <h2 className="font-mainFont font-semibold text-[1.5rem] md:text-[1.8rem] line-clamp-1">
             {votingData.title}
           </h2>
           <p className="text-zinc-600 lg:text-base text-sm text-justify">
@@ -118,7 +118,7 @@ const CastVoteComponent = () => {
                     value={item}
                     onChange={() => setSelectedOption(item)}
                   />
-                  <p className="text-[1.1rem]">{item}</p>
+                  <p className="text-[1.1rem] line-clamp-1">{item}</p>
                 </label>
               </div>
             ))

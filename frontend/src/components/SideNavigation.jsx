@@ -25,17 +25,6 @@ const SideNavigation = () => {
         <FontAwesomeIcon icon={faCalendar} />
         <p>Registered Events</p>
       </div>
-      <div
-        onClick={() => {
-          setActiveTab("notifications");
-        }}
-        className={`flex items-center gap-4 cursor-pointer lg:w-full w-[50%]  justify-start pl-5  lg:rounded-tr-full lg:rounded-br-full rounded-tl-full lg:rounded-tl-none rounded-bl-full lg:rounded-bl-none  py-3 border-2 border-indigo text-indigo lg:border-l-0 border-r-0 lg:border-r-2 hover:bg-indigo hover:text-white duration-200 ease-linear ${
-          activeTab === "notifications" ? "bg-indigo text-white" : null
-        }`}
-      >
-        <FontAwesomeIcon icon={faBell} />
-        <p>Notifications</p>
-      </div>
     </div>
   ) : (
     <div className="flex-col w-full lg:w-[20%] xl:w-[15%] flex  items-center py-[2rem] bg-transparent h-auto lg:h-screen gap-[1rem] select-none flex-shrink-0 lg:px-0 px-2">
@@ -50,17 +39,7 @@ const SideNavigation = () => {
         <FontAwesomeIcon icon={faCalendar} />
         <p>Created Events</p>
       </div>
-      <div
-        onClick={() => {
-          setActiveTab("notifications");
-        }}
-        className={`flex items-center gap-4 cursor-pointer lg:w-full w-full  justify-start pl-5  lg:rounded-tr-full lg:rounded-br-full rounded-full lg:rounded-tl-none rounded-bl-full lg:rounded-bl-none  py-3 border-2 border-indigo text-indigo lg:border-l-0 border-r-0 lg:border-r-2 hover:bg-indigo hover:text-white duration-200 ease-linear ${
-          activeTab === "notifications" ? "bg-indigo text-white" : null
-        }`}
-      >
-        <FontAwesomeIcon icon={faBell} />
-        <p>Notifications</p>
-      </div>
+
       <div
         onClick={() => {
           setActiveTab("organize-event");

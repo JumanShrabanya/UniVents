@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Student } from "../models/student.model.js";
 import { Club } from "../models/club.model.js";
+import { sendVerificationEmail } from "../utils/emailService.js";
 import jwt from "jsonwebtoken";
 
 // helper function for generating access and refresh token
@@ -39,12 +40,9 @@ const generateRefreshAccessTokenOrganizer = async (userId) => {
 
 // for the participant registration
 const registerParticipant = asyncHandler(async (req, res) => {
-  // take the details provided by the user
   const { name, email, password, collegeName, semester, rollNo } = req.body;
 
-  // verify the details
-  console.log(req.body);
-
+  // Validate inputs
   if (
     [name, email, password, collegeName, semester, rollNo].some(
       (field) => !field || field === ""
@@ -53,26 +51,29 @@ const registerParticipant = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please enter all the required credentials");
   }
 
-  // validate email
+  // Validate email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     throw new ApiError(400, "Please provide a valid email");
   }
 
-  // check if the email already exists or not
-  const existedUser = await Student.findOne({
-    email,
-  });
-  if (existedUser) {
+  // Check if email already exists
+  const existingUser = await Student.findOne({ email });
+  if (existingUser) {
     return res.status(400).json({
-      statusCode: 400,
       message: "Participant already exists with this email",
       success: false,
-      errors: [],
     });
   }
 
-  // create the participant object in DB
+  // Create the participant in DB but set isVerified as false and generate a verification token
+  const verificationToken = jwt.sign(
+    { email },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: "1d",
+    }
+  ); // Token expires in 1 day
   const student = await Student.create({
     name,
     email,
@@ -81,8 +82,9 @@ const registerParticipant = asyncHandler(async (req, res) => {
     semester,
     role: "student",
     rollNo,
+    isVerified: false,
+    verificationToken, // Store the verification token
   });
-
   // refresh and access token for participant
   const { refreshToken, accessToken } = await generateRefreshAccessTokenStudent(
     student._id
@@ -91,8 +93,6 @@ const registerParticipant = asyncHandler(async (req, res) => {
   const createdStudent = await Student.findById(student._id).select(
     "-password"
   );
-
-  // check if the user got created or not
   if (!createdStudent) {
     throw new ApiError(
       500,
@@ -100,7 +100,9 @@ const registerParticipant = asyncHandler(async (req, res) => {
     );
   }
 
-  // cookies option
+  // Send email verification
+  await sendVerificationEmail(email, verificationToken); // Sends an email with the token
+
   const options = {
     httpOnly: true,
     secure: true, // Make sure to only set this to true in production (HTTPS)

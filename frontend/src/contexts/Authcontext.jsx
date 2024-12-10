@@ -20,9 +20,6 @@ export const AuthProvider = ({ children }) => {
         setLogedIn(true);
         setRole(response.data.data.role);
         setUserDetails(response.data.data.user);
-
-        console.log("User logged in");
-        console.log(role);
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {

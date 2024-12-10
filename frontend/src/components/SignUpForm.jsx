@@ -83,8 +83,9 @@ const SignUpForm = () => {
       if (response.status === 201) {
         setRole(userType);
         setLogedIn(true); // Corrected this line
-        selectUserType(""); // Reset user type
-        navigate("/"); // Navigate to the dashboard
+        selectUserType("");
+        e.preventDefault(); // Reset user type
+        navigate("/", { replace: true }); // Navigate to the dashboard
       }
     } catch (err) {
       setErrors({
@@ -202,6 +203,7 @@ const SignUpForm = () => {
                   id="semester"
                   type="number"
                   min={1}
+                  max={8}
                   value={semester}
                   onChange={(e) => setSemester(e.target.value)}
                   required

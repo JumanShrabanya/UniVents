@@ -17,7 +17,6 @@ const ProfileComponent = () => {
   const [isEditing, setEditing] = useState(false);
   //  to disable the profile detail inputs
   const [inputDisable, setInputDisable] = useState(true);
-  console.log("userDetails", userDetails);
 
   // states to handle the new change inputs
   const [name, setName] = useState(userDetails?.name);
@@ -54,6 +53,12 @@ const ProfileComponent = () => {
       // Check response status
       if (response?.status === 200) {
         console.log(response.data.data.user);
+        setUserDetails((prev) => ({
+          ...prev,
+          ...(role === "student"
+            ? { name, semester, rollNo, collegeName }
+            : { clubName, collegeName }),
+        }));
         setEditing(false);
         setInputDisable(true);
       } else {
@@ -66,7 +71,7 @@ const ProfileComponent = () => {
   };
 
   // to handle the logout
-  const handleLogout = async () => {
+  const handleLogout = async (e) => {
     // Remove tokens from local or session storage (if used)
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");
@@ -82,7 +87,8 @@ const ProfileComponent = () => {
         setRole("");
         setLogedIn(false);
         // Redirect to the homepage or another route after logout
-        navigate("/");
+
+        navigate("/", { replace: true });
       }
     } catch (error) {
       console.error("Error during logout:", error);

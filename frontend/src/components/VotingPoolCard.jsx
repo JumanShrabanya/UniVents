@@ -32,15 +32,15 @@ const VotingPoolCard = (item) => {
         <h3 className="text-[1.1rem] md:text-[1.4rem] text-indigo mb-2 capitalize line-clamp-1 flex-shrink-0">
           {poolData.title}
         </h3>
-        <p className="text-[11px] md:text-[12px] text-gray-700 line-clamp-3 md:line-clamp-4 flex-shrink-0 text-justify pr-8">
+        <p className="text-[11px] md:text-[13px] text-gray-700 line-clamp-3 md:line-clamp-4 flex-shrink-0 text-justify pr-8">
           {poolData.description}
         </p>
 
         <div className="flex flex-col gap-3 mt-5 mb-5">
           {poolData.options.slice(0, 2).map((item, index) => (
-            <div key={index} className="flex gap-2 items-center">
+            <div key={index} className="flex gap-2 items-center ">
               <div className="md:h-6 md:w-6 h-4 w-4 bg-gray-200 rounded-full border-[1px] border-zinc-500"></div>
-              <p className="text-[.8rem] md:text-[1rem]">{item}</p>
+              <p className="text-[.8rem] md:text-[1rem] line-clamp-1">{item}</p>
             </div>
           ))}
         </div>

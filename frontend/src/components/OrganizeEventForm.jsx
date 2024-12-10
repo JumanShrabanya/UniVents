@@ -206,6 +206,7 @@ const OrganizeEventForm = () => {
                 type="date"
                 value={eventDate}
                 onChange={(e) => formatDate(e.target.value)}
+                min={new Date().toISOString().split("T")[0]}
                 className="bg-gray-200 p-2 rounded-md w-[100%] h-12"
               />
             </div>

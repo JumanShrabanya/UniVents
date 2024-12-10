@@ -6,6 +6,7 @@ import { AuthContext } from "../contexts/Authcontext";
 import { useCreateVotingPool } from "../contexts/CreateVotingPoolContext";
 import { counter } from "@fortawesome/fontawesome-svg-core";
 import { CreatePool } from "../services/CreatePool";
+import LoaderAnimation from "./LoaderAnimation";
 
 const CreateVotingPool = () => {
   // to toggle close the create event form
@@ -60,9 +61,13 @@ const CreateVotingPool = () => {
       closeCreatePool();
   };
 
+  // to load a animation
+  const [creatingPoll, setCreatingPoll] = useState(false);
+
   //   to handle the pool creation
   const handleCreateVotingPool = async (e) => {
     e.preventDefault();
+    setCreatingPoll(true);
     try {
       const response = await CreatePool({
         title,
@@ -75,6 +80,7 @@ const CreateVotingPool = () => {
         organizer,
       });
       if (response.status === 201) {
+        setCreatingPoll(false);
         closeCreatePool();
       }
     } catch (error) {
@@ -190,6 +196,7 @@ const CreateVotingPool = () => {
                 id="date"
                 type="date"
                 value={endDate}
+                min={new Date().toISOString().split("T")[0]}
                 onChange={(e) => {
                   setEndDate(e.target.value);
                 }}
@@ -215,12 +222,16 @@ const CreateVotingPool = () => {
             </div>
           </div>
           <div className="flex justify-center items-center ">
-            <button
-              type="submit"
-              className="py-3 px-12 text-white bg-indigo rounded-lg hover:bg-indigoHover duration-200 ease-linear"
-            >
-              Create Pool
-            </button>
+            {!creatingPoll ? (
+              <button
+                type="submit"
+                className="py-3 px-12 text-white bg-indigo rounded-lg hover:bg-indigoHover duration-200 ease-linear"
+              >
+                Create Pool
+              </button>
+            ) : (
+              <LoaderAnimation></LoaderAnimation>
+            )}
           </div>
         </form>
       ) : (

@@ -19,6 +19,7 @@ import eventRoutes from "./routes/event.routes.js";
 import studentDashboardRoutes from "./routes/studentDashboard.routes.js";
 import orgDashboardRoutes from "./routes/orgDashboard.routes.js";
 import votingPoolRoutes from "./routes/votingPool.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 
 // routes declaration
 app.use("/api/v1/user", userRoutes);
@@ -26,6 +27,7 @@ app.use("/api/v1/event", eventRoutes);
 app.use("/app", studentDashboardRoutes);
 app.use("/dashboard-organizer", orgDashboardRoutes);
 app.use("/voting", votingPoolRoutes);
+app.use("/auth", authRoutes);
 // localhost:8000/api/v1/users/registerClub
 
 export { app };
