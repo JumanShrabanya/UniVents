@@ -86,6 +86,7 @@ const CastVoteComponent = () => {
     votingData.participants,
     userDetails?._id,
     votingData,
+    isPollActive,
   ]);
 
   useEffect(() => {

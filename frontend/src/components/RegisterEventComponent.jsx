@@ -37,10 +37,12 @@ const RegisterEventComponent = () => {
 
   // Function to check if the user is from the same college as the organizer
   const checkEligibility = () => {
-    if (eventData?.organizer?.collegeName !== userDetails?.collegeName) {
-      setIsEligible(false);
-    } else {
-      setIsEligible(true);
+    if (eventData.availableFor === "College Only") {
+      if (eventData?.organizer?.collegeName !== userDetails?.collegeName) {
+        setIsEligible(false);
+      } else {
+        setIsEligible(true);
+      }
     }
   };
 
