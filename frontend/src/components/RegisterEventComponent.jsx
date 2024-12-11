@@ -12,17 +12,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../contexts/Authcontext";
 import axios from "axios";
-import { checkRegistration } from "../services/CheckRegistration";
-import { useCheckRegistration } from "../contexts/CheckRegistrationContext";
-import { useEditEvent } from "../contexts/EditEventContext";
 import { useNavigate } from "react-router-dom";
 import { GetRegisteredParticipants } from "../services/GetRegisteredParticipants";
 
 const RegisterEventComponent = () => {
   const navigate = useNavigate();
-  // to open the edit event component in that page
-  const { editEventOpen, closeEditEvent, openEditEvent } = useEditEvent();
-  // to get the role
   const { role, userDetails, logedIn } = useContext(AuthContext);
   const {
     isRegisterCardOpen,
@@ -32,165 +26,118 @@ const RegisterEventComponent = () => {
     setRegisterCardOpen,
   } = useRegisterCard();
 
-  // to check the registration
-  const { isRegistered, setRegistered } = useCheckRegistration();
+  // State to check if the user is registered
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
 
-  const toggleEvent = () => {
-    closeRegisterCard();
-  };
-  useEffect(() => {
-    if (isRegisterCardOpen) {
-      document.body.style.overflow = "hidden";
+  // State to check eligibility
+  const [isEligible, setIsEligible] = useState(true);
+
+  const [registeredParticipants, setRegisteredParticipants] = useState([]);
+  const [showParticipants, setShowParticipants] = useState(false);
+
+  // Function to check if the user is from the same college as the organizer
+  const checkEligibility = () => {
+    if (eventData?.organizer?.collegeName !== userDetails?.collegeName) {
+      setIsEligible(false);
+    } else {
+      setIsEligible(true);
     }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isRegisterCardOpen]);
-
-  // state to hold the show and hide value
-  const [showEditBtn, setShowEditBtn] = useState(false);
-
-  const handleEditEvent = () => {
-    // Add your logic for editing the event
-    // Example: Navigate to an edit form or modal
-    navigate("/dashboard", { state: { eventData } });
-    closeRegisterCard();
-    openEditEvent();
   };
 
-  // to handle the registration
-  const handleRegistration = async (eventId) => {
+  console.log(eventData);
+
+  // Function to check if the user is already registered
+  const handleAlreadyRegistered = async () => {
+    if (!userDetails?._id || !eventData?._id) return;
+
+    const eventId = eventData._id;
+    const studentId = userDetails._id;
+    const apiUrl = `http://localhost:8000/app/alreadyRegistered`;
+    try {
+      const response = await axios.post(
+        apiUrl,
+        { eventId, studentId },
+        { withCredentials: true }
+      );
+
+      setAlreadyRegistered(response.data.message.isRegistered);
+    } catch (error) {
+      console.error("Error checking registration", error.message);
+    }
+  };
+
+  // Fetch registered participants for the event
+  const handleGetRegisteredParticipants = async () => {
+    setShowParticipants(!showParticipants);
+    const eventId = eventData._id;
+    try {
+      const response = await GetRegisteredParticipants(eventId);
+      if (response.status === 200) {
+        setRegisteredParticipants(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching participants", error);
+    }
+  };
+
+  // Handle event registration
+  const handleRegistration = async () => {
+    if (!isEligible) {
+      alert(
+        "You are not eligible to register. You must belong to the same college as the organizer."
+      );
+      return;
+    }
     const apiUrl = "http://localhost:8000/api/v1/event/events-register";
     try {
       const response = await axios.post(
         apiUrl,
-        { eventId, studentId: userDetails._id },
+        { eventId: eventData._id, studentId: userDetails._id },
         { withCredentials: true }
       );
-      console.log(userDetails._id);
-      closeRegisterCard();
-
       if (response.status === 201) {
-        console.log(response.data);
+        setAlreadyRegistered(true);
+        alert("Registration successful!");
+        handleGetRegisteredParticipants(); // Refresh the participants list
       }
     } catch (error) {
-      console.log("error registering in the event", error);
+      console.error("Error registering in the event", error);
+      alert("Failed to register. Please try again.");
     }
-    // console.log(eventId, userDetails._id);
+    closeRegisterCard();
   };
 
-  // to handle the add winners functionality
-  const [showAddWinnersInput, setshowAddWinnersInput] = useState(false);
-  const [showingWinnerInput, setshowingWinnerInput] = useState(false);
-  // hold the winners
-  const [firstWinner, setFirstWinner] = useState("");
-  const [secondWinner, setSecondWinner] = useState("");
-  const [thirdWinner, setThirdWinner] = useState("");
+  console.log("is eligible", isEligible);
 
-  // handle save winners
-  let currentEventId = eventData._id;
-
-  const handleSaveWinners = async () => {
-    if (firstWinner && secondWinner && thirdWinner) {
-      try {
-        const apiUrl = "http://localhost:8000/dashboard-organizer/add-winners";
-        const response = await axios.post(
-          apiUrl,
-          { currentEventId, firstWinner, secondWinner, thirdWinner },
-          { withCredentials: true }
-        );
-        if (response.status === 200) {
-          console.log("with winners:", response);
-          // Clear input fields
-          setFirstWinner("");
-          setSecondWinner("");
-          setThirdWinner("");
-          setshowAddWinnersInput(false);
-          // setshowingWinnerInput(!showingWinnerInput);
-        }
-      } catch (error) {
-        console.log("error adding the winners", error);
-      }
-    }
-  };
-
-  const [registeredParticipants, setRegisteredParticipants] = useState([]);
-
-  // handle get registered participants
-  const handleGetRegisteredParticipants = async () => {
-    try {
-      const response = await GetRegisteredParticipants(currentEventId);
-      if (response.status === 200) {
-        setRegisteredParticipants(response.data.data);
-      }
-      console.log(response.data.data);
-    } catch (error) {
-      console.log("error fetching the participants ", error);
-    }
-  };
-
-  // to handle the winner submit
-  const handleAddWinners = () => {
-    setshowAddWinnersInput(true);
-    setshowingWinnerInput(true);
-  };
-  // to handle the cancel of adding of the winners
-  const handleCancelWinners = () => {
-    setshowAddWinnersInput(false);
-    setshowingWinnerInput(false);
-    setFirstWinner("");
-    setSecondWinner("");
-    setThirdWinner("");
-  };
-
-  // to show and hide the participants
-  const [showingParticipant, setshowingParticipant] = useState(false);
-  const handleShowParticipant = () => {
-    setshowingParticipant(!showingParticipant);
-  };
-
-  // to handle already registerd case
-  const [alreadyRegistered, setalreadyRegistered] = useState(false);
-  const handleAlreadyRegistered = async () => {
-    const apiUrl = "http://localhost:8000/app/alreadyRegistered";
-    try {
-      const response = await axios.get(
-        apiUrl,
-        { currentEventId },
-        { withCredentials: true }
-      );
-      setalreadyRegistered(response.data);
-    } catch (error) {}
-  };
-  // to handle the show of edit button
   useEffect(() => {
-    // Check if the current user is the event organizer
-    if (eventData?.organizer?._id === userDetails?._id) {
-      setShowEditBtn(true);
+    if (isRegisterCardOpen) {
+      document.body.style.overflow = "hidden";
+      checkEligibility();
+      handleAlreadyRegistered();
+      handleGetRegisteredParticipants();
     } else {
-      setShowEditBtn(false);
+      document.body.style.overflow = "auto";
     }
-    handleGetRegisteredParticipants();
-    handleAlreadyRegistered();
-  }, [eventData, logedIn]);
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isRegisterCardOpen, eventData, logedIn]);
+
+  console.log(eventData.availableFor);
 
   return isRegisterCardOpen ? (
     <div className="fixed inset-0 bg-black lg:p-0 p-[3rem] bg-opacity-50 z-50">
       <div className="fixed top-0 right-0 -translate-x-0 -translate-y-0 w-[90%] lg:w-[57%] h-[100vh] bg-white overflow-auto transition-transform duration-300 ease-out">
         {/* content area */}
-        <div className="relative flex flex-col gap-[1.5rem] p-[1.2rem] lg:p-[2rem]  items-start">
+        <div className="relative flex flex-col gap-[1.5rem] p-[1.2rem] lg:p-[2rem] items-start">
           <FontAwesomeIcon
             icon={faClose}
             onClick={() => {
               setRegisterCardOpen(false);
-              setshowingWinnerInput(false);
-              setshowAddWinnersInput(false);
-              setFirstWinner("");
-              setSecondWinner("");
-              setThirdWinner("");
             }}
             className="sticky top-5 left-0 cursor-pointer text-[1.5rem] text-zinc-700 w-7 h-7 bg-white rounded-full z-10"
-          ></FontAwesomeIcon>
+          />
           {/* header image */}
           <img
             src={eventData.coverImg}
@@ -201,211 +148,89 @@ const RegisterEventComponent = () => {
           <h2 className="font-mainFont font-semibold text-[1.8rem]">
             {eventData.title}
           </h2>
-          {/* to display the winners */}
-          {eventData.winners.length > 1 && (
-            <div>
-              <h2 className="font-mainFont font-semibold text-[20px] mb-4">
-                Winners List
-              </h2>
-              {/* first */}
-              <div className="flex items-center gap-2 mb-2">
-                <div className="bg-[#FFD700] border-[1px] border-[#ff9500] h-8 w-8 rounded-full  flex justify-center items-center ">
-                  <p className="text-[12px]">1st</p>
-                </div>
-                <p className="capitalize">{eventData.winners[0]}</p>
-              </div>
-              {/* second */}
-              <div className="flex items-center gap-2 mb-2">
-                <div className="bg-[#C0C0C0] border-[1px] border-[#8d8d8d] h-8 w-8 rounded-full  flex justify-center items-center ">
-                  <p className="text-[12px]">2nd</p>
-                </div>
-                <p className="capitalize">{eventData.winners[1]}</p>
-              </div>
-              {/* third*/}
-              <div className="flex items-center gap-2 mb-2">
-                <div className="border-[1px] border-[#5f3e1e] bg-[#CD7F32] h-8 w-8 rounded-full  flex justify-center items-center ">
-                  <p className="text-[12px]">3rd</p>
-                </div>
-                <p className="capitalize">{eventData.winners[2]}</p>
-              </div>
-            </div>
-          )}
+          {/* event description */}
           <p className="text-zinc-600 lg:text-base text-sm text-justify">
             {eventData.description}
           </p>
           {/* event location */}
-          <div className="flex flex-row gap-4 items-start justify-between  lg:items-center w-full">
+          <div className="flex flex-row gap-4 items-start justify-between lg:items-center w-full">
             <div className="flex items-center gap-2 lg:gap-4 w-[30%] md:w-[17%] lg:w-[20%] xl:w-[17%]">
-              <FontAwesomeIcon
-                icon={faLocationDot}
-                className="text-zinc-600"
-              ></FontAwesomeIcon>
+              <FontAwesomeIcon icon={faLocationDot} className="text-zinc-600" />
               <p className="text-zinc-600">Venue:</p>
             </div>
-            <p className="text-black font-semibold w-[70%] lg:w-auto flex-wrap flex-1">{` ${eventData.venue}`}</p>
+            <p className="text-black font-semibold w-[70%] lg:w-auto flex-wrap flex-1">
+              {eventData.venue}
+            </p>
           </div>
           {/* event date */}
-          <div className="flex flex-row  gap-4 items-start lg:items-center w-full ">
-            <div className="flex items-center gap-2 lg:gap-4 w-[30%] md:w-[17%] lg:w-[20%] xl:w-[17%]  ">
+          <div className="flex flex-row gap-4 items-start lg:items-center w-full">
+            <div className="flex items-center gap-2 lg:gap-4 w-[30%] md:w-[17%] lg:w-[20%] xl:w-[17%]">
               <FontAwesomeIcon
                 icon={faCalendarCheck}
                 className="text-zinc-600"
-              ></FontAwesomeIcon>
+              />
               <p className="text-zinc-600">Date:</p>
             </div>
-            <p className="text-black font-semibold flex-wrap">{` ${eventData.eventDate}`}</p>
+            <p className="text-black font-semibold flex-wrap">
+              {eventData.eventDate}
+            </p>
           </div>
           {/* organizer name */}
-          <div className="flex flex-row  gap-4 items-start lg:items-center w-full">
+          <div className="flex flex-row gap-4 items-start lg:items-center w-full">
             <div className="flex items-center gap-2 lg:gap-4 w-[30%] md:w-[17%] lg:w-[20%] xl:w-[17%]">
-              <FontAwesomeIcon
-                icon={faUserGroup}
-                className="text-zinc-600"
-              ></FontAwesomeIcon>
+              <FontAwesomeIcon icon={faUserGroup} className="text-zinc-600" />
               <p className="text-zinc-600">Organizer:</p>
             </div>
-            <p className="text-black font-semibold w-[70%] lg:w-auto flex-wrap">{` ${eventData.organizer.clubName}`}</p>
+            <p className="text-black font-semibold w-[70%] lg:w-auto flex-wrap">
+              {eventData.organizer.clubName}
+            </p>
           </div>
-          {/* for the register event button */}
-          {role === "organizer" ? null : logedIn ? (
-            <div
-              onClick={() => {
-                handleRegistration(eventData._id);
-              }}
-              className={`flex w-full text-white rounded-md overflow-hidden py-3 ${
-                eventData.registrationAvailable
-                  ? "bg-indigo hover:bg-indigoHover"
-                  : "bg-gray-400 hover:bg-gray-400 transition-all duration-0 cursor-not-allowed"
-              }`}
-            >
-              <button
-                disabled={eventData.registrationAvailable ? false : true}
-                className={`flex-1 text-[1.2rem] select-none ${
-                  eventData.registrationAvailable
-                    ? "cursor-pointer"
-                    : "bg-gray-400 hover:bg-gray-400 transition-all duration-0 cursor-not-allowed"
+          {/* register button */}
+          {role !== "organizer" &&
+            logedIn &&
+            userDetails.isVerified === true && (
+              <div
+                onClick={!alreadyRegistered ? handleRegistration : undefined}
+                className={`flex w-full text-white rounded-md overflow-hidden py-3 ${
+                  eventData.registrationAvailable &&
+                  !alreadyRegistered &&
+                  isEligible
+                    ? "bg-indigo hover:bg-indigoHover cursor-pointer"
+                    : alreadyRegistered
+                    ? "bg-green-500"
+                    : "bg-gray-400 cursor-not-allowed"
                 }`}
               >
-                {alreadyRegistered
-                  ? "Already Registered"
-                  : eventData.registrationAvailable
-                  ? "Register"
-                  : "Registration Closed"}
-              </button>
-            </div>
-          ) : null}
-          {/* Event winners list */}
-          {showAddWinnersInput && (
-            <div className="w-[100%]">
-              {/* first */}
-              <div className="h-10 flex rounded-md mb-2">
-                <div className="border-[1px] border-[#ff9500] rounded-l-md px-3 py-2 bg-[#FFD700]  min-w-[15%]">
-                  <label htmlFor="first">1st Position</label>
-                </div>
-                <input
-                  value={firstWinner}
-                  onChange={(e) => {
-                    setFirstWinner(e.target.value);
-                  }}
-                  type="text"
-                  className="px-3 h-full border-[1px] border-gray-400 outline-none rounded-r-md  flex-1"
-                />
-              </div>
-              {/* second */}
-              <div className="h-10 flex rounded-md mb-2">
-                <div className="border-[1px] border-[#8d8d8d] rounded-l-md px-3 py-2 bg-[#C0C0C0] min-w-[15%]">
-                  <label htmlFor="first">2nd Position</label>
-                </div>
-                <input
-                  value={secondWinner}
-                  onChange={(e) => {
-                    setSecondWinner(e.target.value);
-                  }}
-                  type="text"
-                  className="px-3 h-full border-[1px] border-gray-400 outline-none rounded-r-md  flex-1"
-                />
-              </div>
-              {/* third */}
-              <div className="h-10 flex rounded-md mb-2">
-                <div className="border-[1px] border-[#5f3e1e] rounded-l-md px-3 py-2 bg-[#CD7F32] min-w-[15%]">
-                  <label htmlFor="first">3rd Position</label>
-                </div>
-                <input
-                  value={thirdWinner}
-                  onChange={(e) => {
-                    setThirdWinner(e.target.value);
-                  }}
-                  type="text"
-                  className="px-3 h-full border-[1px] border-gray-400 outline-none rounded-r-md  flex-1"
-                />
-              </div>
-              {/* cancel button */}
-              <div
-                onClick={handleCancelWinners}
-                className="bg-zinc-200 text-black rounded-md py-3 hover:bg-zinc-300 duration-200 mb-2"
-              >
-                <button className="w-full flex justify-center items-center flex-1 ">
-                  Cancel
+                <button
+                  disabled={
+                    alreadyRegistered || !eventData.registrationAvailable
+                  }
+                  className="flex-1 text-[1.2rem] select-none"
+                >
+                  {alreadyRegistered
+                    ? "Already Registered"
+                    : !isEligible
+                    ? "Not Eligible (College only event)"
+                    : eventData.registrationAvailable
+                    ? "Register"
+                    : "Registration Closed"}
                 </button>
               </div>
-              {/* save button */}
-              <div
-                onClick={handleSaveWinners}
-                className="bg-zinc-800 text-white rounded-md py-3 hover:bg-zinc-900 duration-200 "
-              >
-                <button className="w-full flex justify-center items-center flex-1">
-                  Save
-                </button>
-              </div>
-            </div>
-          )}
-          {/* to show the add winners list option */}
-          {showEditBtn && !showAddWinnersInput && (
-            <div
-              onClick={handleAddWinners}
-              className={`flex items-center justify-center w-full text-white bg-zinc-800 cursor-pointer rounded-md overflow-hidden py-3 gap-3 hover:bg-zinc-900 duration-200`}
-            >
-              <button className="text-[1rem] lg:text-[1.2rem] select-none ">{`${
-                eventData.winners.length > 1 ? "Update Winners" : "Add Winners"
-              }`}</button>
-            </div>
-          )}
-          {/* for the edit event button */}
-          {showEditBtn && (
-            <div
-              onClick={() => handleEditEvent()}
-              className={`flex items-center justify-center w-full text-black bg-gray-300 cursor-pointer rounded-md overflow-hidden py-3 gap-3 hover:bg-gray-400 duration-200`}
-            >
-              <FontAwesomeIcon
-                icon={faPencil}
-                className="text-[.7rem] lg:text-[.9rem]"
-              />
-              <button className="text-[1rem] lg:text-[1.2rem] select-none">
-                Update event details
-              </button>
-            </div>
-          )}
+            )}
           {/* registered participants */}
-          {showEditBtn ? (
+          {logedIn && role === "organizer" && (
             <div className="w-full">
-              {/* heading */}
               <div
-                onClick={handleShowParticipant}
+                onClick={handleGetRegisteredParticipants}
                 className="flex items-center gap-3 cursor-pointer bg-indigo px-4 text-white py-1 rounded-md mb-4"
               >
                 <p className="text-[1.1rem]">Registered Participants</p>
                 <FontAwesomeIcon
-                  icon={showingParticipant ? faArrowUp : faArrowDown}
-                ></FontAwesomeIcon>
+                  icon={showParticipants ? faArrowUp : faArrowDown}
+                />
               </div>
-              {/* list of participants */}
-              {showingParticipant ? (
-                <div className="w-full transition-all duration-200">
-                  <div className="flex justify-between items-center font-semibold my-2">
-                    <p>Name</p>
-                    <p>Semester</p>
-                    <p>RollNo</p>
-                  </div>
+              {showParticipants && registeredParticipants.length > 0 && (
+                <div className="w-full">
                   {registeredParticipants.map((item, index) => (
                     <div
                       key={index}
@@ -413,13 +238,13 @@ const RegisterEventComponent = () => {
                     >
                       <p>{item.studentId.name}</p>
                       <p>{item.studentId.semester}</p>
-                      <p>{item.studentId.rollNo}</p>{" "}
+                      <p>{item.studentId.rollNo}</p>
                     </div>
                   ))}
                 </div>
-              ) : null}
+              )}
             </div>
-          ) : null}
+          )}
         </div>
       </div>
     </div>

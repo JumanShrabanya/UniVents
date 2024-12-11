@@ -12,6 +12,8 @@ export const GetRegisteredParticipants = async (eventId) => {
       { eventId },
       { withCredentials: true }
     );
+    console.log(response);
+
     return response;
   } catch (error) {
     console.log("error fetching the registered participants", error);

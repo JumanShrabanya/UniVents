@@ -77,8 +77,7 @@ const registeredEvents = asyncHandler(async (req, res) => {
 
 // to check if the student has already registered for that particular event or not
 const isStudentRegistered = asyncHandler(async (req, res) => {
-  const { eventId } = req.body;
-  const studentId = req.user._id;
+  const { eventId, studentId } = req.body;
 
   if (!eventId) {
     return res.status(400).json(new ApiResponse(400, "Event ID is required"));

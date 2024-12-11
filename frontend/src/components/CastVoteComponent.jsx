@@ -19,7 +19,10 @@ const CastVoteComponent = () => {
 
   const handleCastVote = async () => {
     try {
-      await CastVote(selectedOption, votingData.title);
+      const response = await CastVote(selectedOption, votingData.title);
+      if (response.status === 200) {
+        closeCastVoteCard();
+      }
     } catch (error) {
       console.error("Error casting vote:", error);
     }

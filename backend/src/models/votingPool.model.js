@@ -42,9 +42,6 @@ const votingPoolSchema = new Schema(
       type: Boolean,
       default: true,
     },
-    endDate: {
-      type: Date,
-    },
     endTime: {
       type: Date,
     },

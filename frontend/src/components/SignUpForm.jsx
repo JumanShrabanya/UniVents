@@ -30,7 +30,7 @@ const SignUpForm = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [semester, setSemester] = useState(0);
+  const [semester, setSemester] = useState(1);
   const [rollNo, setRollno] = useState("");
   const [collegeName, setCollege] = useState("");
   const [clubName, setClubName] = useState("");
@@ -52,6 +52,9 @@ const SignUpForm = () => {
     const error = {};
     if (password.length < 8) {
       error.length = "Password must be at least 8 characters long";
+    }
+    if (semester > 8) {
+      error.semester = "Semester can not be more than 8";
     }
     if (password.length > 15) {
       error.maxLength = "Password must be lesser than 16 characters long";
@@ -253,6 +256,7 @@ const SignUpForm = () => {
                 <p className="text-[11px]">{errors.length}</p>
                 <p className="text-[11px]">{errors.specialChar}</p>
                 <p className="text-[11px]">{errors.maxLength}</p>
+                <p className="text-[11px]">{errors.semester}</p>
               </div>
             </div>
           </div>
@@ -269,9 +273,6 @@ const SignUpForm = () => {
         {errors.message ? (
           <div className="flex items-center justify-center mt-2 gap-2">
             <p className="text-red-600">{errors.message}.</p>
-            <p className=" underline text-[16px] cursor-pointer text-indigo">
-              Login
-            </p>
           </div>
         ) : null}
       </form>

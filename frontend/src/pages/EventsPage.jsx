@@ -37,18 +37,18 @@ const EventsPage = () => {
       {/* Main section */}
       <section className="py-[2rem] px-[4vw]">
         {/* Search bar section */}
-        <div className="flex justify-between items-center gap-[2rem] ">
-          <div className="flex border-[1px] border-gray-500 rounded-lg pl-3 flex-1 justify-between items-center h-[3rem] overflow-hidden">
+        <div className="flex justify-between items-center gap-[2rem] md:flex-row flex-col ">
+          <div className="flex border-[1px] border-gray-500 rounded-lg pl-3 flex-1 justify-between items-center md:h-[3rem] overflow-hidden ">
             <FontAwesomeIcon icon={faSearch} className="text-gray-800 mr-4" />
             <input
               type="text"
               placeholder="Search for events by title"
-              className="outline-none border-none h-full flex-1"
+              className="outline-none border-none md:h-full h-12 flex-1 "
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
             <button
-              className="text-white px-4 h-full bg-indigo border-none outline-none hover:bg-indigoHover duration-150 ease-linear"
+              className="text-white px-4 md:h-full h-12 bg-indigo border-none outline-none hover:bg-indigoHover duration-150 ease-linear"
               onClick={() => handleSearch("title")}
             >
               Search
@@ -60,12 +60,12 @@ const EventsPage = () => {
             <input
               type="text"
               placeholder="Search events by college name"
-              className="outline-none border-none h-full flex-1"
+              className="outline-none border-none md:h-full h-12 flex-1"
               value={college}
               onChange={(e) => setCollege(e.target.value)}
             />
             <button
-              className="text-white px-4 h-full bg-indigo border-none outline-none hover:bg-indigoHover duration-150 ease-linear"
+              className="text-white px-4 md:h-full h-12 bg-indigo border-none outline-none hover:bg-indigoHover duration-150 ease-linear"
               onClick={() => handleSearch("college")}
             >
               Search

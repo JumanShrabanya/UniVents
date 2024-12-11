@@ -58,10 +58,19 @@ const registerParticipant = asyncHandler(async (req, res) => {
   }
 
   // Check if email already exists
-  const existingUser = await Student.findOne({ email });
+  let existingUser = await Student.findOne({ email });
+  if (!existingUser) {
+    existingUser = await Club.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        message: "A club already exists with this email",
+        success: false,
+      });
+    }
+  }
   if (existingUser) {
     return res.status(400).json({
-      message: "Participant already exists with this email",
+      message: "A participant already exists with this email",
       success: false,
     });
   }
@@ -145,9 +154,22 @@ const registerClub = asyncHandler(async (req, res) => {
   }
 
   // check if the email already exists or not
-  const existedClub = await Club.findOne({
+  let existedClub = await Club.findOne({
     email,
   });
+  if (!existedClub) {
+    existedClub = await Student.findOne({
+      email,
+    });
+    if (existedClub) {
+      return res.status(400).json({
+        statusCode: 400,
+        message: "Participant already exists with this email",
+        success: false,
+        errors: [],
+      });
+    }
+  }
   if (existedClub) {
     return res.status(400).json({
       statusCode: 400,

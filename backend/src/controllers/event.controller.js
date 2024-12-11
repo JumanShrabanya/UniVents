@@ -16,7 +16,7 @@ const showEvents = asyncHandler(async (req, res) => {
   const events = await Event.find({})
     .populate({
       path: "organizer",
-      select: "clubName", // Fields you want from the organizer
+      select: "clubName collegeName", // Fields you want from the organizer
     })
     .populate({
       path: "category", // Assuming `category` is a reference field in your Event schema
@@ -130,19 +130,22 @@ const createEvent = asyncHandler(async (req, res) => {
 
 // to handle event by search query
 const searchEvent = asyncHandler(async (req, res) => {
-  // get the query params
-  // check if matching event available or not
-  // if available, then showcase it
-  // if not then show nothing
-
+  // Get the query params
   const { search } = req.query;
+
   if (!search) {
     throw new ApiError(404, "Search query is required");
   }
 
+  // Query to search across title and collegeName
   const matchingEvents = await Event.find({
     $and: [
-      { title: { $regex: search, $options: "i" } },
+      {
+        $or: [
+          { title: { $regex: search, $options: "i" } },
+          { collegeName: { $regex: search, $options: "i" } },
+        ],
+      },
       { registrationAvailable: true },
     ],
   });

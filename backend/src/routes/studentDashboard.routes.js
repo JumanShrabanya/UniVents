@@ -14,6 +14,6 @@ router
   .post(Authentication, Authorization("student"), registerEvent);
 
 router.route("/registered-events").get(Authentication, registeredEvents);
-router.route("/alreadyRegistered").get(Authentication, isStudentRegistered);
+router.route("/alreadyRegistered").post(isStudentRegistered);
 
 export default router;

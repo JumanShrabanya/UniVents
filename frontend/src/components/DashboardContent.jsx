@@ -25,7 +25,9 @@ const DashboardContent = () => {
   const { editEventOpen, closeEditEvent, openEditEvent } = useEditEvent();
 
   // to get the user role data
-  const { role } = useContext(AuthContext);
+  const { role, userDetails } = useContext(AuthContext);
+
+  const [isVerified, setIsVerified] = useState(false);
 
   const showRegisteredEvents = async () => {
     try {
@@ -59,11 +61,14 @@ const DashboardContent = () => {
     if (role === "student") {
       showRegisteredEvents();
     }
+    if (userDetails.isVerified === true) {
+      setIsVerified(true);
+    }
   }, [activeTab]);
 
   useEffect(() => {
     handleShowCreatedEvents();
-  }, [activeTab]);
+  }, [activeTab, userDetails]);
 
   return role === "student" ? (
     <section className="p-[2rem] lg:w-[80%] xl:w-[85%] ">
@@ -97,12 +102,14 @@ const DashboardContent = () => {
       )}
 
       {/* for the create new event */}
-      {activeTab === "organize-event" && (
-        <div className="w-full ">
-          <OrganizeEventForm></OrganizeEventForm>
-          <CreateVotingPool></CreateVotingPool>
-        </div>
-      )}
+      {isVerified
+        ? activeTab === "organize-event" && (
+            <div className="w-full ">
+              <OrganizeEventForm></OrganizeEventForm>
+              <CreateVotingPool></CreateVotingPool>
+            </div>
+          )
+        : null}
     </section>
   );
 };

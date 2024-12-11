@@ -26,23 +26,6 @@ const createVotingPool = asyncHandler(async (req, res) => {
     throw new ApiError(400, `Missing fields: ${missingFields.join(", ")}`);
   }
 
-  let endTime = "";
-  if (poolValues.endTime) {
-    const [hours, minutes] = poolValues.endTime
-      .split(/[: ]/)
-      .map((value) => (isNaN(value) ? value : parseInt(value)));
-    const isPM = poolValues.endTime.includes("PM");
-
-    const today = new Date();
-    endTime = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate(),
-      isPM ? hours + 12 : hours,
-      minutes
-    );
-  }
-
   const optionCounters = poolValues.options.map((option) => ({
     option,
     count: 0,
@@ -60,7 +43,6 @@ const createVotingPool = asyncHandler(async (req, res) => {
     optionCounters: optionCounters,
     endDate: poolValues.endDate,
     availableFor: poolValues.availableFor,
-    endTime: endTime || "",
     organizer: org._id,
     collegeName: poolValues.collegeName,
   });
@@ -144,10 +126,7 @@ const updateVotingPoolStatus = async () => {
     // Find all active polls where the end time has passed
     const pollsToUpdate = await VotingPool.find({
       isActive: true,
-      $or: [
-        { endDate: { $lte: currentDateTime } },
-        { endTime: { $lte: currentDateTime } },
-      ],
+      $or: [{ endDate: { $lte: currentDateTime } }],
     });
 
     if (pollsToUpdate.length > 0) {

@@ -25,7 +25,6 @@ const CreateVotingPool = () => {
   const [description, setDescription] = useState("");
   const [availableFor, setAvailableFor] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [endTime, setEndTime] = useState("");
   const [organizer, setorganizer] = useState(userDetails.clubName);
   const [collegeName, setcollegeName] = useState(userDetails.collegeName);
   const [options, setOptions] = useState([""]);
@@ -56,7 +55,6 @@ const CreateVotingPool = () => {
       setDescription(""),
       setAvailableFor(""),
       setEndDate(""),
-      setEndTime(""),
       setOptions([""]),
       closeCreatePool();
   };
@@ -74,7 +72,6 @@ const CreateVotingPool = () => {
         description,
         availableFor,
         endDate,
-        endTime,
         options,
         collegeName,
         organizer,
@@ -199,23 +196,6 @@ const CreateVotingPool = () => {
                 min={new Date().toISOString().split("T")[0]}
                 onChange={(e) => {
                   setEndDate(e.target.value);
-                }}
-                className="bg-gray-200 p-2 rounded-md w-[100%] h-12"
-              ></input>
-            </div>
-            {/* pool time */}
-            <div className="mb-10 flex flex-col w-[20%]">
-              <label htmlFor="time" className="mb-2">
-                End Time{" "}
-                <span className="text-[.8rem] text-zinc-600">(Optional)</span>
-              </label>
-              {/* time input */}
-              <input
-                id="time"
-                type="time"
-                value={endTime}
-                onChange={(e) => {
-                  setEndTime(e.target.value);
                 }}
                 className="bg-gray-200 p-2 rounded-md w-[100%] h-12"
               ></input>
