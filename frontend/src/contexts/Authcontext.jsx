@@ -20,12 +20,16 @@ export const AuthProvider = ({ children }) => {
         setLogedIn(true);
         setRole(response.data.data.role);
         setUserDetails(response.data.data.user);
+        console.log("Auth status updated:", response.data.data);
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        // console.log("User is not logged in");
+        console.log("User is not logged in");
+        setLogedIn(false);
+        setRole("");
+        setUserDetails(null);
       } else {
-        // console.error("Error checking auth status", error);
+        console.error("Error checking auth status", error);
       }
     }
   };
@@ -51,6 +55,7 @@ export const AuthProvider = ({ children }) => {
         setRole,
         userDetails,
         setUserDetails,
+        checkAuthStatus, // Expose the function to components
       }}
     >
       {children}

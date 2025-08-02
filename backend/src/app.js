@@ -20,6 +20,7 @@ import studentDashboardRoutes from "./routes/studentDashboard.routes.js";
 import orgDashboardRoutes from "./routes/orgDashboard.routes.js";
 import votingPoolRoutes from "./routes/votingPool.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import otpRoutes from "./routes/otp.routes.js";
 
 // routes declaration
 app.use("/api/v1/user", userRoutes);
@@ -28,6 +29,7 @@ app.use("/app", studentDashboardRoutes);
 app.use("/dashboard-organizer", orgDashboardRoutes);
 app.use("/voting", votingPoolRoutes);
 app.use("/auth", authRoutes);
+app.use("/api/v1/otp", otpRoutes);
 // localhost:8000/api/v1/users/registerClub
 
 export { app };

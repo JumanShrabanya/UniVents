@@ -12,7 +12,7 @@ import {
   faEyeSlash as faEyeSlashRegular,
 } from "@fortawesome/free-regular-svg-icons";
 import { AuthContext } from "../contexts/Authcontext";
-import { registerUser } from "../services/RegisterUser";
+// import { registerUser } from "../services/RegisterUser";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const ParticipantRegistrationPage = () => {
@@ -105,16 +105,38 @@ const ParticipantRegistrationPage = () => {
 
     setIsLoading(true);
     try {
-      const response = await registerUser(formData, "participant");
+      const response = await fetch(
+        "http://localhost:8000/api/v1/otp/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...formData,
+            userType: "participant",
+          }),
+        }
+      );
 
-      if (response.status === 201) {
-        setRole("participant");
-        setLogedIn(true);
-        navigate("/dashboard", { replace: true });
+      const data = await response.json();
+
+      if (response.ok) {
+        // Navigate to OTP verification page with user data
+        navigate("/verify-otp", {
+          state: {
+            userData: formData,
+            userType: "participant",
+          },
+        });
+      } else {
+        setErrors({
+          message: data.message || "Registration failed. Please try again.",
+        });
       }
     } catch (err) {
       setErrors({
-        message: err.message || "Registration failed. Please try again.",
+        message: "Network error. Please try again.",
       });
     } finally {
       setIsLoading(false);

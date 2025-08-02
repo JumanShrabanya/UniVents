@@ -2,9 +2,11 @@ import { ApiError } from "../utils/ApiError.js";
 import jwt from "jsonwebtoken";
 
 const Authentication = (req, res, next) => {
+  console.log("Cookies received:", req.cookies);
   const token = req.cookies.accessToken;
 
   if (!token) {
+    console.log("No accessToken found in cookies");
     throw new ApiError(401, "No token found, authorization denied.");
   }
 

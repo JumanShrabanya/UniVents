@@ -9,6 +9,8 @@ import HomePage from "./pages/HomePage";
 import RegistrationPage from "./pages/RegistrationPage";
 import OrganizerRegistrationPage from "./pages/OrganizerRegistrationPage";
 import ParticipantRegistrationPage from "./pages/ParticipantRegistrationPage";
+import OTPVerificationPage from "./pages/OTPVerificationPage";
+import RedirectIfAuthenticated from "./components/RedirectIfAuthenticated";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import LoginCard from "./components/LoginCard";
 import RegisterEventComponent from "./components/RegisterEventComponent";
@@ -35,18 +37,34 @@ const App = () => {
                         <Route path="/" element={<HomePage></HomePage>}></Route>
                         <Route
                           path="/registration"
-                          element={<RegistrationPage></RegistrationPage>}
+                          element={
+                            <RedirectIfAuthenticated>
+                              <RegistrationPage></RegistrationPage>
+                            </RedirectIfAuthenticated>
+                          }
                         ></Route>
                         <Route
                           path="/register/organizer"
                           element={
-                            <OrganizerRegistrationPage></OrganizerRegistrationPage>
+                            <RedirectIfAuthenticated>
+                              <OrganizerRegistrationPage></OrganizerRegistrationPage>
+                            </RedirectIfAuthenticated>
                           }
                         ></Route>
                         <Route
                           path="/register/participant"
                           element={
-                            <ParticipantRegistrationPage></ParticipantRegistrationPage>
+                            <RedirectIfAuthenticated>
+                              <ParticipantRegistrationPage></ParticipantRegistrationPage>
+                            </RedirectIfAuthenticated>
+                          }
+                        ></Route>
+                        <Route
+                          path="/verify-otp"
+                          element={
+                            <RedirectIfAuthenticated>
+                              <OTPVerificationPage></OTPVerificationPage>
+                            </RedirectIfAuthenticated>
                           }
                         ></Route>
                         <Route
