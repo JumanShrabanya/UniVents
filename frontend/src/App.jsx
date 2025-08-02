@@ -68,7 +68,7 @@ const App = () => {
                           }
                         ></Route>
                         <Route
-                          path="/dashboard"
+                          path="/dashboard/:userId"
                           element={
                             <ProtectedRoute
                               element={<DashBoard></DashBoard>}
@@ -80,7 +80,7 @@ const App = () => {
                           element={<EventsPage></EventsPage>}
                         ></Route>
                         <Route
-                          path="/profile"
+                          path="/profile/:userId"
                           element={
                             <ProtectedRoute
                               element={<ProfilePage></ProfilePage>}

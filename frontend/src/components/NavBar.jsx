@@ -15,7 +15,7 @@ import ViewProfileCard from "./ViewProfileCard";
 
 const NavBar = () => {
   // calling context to get the user loged in or not and the role
-  const { logedIn, role } = useContext(AuthContext);
+  const { logedIn, role, userDetails } = useContext(AuthContext);
   // to know if the menu is open or not
   const [isMenuOpen, setMenuOpen] = useState(false);
 
@@ -134,7 +134,7 @@ const NavBar = () => {
             <ul className="flex flex-col items-start justify-between mt-10 max-sm:text-[.8rem] gap-2">
               <div
                 onClick={() => {
-                  navigate("/dashboard");
+                  navigate(`/dashboard/${userDetails?._id || ""}`);
                 }}
                 className="flex bg- w-full border-2 py-2 rounded-md bg-gray-200 pl-2"
               >
@@ -142,7 +142,7 @@ const NavBar = () => {
               </div>
               <div
                 onClick={() => {
-                  navigate("/profile");
+                  navigate(`/profile/${userDetails?._id || ""}`);
                 }}
                 className="flex bg- w-full  border-2 py-2 rounded-md bg-gray-200 pl-2"
               >

@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { useParams } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import SideNavigation from "../components/SideNavigation";
 import { ActiveTabProvider, useActiveTab } from "../contexts/ActiveTabContext";
@@ -8,7 +9,8 @@ import { OrganizeEventProvider } from "../contexts/OrganizeEventContext";
 import { CreteVotingPoolProvider } from "../contexts/CreateVotingPoolContext";
 
 const DashBoard = () => {
-  const { role } = useContext(AuthContext);
+  const { role, userDetails } = useContext(AuthContext);
+  const { userId } = useParams();
   // console.log("role from dashboard: ", role);
 
   return (

@@ -6,16 +6,18 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
-import React from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../contexts/Authcontext";
 
 const ViewProfileCard = () => {
   const navigate = useNavigate();
+  const { userDetails } = useContext(AuthContext);
   return (
     <div className="absolute top-[100%] right-[2%] w-auto h-auto px-[1.2rem] py-[1.5rem] bg-white border-[1px] border-gray-200 rounded-lg z-10">
       {/* profile */}
       <div
         onClick={() => {
-          navigate("/profile");
+          navigate(`/profile/${userDetails?._id || ""}`);
         }}
         className="flex gap-4 items-center w-full rounded-md cursor-pointer hover:bg-indigoHover hover:text-white px-3 py-2 transition-all duration-200 ease-linear mb-4"
       >
@@ -28,7 +30,7 @@ const ViewProfileCard = () => {
       {/* dashboard */}
       <div
         onClick={() => {
-          navigate("/dashboard");
+          navigate(`/dashboard/${userDetails?._id || ""}`);
         }}
         className="flex gap-4 items-center w-full rounded-md cursor-pointer hover:bg-indigoHover hover:text-white px-3 py-2 transition-all duration-200 ease-linear"
       >
