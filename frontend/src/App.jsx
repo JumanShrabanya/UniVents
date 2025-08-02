@@ -7,6 +7,8 @@ import DashBoard from "./pages/DashBoard";
 import EventsPage from "./pages/EventsPage";
 import HomePage from "./pages/HomePage";
 import RegistrationPage from "./pages/RegistrationPage";
+import OrganizerRegistrationPage from "./pages/OrganizerRegistrationPage";
+import ParticipantRegistrationPage from "./pages/ParticipantRegistrationPage";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import LoginCard from "./components/LoginCard";
 import RegisterEventComponent from "./components/RegisterEventComponent";
@@ -34,6 +36,18 @@ const App = () => {
                         <Route
                           path="/registration"
                           element={<RegistrationPage></RegistrationPage>}
+                        ></Route>
+                        <Route
+                          path="/register/organizer"
+                          element={
+                            <OrganizerRegistrationPage></OrganizerRegistrationPage>
+                          }
+                        ></Route>
+                        <Route
+                          path="/register/participant"
+                          element={
+                            <ParticipantRegistrationPage></ParticipantRegistrationPage>
+                          }
                         ></Route>
                         <Route
                           path="/dashboard"

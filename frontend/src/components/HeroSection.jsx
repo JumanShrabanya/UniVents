@@ -28,7 +28,7 @@ const HeroSection = () => {
             <div className="flex flex-col lg:flex-row gap-5 items-center mt-2">
               {/* for the organizer button */}
               <div
-                onClick={() => navigate("/registration")}
+                onClick={() => navigate("/register/organizer")}
                 className="flex w-full lg:justify-normal justify-center lg:w-auto items-center gap-3 bg-lightBlue px-7 py-4 rounded-lg border-none outline-none text-[14px] lg:text-[13px] xl:text-[14px] cursor-pointer hover:bg-lightBlueHover duration-200 ease-linear select-none"
               >
                 <button className="rounded-lg border-none outline-none text-[14px] lg:text-[13px] xl:text-[14px]">
@@ -38,7 +38,7 @@ const HeroSection = () => {
               </div>
               {/* for the participant button */}
               <div
-                onClick={() => navigate("/registration")}
+                onClick={() => navigate("/register/participant")}
                 className="flex w-full lg:justify-normal justify-center items-center lg:w-auto gap-3 bg-indigo px-7 py-4 rounded-lg border-none outline-none text-[14px] text-white cursor-pointer hover:bg-indigoHover duration-200 ease-linear select-none lg:text-[13px] xl:text-[14px]"
               >
                 <button className="bg-transparent rounded-lg border-none outline-none text-[14px] lg:text-[13px] xl:text-[14px]">

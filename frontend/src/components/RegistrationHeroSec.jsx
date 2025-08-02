@@ -1,12 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import SignUpCard from "./SignUpCard";
-import { useUserType } from "../contexts/UserTypeContext";
+import { useNavigate } from "react-router-dom";
 
 const RegistrationHeroSec = () => {
-  // state to open participant or organizer signup pop up
-  const { userType, selectUserType } = useUserType();
-
-  console.log(userType);
+  const navigate = useNavigate();
 
   return (
     <section className="w-full bg-indigo pt-[3rem] pb-[4rem] px-[4vw] flex flex-col gap-10">
@@ -21,12 +18,12 @@ const RegistrationHeroSec = () => {
       {/* sign up cards */}
       <div className="flex md:flex-row flex-col justify-center gap-[3rem]">
         <SignUpCard
-          title={"organize Your Next Event"}
+          title={"Organize Your Next Event"}
           paragraph={
             "Easily create and manage your own events on UniVents. From club meetings to large-scale festivals, we've got you covered"
           }
           btnText={"Register as Organizer"}
-          onClick={() => selectUserType("organizer")}
+          onClick={() => navigate("/register/organizer")}
         ></SignUpCard>
         <SignUpCard
           title={"Participate in various Events"}
@@ -34,7 +31,7 @@ const RegistrationHeroSec = () => {
             "Easily participate in various events with UniVents. From meetings to large-scale festivals, we've got you covered"
           }
           btnText={"Register as Participant"}
-          onClick={() => selectUserType("participant")}
+          onClick={() => navigate("/register/participant")}
         ></SignUpCard>
       </div>
     </section>
