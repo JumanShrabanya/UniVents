@@ -219,34 +219,7 @@ const RegisterEventComponent = () => {
                 </button>
               </div>
             )}
-          {/* registered participants */}
-          {logedIn && role === "organizer" && (
-            <div className="w-full">
-              <div
-                onClick={handleGetRegisteredParticipants}
-                className="flex items-center gap-3 cursor-pointer bg-indigo px-4 text-white py-1 rounded-md mb-4"
-              >
-                <p className="text-[1.1rem]">Registered Participants</p>
-                <FontAwesomeIcon
-                  icon={showParticipants ? faArrowUp : faArrowDown}
-                />
-              </div>
-              {showParticipants && registeredParticipants.length > 0 && (
-                <div className="w-full">
-                  {registeredParticipants.map((item, index) => (
-                    <div
-                      key={index}
-                      className="py-2 rounded-md bg-gray-200 w-full px-2 flex justify-between items-center mb-2"
-                    >
-                      <p>{item.studentId.name}</p>
-                      <p>{item.studentId.semester}</p>
-                      <p>{item.studentId.rollNo}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+          {/* registered participants - removed for normal users */}
         </div>
       </div>
     </div>

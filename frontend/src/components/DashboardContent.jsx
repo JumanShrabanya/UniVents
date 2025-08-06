@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useActiveTab } from "../contexts/ActiveTabContext";
 import EventCard from "../components/EventCard";
+import OrganizerEventCard from "../components/OrganizerEventCard";
 import { AuthContext } from "../contexts/Authcontext";
 import OrganizeEventForm from "./OrganizeEventForm";
 import { CreatedEvents } from "../services/CreatedEvents";
@@ -93,9 +94,9 @@ const DashboardContent = () => {
               </div>
             </div>
           ) : null}
-          <div className="flex gap-[2rem] flex-wrap">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {createdEvents.map((item, index) => (
-              <EventCard key={index} item={item}></EventCard>
+              <OrganizerEventCard key={index} item={item}></OrganizerEventCard>
             ))}
           </div>
         </div>
