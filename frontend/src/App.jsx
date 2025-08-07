@@ -18,95 +18,89 @@ import { RegisterCardProvider } from "./contexts/RegisterCardContext";
 import ProfilePage from "./pages/ProfilePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { CheckRegistrationProvider } from "./contexts/CheckRegistrationContext";
-import CastVoteComponent from "./components/CastVoteComponent";
-import { CasteVoteCardProvider } from "./contexts/CastVoteCardContext";
 import VerifyEmail from "./components/VerifiyEmail";
 
 const App = () => {
   return (
     <AuthProvider>
       <RegisterCardProvider>
-        <CasteVoteCardProvider>
-          <EditEventProvider>
-            <CheckRegistrationProvider>
-              <UserTypeProvider>
-                <LoginCardProvider>
-                  <Router>
-                    <main className="relative h-full">
-                      <Routes>
-                        <Route path="/" element={<HomePage></HomePage>}></Route>
-                        <Route
-                          path="/registration"
-                          element={
-                            <RedirectIfAuthenticated>
-                              <RegistrationPage></RegistrationPage>
-                            </RedirectIfAuthenticated>
-                          }
-                        ></Route>
-                        <Route
-                          path="/register/organizer"
-                          element={
-                            <RedirectIfAuthenticated>
-                              <OrganizerRegistrationPage></OrganizerRegistrationPage>
-                            </RedirectIfAuthenticated>
-                          }
-                        ></Route>
-                        <Route
-                          path="/register/participant"
-                          element={
-                            <RedirectIfAuthenticated>
-                              <ParticipantRegistrationPage></ParticipantRegistrationPage>
-                            </RedirectIfAuthenticated>
-                          }
-                        ></Route>
-                        <Route
-                          path="/verify-otp"
-                          element={
-                            <RedirectIfAuthenticated>
-                              <OTPVerificationPage></OTPVerificationPage>
-                            </RedirectIfAuthenticated>
-                          }
-                        ></Route>
-                        <Route
-                          path="/dashboard/:userId"
-                          element={
-                            <ProtectedRoute
-                              element={<DashBoard></DashBoard>}
-                            ></ProtectedRoute>
-                          }
-                        ></Route>
-                        <Route
-                          path="/events"
-                          element={<EventsPage></EventsPage>}
-                        ></Route>
-                        <Route
-                          path="/profile/:userId"
-                          element={
-                            <ProtectedRoute
-                              element={<ProfilePage></ProfilePage>}
-                            ></ProtectedRoute>
-                          }
-                        ></Route>
-                        {/* for the email page */}
-                        <Route
-                          path="/verify-email/:token"
-                          element={<VerifyEmail />}
-                        />{" "}
-                        {/* Route for email verification */}
-                      </Routes>
-                      {/* login card component */}
-                      <LoginCard></LoginCard>
-                      {/* side view card component for complete detailed view of the event */}
-                      <RegisterEventComponent></RegisterEventComponent>
-                      {/* side view of the voting component */}
-                      <CastVoteComponent></CastVoteComponent>
-                    </main>
-                  </Router>
-                </LoginCardProvider>
-              </UserTypeProvider>
-            </CheckRegistrationProvider>
-          </EditEventProvider>
-        </CasteVoteCardProvider>
+        <EditEventProvider>
+          <CheckRegistrationProvider>
+            <UserTypeProvider>
+              <LoginCardProvider>
+                <Router>
+                  <main className="relative h-full">
+                    <Routes>
+                      <Route path="/" element={<HomePage></HomePage>}></Route>
+                      <Route
+                        path="/registration"
+                        element={
+                          <RedirectIfAuthenticated>
+                            <RegistrationPage></RegistrationPage>
+                          </RedirectIfAuthenticated>
+                        }
+                      ></Route>
+                      <Route
+                        path="/register/organizer"
+                        element={
+                          <RedirectIfAuthenticated>
+                            <OrganizerRegistrationPage></OrganizerRegistrationPage>
+                          </RedirectIfAuthenticated>
+                        }
+                      ></Route>
+                      <Route
+                        path="/register/participant"
+                        element={
+                          <RedirectIfAuthenticated>
+                            <ParticipantRegistrationPage></ParticipantRegistrationPage>
+                          </RedirectIfAuthenticated>
+                        }
+                      ></Route>
+                      <Route
+                        path="/verify-otp"
+                        element={
+                          <RedirectIfAuthenticated>
+                            <OTPVerificationPage></OTPVerificationPage>
+                          </RedirectIfAuthenticated>
+                        }
+                      ></Route>
+                      <Route
+                        path="/dashboard/:userId"
+                        element={
+                          <ProtectedRoute
+                            element={<DashBoard></DashBoard>}
+                          ></ProtectedRoute>
+                        }
+                      ></Route>
+                      <Route
+                        path="/events"
+                        element={<EventsPage></EventsPage>}
+                      ></Route>
+                      <Route
+                        path="/profile/:userId"
+                        element={
+                          <ProtectedRoute
+                            element={<ProfilePage></ProfilePage>}
+                          ></ProtectedRoute>
+                        }
+                      ></Route>
+                      {/* for the email page */}
+                      <Route
+                        path="/verify-email/:token"
+                        element={<VerifyEmail />}
+                      />{" "}
+                      {/* Route for email verification */}
+                    </Routes>
+                    {/* login card component */}
+                    <LoginCard></LoginCard>
+                    {/* side view card component for complete detailed view of the event */}
+                    <RegisterEventComponent></RegisterEventComponent>
+                  </main>
+                </Router>
+              </LoginCardProvider>
+            </UserTypeProvider>
+          </CheckRegistrationProvider>
+        </EditEventProvider>
       </RegisterCardProvider>
     </AuthProvider>
   );

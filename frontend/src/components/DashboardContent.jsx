@@ -9,7 +9,6 @@ import { RegisteredEvents } from "../services/RegisteredEvents";
 import EditEventComponent from "./EditEventComponent";
 import { useEditEvent } from "../contexts/EditEventContext";
 import { useLocation } from "react-router-dom";
-import CreateVotingPool from "./CreateVotingPool";
 
 const DashboardContent = () => {
   // to recieve the data from the edit event button
@@ -107,7 +106,6 @@ const DashboardContent = () => {
         ? activeTab === "organize-event" && (
             <div className="w-full ">
               <OrganizeEventForm></OrganizeEventForm>
-              <CreateVotingPool></CreateVotingPool>
             </div>
           )
         : null}

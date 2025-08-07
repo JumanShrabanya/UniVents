@@ -1,25 +1,31 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useOrgEventForm } from "../contexts/OrganizeEventContext.jsx";
+import React, { useState, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faClose,
   faPlus,
-  faCalendarAlt,
+  faArrowRight,
+  faArrowLeft,
+  faCheck,
+  faCalendar,
   faMapMarkerAlt,
   faUsers,
   faImage,
-  faEdit,
-  faCheck,
-  faArrowRight,
-  faArrowLeft,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { categoryEnum } from "../assetImports.js";
+import { useOrgEventForm } from "../contexts/OrganizeEventContext.jsx";
 import { CreateEvent } from "../services/CreateEvent.js";
 import LoaderAnimation from "./LoaderAnimation.jsx";
 import { AuthContext } from "../contexts/Authcontext.jsx";
-import { useCreateVotingPool } from "../contexts/CreateVotingPoolContext.jsx";
+
+const categoryEnum = [
+  "Technical",
+  "Cultural",
+  "Sports",
+  "Academic",
+  "Workshop",
+  "Seminar",
+  "Conference",
+  "Other",
+];
 
 const OrganizeEventForm = () => {
   const { userDetails } = useContext(AuthContext);
@@ -29,8 +35,6 @@ const OrganizeEventForm = () => {
     closeOrgEventForm,
     openOrgEventForm,
   } = useOrgEventForm();
-  const { isCreatePoolOpen, closeCreatePool, openCreatePool } =
-    useCreateVotingPool();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -122,11 +126,11 @@ const OrganizeEventForm = () => {
   const canProceedToNext = () => {
     switch (currentStep) {
       case 1:
-        return title && description && coverImg;
+        return title.trim() && description.trim() && venue.trim();
       case 2:
-        return venue && eventDate && category;
+        return eventDate && category && availableSeats > 0;
       case 3:
-        return availableSeats > 0;
+        return coverImg;
       default:
         return false;
     }
@@ -135,24 +139,24 @@ const OrganizeEventForm = () => {
   const renderStepIndicator = () => (
     <div className="flex items-center justify-center mb-8">
       {[1, 2, 3].map((step) => (
-        <div key={step} className="flex items-center">
+        <React.Fragment key={step}>
           <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold ${
+            className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
               currentStep >= step
                 ? "bg-indigo text-white"
                 : "bg-gray-200 text-gray-500"
             }`}
           >
-            {currentStep > step ? <FontAwesomeIcon icon={faCheck} /> : step}
+            {step}
           </div>
           {step < 3 && (
             <div
-              className={`w-16 h-1 mx-2 ${
+              className={`w-16 h-1 mx-2 transition-all ${
                 currentStep > step ? "bg-indigo" : "bg-gray-200"
               }`}
             />
           )}
-        </div>
+        </React.Fragment>
       ))}
     </div>
   );
@@ -162,315 +166,187 @@ const OrganizeEventForm = () => {
       case 1:
         return (
           <div className="space-y-6">
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                Event Details
-              </h3>
-              <p className="text-gray-600">
-                Let's start with the basic information about your event
-              </p>
-            </div>
-
-            {/* Event Poster */}
-            <div className="space-y-4">
-              <label className="block text-sm font-medium text-gray-700">
-                <FontAwesomeIcon icon={faImage} className="mr-2 text-indigo" />
-                Event Poster *
-              </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-indigo transition-colors relative">
-                {previewImage ? (
-                  <div className="space-y-4">
-                    <img
-                      src={previewImage}
-                      alt="Preview"
-                      className="w-48 h-32 object-cover rounded-lg mx-auto"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setCoverImg(null);
-                        setPreviewImage(null);
-                      }}
-                      className="text-red-500 hover:text-red-700 text-sm"
-                    >
-                      Remove Image
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    <FontAwesomeIcon
-                      icon={faImage}
-                      className="text-4xl text-gray-400 mb-4"
-                    />
-                    <p className="text-gray-600 mb-2">
-                      Click to upload event poster
-                    </p>
-                    <p className="text-sm text-gray-500">PNG, JPG up to 5MB</p>
-                  </div>
-                )}
-                <input
-                  type="file"
-                  onChange={handleImageChange}
-                  required
-                  accept="image/*"
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-              </div>
-            </div>
-
-            {/* Event Title */}
-            <div className="space-y-2">
-              <label
-                htmlFor="title"
-                className="block text-sm font-medium text-gray-700"
-              >
-                <FontAwesomeIcon icon={faEdit} className="mr-2 text-indigo" />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Event Title *
               </label>
               <input
-                id="title"
                 type="text"
                 value={title}
-                required
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo focus:border-transparent transition-all"
-                placeholder="e.g., Tech Meetup 2024"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo focus:border-transparent"
+                placeholder="Enter event title"
+                required
               />
             </div>
-
-            {/* Event Description */}
-            <div className="space-y-2">
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium text-gray-700"
-              >
-                <FontAwesomeIcon icon={faEdit} className="mr-2 text-indigo" />
-                Event Description *
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Description *
               </label>
               <textarea
-                id="description"
                 value={description}
-                required
                 onChange={(e) => setDescription(e.target.value)}
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo focus:border-transparent transition-all resize-none"
-                placeholder="Describe your event details, what attendees can expect, and any special highlights..."
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo focus:border-transparent"
+                placeholder="Describe your event"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Venue *
+              </label>
+              <input
+                type="text"
+                value={venue}
+                onChange={(e) => setVenue(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo focus:border-transparent"
+                placeholder="Enter venue"
+                required
               />
             </div>
           </div>
         );
-
       case 2:
         return (
           <div className="space-y-6">
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                Event Logistics
-              </h3>
-              <p className="text-gray-600">
-                Set the time, location, and category for your event
-              </p>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Event Date *
+              </label>
+              <input
+                type="date"
+                onChange={(e) => formatDate(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo focus:border-transparent"
+                required
+              />
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Event Date */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="date"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  <FontAwesomeIcon
-                    icon={faCalendarAlt}
-                    className="mr-2 text-indigo"
-                  />
-                  Event Date *
-                </label>
-                <input
-                  id="date"
-                  type="date"
-                  value={eventDate}
-                  onChange={(e) => formatDate(e.target.value)}
-                  min={new Date().toISOString().split("T")[0]}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo focus:border-transparent transition-all"
-                />
-              </div>
-
-              {/* Event Category */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="category"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  <FontAwesomeIcon icon={faEdit} className="mr-2 text-indigo" />
-                  Event Category *
-                </label>
-                <select
-                  id="category"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo focus:border-transparent transition-all"
-                >
-                  {categoryEnum.map((cat, index) => (
-                    <option key={index} value={cat}>
-                      {cat}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Venue */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="venue"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  <FontAwesomeIcon
-                    icon={faMapMarkerAlt}
-                    className="mr-2 text-indigo"
-                  />
-                  Venue *
-                </label>
-                <input
-                  id="venue"
-                  type="text"
-                  value={venue}
-                  onChange={(e) => setVenue(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo focus:border-transparent transition-all"
-                  placeholder="e.g., College Conference Hall"
-                />
-              </div>
-
-              {/* Available For */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="availableFor"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  <FontAwesomeIcon
-                    icon={faUsers}
-                    className="mr-2 text-indigo"
-                  />
-                  Available For *
-                </label>
-                <select
-                  id="availableFor"
-                  value={availableFor}
-                  onChange={(e) => setAvailableFor(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo focus:border-transparent transition-all"
-                >
-                  <option value="For Everyone">For Everyone</option>
-                  <option value="College Only">College Only</option>
-                </select>
-              </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Category *
+              </label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo focus:border-transparent"
+                required
+              >
+                {categoryEnum.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Available Seats *
+              </label>
+              <input
+                type="number"
+                value={availableSeats}
+                onChange={(e) => setAvailableSeats(parseInt(e.target.value))}
+                min="1"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo focus:border-transparent"
+                placeholder="Enter number of seats"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Available For
+              </label>
+              <select
+                value={availableFor}
+                onChange={(e) => setAvailableFor(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo focus:border-transparent"
+              >
+                <option value="For Everyone">For Everyone</option>
+                <option value="College Only">College Only</option>
+              </select>
             </div>
           </div>
         );
-
       case 3:
         return (
           <div className="space-y-6">
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                Event Capacity
-              </h3>
-              <p className="text-gray-600">
-                Set the number of participants your event can accommodate
-              </p>
-            </div>
-
-            <div className="max-w-md mx-auto">
-              <div className="space-y-2">
-                <label
-                  htmlFor="availableseats"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  <FontAwesomeIcon
-                    icon={faUsers}
-                    className="mr-2 text-indigo"
-                  />
-                  Available Seats *
-                </label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Event Cover Image *
+              </label>
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-indigo transition-colors">
                 <input
-                  type="number"
-                  id="availableseats"
-                  value={availableSeats}
-                  onChange={(e) => setAvailableSeats(e.target.value)}
-                  min="1"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo focus:border-transparent transition-all text-center text-2xl font-semibold"
-                  placeholder="0"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                  id="coverImage"
+                  required
                 />
-                <p className="text-sm text-gray-500 text-center">
-                  Maximum number of participants allowed
-                </p>
-              </div>
-            </div>
-
-            {/* Event Summary */}
-            <div className="bg-gray-50 rounded-lg p-6 mt-8">
-              <h4 className="font-semibold text-gray-800 mb-4">
-                Event Summary
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-gray-600">Title:</span>
-                  <p className="font-medium">{title || "Not set"}</p>
-                </div>
-                <div>
-                  <span className="text-gray-600">Category:</span>
-                  <p className="font-medium">{category}</p>
-                </div>
-                <div>
-                  <span className="text-gray-600">Date:</span>
-                  <p className="font-medium">{eventDate || "Not set"}</p>
-                </div>
-                <div>
-                  <span className="text-gray-600">Venue:</span>
-                  <p className="font-medium">{venue || "Not set"}</p>
-                </div>
-                <div>
-                  <span className="text-gray-600">Capacity:</span>
-                  <p className="font-medium">{availableSeats || "0"} seats</p>
-                </div>
-                <div>
-                  <span className="text-gray-600">Available For:</span>
-                  <p className="font-medium">{availableFor}</p>
-                </div>
+                <label htmlFor="coverImage" className="cursor-pointer block">
+                  {previewImage ? (
+                    <div className="relative">
+                      <img
+                        src={previewImage}
+                        alt="Preview"
+                        className="max-w-full h-64 object-cover rounded-lg mx-auto"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCoverImg(null);
+                          setPreviewImage(null);
+                        }}
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
+                      >
+                        <FontAwesomeIcon icon={faTimes} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div>
+                      <FontAwesomeIcon
+                        icon={faImage}
+                        className="text-4xl text-gray-400 mb-4"
+                      />
+                      <p className="text-gray-600">
+                        Click to upload or drag and drop
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        PNG, JPG, GIF up to 10MB
+                      </p>
+                    </div>
+                  )}
+                </label>
               </div>
             </div>
           </div>
         );
-
       default:
         return null;
     }
   };
 
   return (
-    <div className="w-full px-4 py-6">
+    <div>
       {isOrgEventOpen ? (
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-indigo to-indigoHover px-6 py-4 flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-white">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-8">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">
                   Create New Event
                 </h2>
-                <p className="text-gray-200 text-sm">Step {currentStep} of 3</p>
+                <button
+                  onClick={closeOrgEventForm}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <FontAwesomeIcon icon={faTimes} className="text-xl" />
+                </button>
               </div>
-              <button
-                onClick={closeOrgEventForm}
-                className="text-white hover:text-gray-200 transition-colors"
-              >
-                <FontAwesomeIcon icon={faClose} className="text-xl" />
-              </button>
-            </div>
 
-            {/* Progress Indicator */}
-            <div className="px-6 py-4 bg-gray-50">{renderStepIndicator()}</div>
+              {renderStepIndicator()}
 
-            {/* Form Content */}
-            <div className="px-6 py-8">
               <form onSubmit={handleCreateEvent}>
                 {renderStepContent()}
 
@@ -554,7 +430,6 @@ const OrganizeEventForm = () => {
               <button
                 onClick={() => {
                   openOrgEventForm();
-                  closeCreatePool();
                 }}
                 className="bg-gradient-to-r from-indigo to-indigoHover text-white px-8 py-4 rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200 font-semibold"
               >

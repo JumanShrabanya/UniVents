@@ -6,7 +6,6 @@ import { ActiveTabProvider, useActiveTab } from "../contexts/ActiveTabContext";
 import DashboardContent from "../components/DashboardContent";
 import { AuthContext } from "../contexts/Authcontext";
 import { OrganizeEventProvider } from "../contexts/OrganizeEventContext";
-import { CreteVotingPoolProvider } from "../contexts/CreateVotingPoolContext";
 
 const DashBoard = () => {
   const { role, userDetails } = useContext(AuthContext);
@@ -16,15 +15,13 @@ const DashBoard = () => {
   return (
     <ActiveTabProvider>
       <OrganizeEventProvider>
-        <CreteVotingPoolProvider>
-          <div>
-            <NavBar></NavBar>
-            <div className="flex lg:flex-row flex-col">
-              <SideNavigation></SideNavigation>
-              <DashboardContent></DashboardContent>
-            </div>
+        <div>
+          <NavBar></NavBar>
+          <div className="flex lg:flex-row flex-col">
+            <SideNavigation></SideNavigation>
+            <DashboardContent></DashboardContent>
           </div>
-        </CreteVotingPoolProvider>
+        </div>
       </OrganizeEventProvider>
     </ActiveTabProvider>
   );

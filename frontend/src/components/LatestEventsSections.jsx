@@ -2,15 +2,9 @@ import React, { useEffect, useState } from "react";
 import EventCard from "./EventCard";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { showPools } from "../services/ShowPools";
-import VotingPoolCard from "./VotingPoolCard";
 
 const LatestEventsSections = () => {
   const [events, setEvents] = useState([]);
-  const [pools, setPools] = useState([]);
-
-  // to set the option value
-  const [option, setOption] = useState("Events");
 
   const navigate = useNavigate();
   const handleExploreMoreEvent = () => {
@@ -30,50 +24,20 @@ const LatestEventsSections = () => {
       setEvents([]); // Handle errors
     }
   };
-  const latestPools = async () => {
-    try {
-      const response = await showPools();
-
-      // Slice the first 10 events
-      setPools(response.data.data.slice(0, 10));
-    } catch (error) {
-      setEvents([]);
-      setPools([]); // Handle errors
-    }
-  };
 
   useEffect(() => {
     latestEvent();
-    latestPools();
   }, []);
 
   return (
     <section className="px-[4vw] py-[2.5rem]">
       <div className="flex justify-between items-center mb-10">
         <h2 className="text-indigo text-[1.6rem]">Latest Events</h2>
-        <select
-          value={option}
-          onChange={(e) => setOption(e.target.value)}
-          id="eventORpool"
-          className="p-2 md:h-12 h-10 md:w-[10%] w-auto border-[1px] border-indigo text-black outline-none rounded-md"
-        >
-          <option value="Events" className="bg-white text-black">
-            Events
-          </option>
-          <option value="Pools" className="bg-white text-black">
-            Polls
-          </option>
-        </select>
       </div>
       <div className="flex lg:justify-between xl:justify-center items-center flex-wrap gap-10">
-        {option === "Pools"
-          ? pools.map((item, index) => (
-              <VotingPoolCard key={item._id} item={item}></VotingPoolCard>
-            ))
-          : events.map((item, index) => (
-              <EventCard key={index} item={item}></EventCard>
-            ))}
-        {}
+        {events.map((item, index) => (
+          <EventCard key={index} item={item}></EventCard>
+        ))}
       </div>
       {/* Explore more button */}
       <div className="w-full flex justify-center items-center pt-10">
