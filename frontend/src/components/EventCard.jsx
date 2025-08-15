@@ -1,6 +1,11 @@
 import React, { useContext, useEffect } from "react";
 import { faCalendarCheck } from "@fortawesome/free-regular-svg-icons";
-import { faLocationDot, faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import {
+  faLocationDot,
+  faUserGroup,
+  faUsers,
+  faClock,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRegisterCard } from "../contexts/RegisterCardContext";
 import { AuthContext } from "../contexts/Authcontext";
@@ -20,90 +25,147 @@ const EventCard = ({ item }) => {
     openRegisterCard(item);
     console.log(item.registrationAvailable);
   };
-  if (item.eventDate) {
-    // to format the date
-    // Convert to Date object
-    const date = new Date(item.eventDate);
-    // Format as YYYY-MM-DD
-    item.eventDate = date.toLocaleDateString("en-US", {
+
+  // Format date for display
+  const formatDate = (dateString) => {
+    if (!dateString) return "TBD";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      weekday: "short",
       day: "numeric",
       month: "short",
       year: "numeric",
     });
-  }
+  };
+
+  // Format time for display
+  const formatTime = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
     <div
       onClick={() => handleOpenRegisterCard(item)}
-      className="rounded-lg border-[1px] border-zinc-700 w-[100%] lg:w-[45%] xl:flex-none xl:w-[45%] h-[12rem] md:h-[14rem] xl:h-[18rem] p-2 flex md:gap-4 gap-2  hover:scale-[1.009] transition-all duration-150 ease-linear cursor-pointer"
+      className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group"
     >
-      {/* div to show the edit event details  */}
-      {/* left side image div */}
-      <div className="w-[45%] h-full relative overflow-hidden">
-        {/* to show the registration open or closed  */}
-        <div
-          className={`absolute top-2 right-0 z-10 py-1 px-4 rounded-l-full ${
-            item.registrationAvailable ? "bg-green-300" : "bg-gray-300"
-          }`}
-        >
-          <p className="text-[12px]">
-            {item.registrationAvailable ? "Open" : "Closed"}
-          </p>
+      {/* Image Section */}
+      <div className="relative h-48 overflow-hidden">
+        {/* Registration Status Badge */}
+        <div className="absolute top-3 right-3 z-10">
+          <span
+            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+              item.registrationAvailable
+                ? "bg-green-100 text-green-800"
+                : "bg-gray-100 text-gray-800"
+            }`}
+          >
+            {item.registrationAvailable
+              ? "Registration Open"
+              : "Registration Closed"}
+          </span>
         </div>
+
+        {/* Event Image */}
         <img
           src={item.coverImg}
           alt={item.title}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full rounded-lg object-cover"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       </div>
-      {/* right side info div */}
-      <div className="w-[55%] flex flex-col justify-between gap-1 overflow-hidden">
-        {/* title and description */}
-        <div>
-          <h3 className="text-[1.1rem] text-indigo mb-2 line-clamp-1">
-            {item.title}
-          </h3>
-          <p className="text-[11px] text-gray-700 line-clamp-3 md:line-clamp-4 flex-shrink-0 text-justify pr-8">
-            {item.description}
-          </p>
+
+      {/* Content Section */}
+      <div className="p-6">
+        {/* Event Title */}
+        <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors duration-200">
+          {item.title}
+        </h3>
+
+        {/* Event Description */}
+        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+          {item.description}
+        </p>
+
+        {/* Event Details */}
+        <div className="space-y-3">
+          {/* Date and Time */}
+          <div className="flex items-center text-sm text-gray-600">
+            <FontAwesomeIcon
+              icon={faCalendarCheck}
+              className="w-4 h-4 mr-3 text-indigo-500"
+            />
+            <div>
+              <span className="font-medium">{formatDate(item.eventDate)}</span>
+              {formatTime(item.eventDate) && (
+                <span className="text-gray-500 ml-2">
+                  at {formatTime(item.eventDate)}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Venue */}
+          <div className="flex items-center text-sm text-gray-600">
+            <FontAwesomeIcon
+              icon={faLocationDot}
+              className="w-4 h-4 mr-3 text-indigo-500"
+            />
+            <span className="line-clamp-1">{item.venue}</span>
+          </div>
+
+          {/* Organizer */}
+          <div className="flex items-center text-sm text-gray-600">
+            <FontAwesomeIcon
+              icon={faUserGroup}
+              className="w-4 h-4 mr-3 text-indigo-500"
+            />
+            <span className="line-clamp-1">
+              {item.organizer?.clubName || "Unknown Organizer"}
+            </span>
+          </div>
+
+          {/* Capacity Info */}
+          {item.availableSeats !== undefined && (
+            <div className="flex items-center text-sm text-gray-600">
+              <FontAwesomeIcon
+                icon={faUsers}
+                className="w-4 h-4 mr-3 text-indigo-500"
+              />
+              <span>
+                {item.registeredParticipants?.length || 0} /{" "}
+                {item.availableSeats} registered
+              </span>
+            </div>
+          )}
+
+          {/* Category */}
+          {item.category && (
+            <div className="flex items-center text-sm text-gray-600">
+              <FontAwesomeIcon
+                icon={faClock}
+                className="w-4 h-4 mr-3 text-indigo-500"
+              />
+              <span>
+                {typeof item.category === "object"
+                  ? item.category.categoryTitle
+                  : item.category}
+              </span>
+            </div>
+          )}
         </div>
-        {/* venue, date and orgnizer */}
-        <div className="md:mb-[30px] mb-[15px] flex flex-col gap-1 pr-5">
-          {/* venue */}
-          <div className="flex gap-2 items-center mt-2">
-            <div className="flex items-center gap-1 lg:gap-2 min-w-[33%] md:min-w-[24%] lg:min-w-[40%] xl:min-w-[26%]">
-              <FontAwesomeIcon
-                icon={faLocationDot}
-                color="gray"
-                className="text-[9px] md:text-[12px]"
-              ></FontAwesomeIcon>
-              <p className="text-[11px] md:text-[14px] text-black">{`Venue: `}</p>
-            </div>
-            <p className="text-[11px] md:text-[14px] text-indigo line-clamp-1">{`${item.venue}`}</p>
-          </div>
-          {/* date */}
-          <div className="flex gap-2 items-center ">
-            <div className="flex items-center gap-1 lg:gap-2 min-w-[33%] md:min-w-[24%] lg:min-w-[40%] xl:min-w-[26%]">
-              <FontAwesomeIcon
-                icon={faCalendarCheck}
-                color="gray"
-                className="text-[9px] md:text-[12px]"
-              ></FontAwesomeIcon>
-              <p className="text-[11px] md:text-[14px] text-black">{`Date: `}</p>
-            </div>
-            <p className="text-left  text-[11px] md:text-[14px] text-indigo line-clamp-1">{`${item.eventDate}`}</p>
-          </div>
-          {/* organizer */}
-          <div className="flex gap-2 items-center">
-            <div className="flex items-center gap-1 lg:gap-2 min-w-[33%] md:min-w-[24%] lg:min-w-[40%] xl:min-w-[26%]">
-              <FontAwesomeIcon
-                icon={faUserGroup}
-                color="gray"
-                className="text-[8px] md:text-[12px]"
-              ></FontAwesomeIcon>
-              <p className="text-[11px] md:text-[14px] text-black">{`Organizer: `}</p>
-            </div>
-            <p className="text-[11px] md:text-[14px] text-indigo line-clamp-1">{`${item.organizer.clubName}`}</p>
-          </div>
+
+        {/* Action Button */}
+        <div className="mt-6 pt-4 border-t border-gray-100">
+          <button className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-200 font-medium text-sm">
+            View Details
+          </button>
         </div>
       </div>
     </div>

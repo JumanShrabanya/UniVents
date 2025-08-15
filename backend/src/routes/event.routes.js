@@ -12,7 +12,12 @@ import Authorization from "../middlewares/Authorization.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
 const router = Router();
 
-router.route("/events").get(showEvents);
+// Main events route - can handle both all events and search
+router.route("/").get(showEvents);
+
+// Specific search route (for backward compatibility)
+router.route("/search").get(searchEvent);
+
 router
   .route("/create-event")
   .post(
@@ -21,10 +26,11 @@ router
     upload.single("coverImg"),
     createEvent
   );
-router.route("/").get(searchEvent);
+
 router.route("/check-registration").post(checkRegistration);
 router
   .route("/events-register")
   .post(Authentication, Authorization("student"), registerForEvent);
 router.route("/categories").get(Authentication, showCategories);
+
 export default router;

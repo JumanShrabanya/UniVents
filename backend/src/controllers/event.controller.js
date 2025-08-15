@@ -13,21 +13,94 @@ import mongoose from "mongoose";
 
 // to show the events
 const showEvents = asyncHandler(async (req, res) => {
-  const events = await Event.find({})
-    .populate({
-      path: "organizer",
-      select: "clubName collegeName", // Fields you want from the organizer
-    })
-    .populate({
-      path: "category", // Assuming `category` is a reference field in your Event schema
-      select: "categoryTitle", // Fields you want from the category
-    })
-    .sort({ createdAt: -1 });
+  const { search, page = 1, limit = 10 } = req.query;
 
-  if (!events || events.length === 0) {
-    throw new ApiError(404, "No events found");
+  // Convert page and limit to numbers and validate
+  const pageNumber = parseInt(page) || 1;
+  const limitNumber = parseInt(limit) || 10;
+
+  // Ensure reasonable limits
+  const maxLimit = 50; // Maximum 50 events per request
+  const actualLimit = Math.min(limitNumber, maxLimit);
+  const skip = (pageNumber - 1) * actualLimit;
+
+  let events;
+  let totalEvents = 0;
+
+  try {
+    if (search && search.trim()) {
+      // If search query is provided, search across multiple fields
+      const searchQuery = {
+        $or: [
+          { title: { $regex: search.trim(), $options: "i" } },
+          { description: { $regex: search.trim(), $options: "i" } },
+          { collegeName: { $regex: search.trim(), $options: "i" } },
+        ],
+      };
+
+      // Get total count for pagination
+      totalEvents = await Event.countDocuments(searchQuery);
+
+      // Get paginated results
+      events = await Event.find(searchQuery)
+        .populate({
+          path: "organizer",
+          select: "clubName collegeName",
+        })
+        .populate({
+          path: "category",
+          select: "categoryTitle",
+        })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(actualLimit);
+    } else {
+      // If no search query, return all events with pagination
+      totalEvents = await Event.countDocuments({});
+
+      events = await Event.find({})
+        .populate({
+          path: "organizer",
+          select: "clubName collegeName",
+        })
+        .populate({
+          path: "category",
+          select: "categoryTitle",
+        })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(actualLimit);
+    }
+
+    // Return empty array if no events found (don't throw error)
+    if (!events) {
+      events = [];
+    }
+
+    // Calculate pagination info
+    const totalPages = Math.ceil(totalEvents / actualLimit);
+    const hasNextPage = pageNumber < totalPages;
+    const hasPrevPage = pageNumber > 1;
+
+    const response = {
+      events,
+      pagination: {
+        currentPage: pageNumber,
+        totalPages,
+        totalEvents,
+        eventsPerPage: actualLimit,
+        hasNextPage,
+        hasPrevPage,
+      },
+    };
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, response, "Events retrieved successfully"));
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    res.status(500).json(new ApiResponse(500, [], "Error fetching events"));
   }
-  res.status(200).json(new ApiResponse(201, events));
 });
 
 // to handle the creation of a event
@@ -128,33 +201,82 @@ const createEvent = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, newEvent, "Event created successfully"));
 });
 
-// to handle event by search query
+// to handle event by search query (keeping for backward compatibility)
 const searchEvent = asyncHandler(async (req, res) => {
   // Get the query params
-  const { search } = req.query;
+  const { search, page = 1, limit = 10 } = req.query;
 
-  if (!search) {
-    throw new ApiError(404, "Search query is required");
+  if (!search || !search.trim()) {
+    throw new ApiError(400, "Search query is required");
   }
 
-  // Query to search across title and collegeName
-  const matchingEvents = await Event.find({
-    $and: [
-      {
-        $or: [
-          { title: { $regex: search, $options: "i" } },
-          { collegeName: { $regex: search, $options: "i" } },
-        ],
+  // Convert page and limit to numbers and validate
+  const pageNumber = parseInt(page) || 1;
+  const limitNumber = parseInt(limit) || 10;
+
+  // Ensure reasonable limits
+  const maxLimit = 50; // Maximum 50 events per request
+  const actualLimit = Math.min(limitNumber, maxLimit);
+  const skip = (pageNumber - 1) * actualLimit;
+
+  try {
+    // Query to search across title, description, and collegeName
+    const searchQuery = {
+      $or: [
+        { title: { $regex: search.trim(), $options: "i" } },
+        { description: { $regex: search.trim(), $options: "i" } },
+        { collegeName: { $regex: search.trim(), $options: "i" } },
+      ],
+    };
+
+    // Get total count for pagination
+    const totalEvents = await Event.countDocuments(searchQuery);
+
+    if (totalEvents === 0) {
+      throw new ApiError(404, "No events found");
+    }
+
+    // Get paginated results
+    const matchingEvents = await Event.find(searchQuery)
+      .populate({
+        path: "organizer",
+        select: "clubName collegeName",
+      })
+      .populate({
+        path: "category",
+        select: "categoryTitle",
+      })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(actualLimit);
+
+    // Calculate pagination info
+    const totalPages = Math.ceil(totalEvents / actualLimit);
+    const hasNextPage = pageNumber < totalPages;
+    const hasPrevPage = pageNumber > 1;
+
+    const response = {
+      events: matchingEvents,
+      pagination: {
+        currentPage: pageNumber,
+        totalPages,
+        totalEvents,
+        eventsPerPage: actualLimit,
+        hasNextPage,
+        hasPrevPage,
       },
-      { registrationAvailable: true },
-    ],
-  });
+    };
 
-  if (matchingEvents.length === 0) {
-    throw new ApiError(404, "No events found");
+    res
+      .status(200)
+      .json(new ApiResponse(200, response, "Events found successfully"));
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    console.error("Error searching events:", error);
+    res.status(500).json(new ApiResponse(500, [], "Error searching events"));
   }
-
-  res.status(200).json(new ApiResponse("Found events: ", matchingEvents));
 });
 
 // to register for an event
