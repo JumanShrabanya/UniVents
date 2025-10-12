@@ -1,10 +1,12 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { faCalendarCheck } from "@fortawesome/free-regular-svg-icons";
 import {
   faLocationDot,
   faUserGroup,
   faUsers,
   faClock,
+  faShare,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRegisterCard } from "../contexts/RegisterCardContext";
@@ -12,6 +14,8 @@ import { AuthContext } from "../contexts/Authcontext";
 import { checkRegistration } from "../services/CheckRegistration";
 
 const EventCard = ({ item }) => {
+  const navigate = useNavigate();
+  const [copied, setCopied] = useState(false);
   const { isRegisterCardOpen, openRegisterCard, closeRegisterCard, eventData } =
     useRegisterCard();
   const { role, userDetails } = useContext(AuthContext);
@@ -24,6 +28,33 @@ const EventCard = ({ item }) => {
     };
     openRegisterCard(item);
     console.log(item.registrationAvailable);
+  };
+
+  // Handle share functionality
+  const handleShare = async (e) => {
+    e.stopPropagation(); // Prevent card click
+    const eventUrl = `${window.location.origin}/event/${item._id}`;
+    try {
+      await navigator.clipboard.writeText(eventUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = eventUrl;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  // Handle navigation to event details page
+  const handleViewDetails = (e) => {
+    e.stopPropagation(); // Prevent card click
+    navigate(`/event/${item._id}`);
   };
 
   // Format date for display
@@ -55,8 +86,20 @@ const EventCard = ({ item }) => {
     >
       {/* Image Section */}
       <div className="relative h-48 overflow-hidden">
-        {/* Registration Status Badge */}
-        <div className="absolute top-3 right-3 z-10">
+        {/* Share Button */}
+        <div className="absolute top-3 right-3 z-10 flex gap-2">
+          <button
+            onClick={handleShare}
+            className={`p-2 rounded-lg transition-all duration-200 ${
+              copied
+                ? "bg-green-600 text-white"
+                : "bg-white/90 text-gray-700 hover:bg-white"
+            }`}
+          >
+            <FontAwesomeIcon icon={faShare} className="text-sm" />
+          </button>
+
+          {/* Registration Status Badge */}
           <span
             className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
               item.registrationAvailable
@@ -163,7 +206,10 @@ const EventCard = ({ item }) => {
 
         {/* Action Button */}
         <div className="mt-6 pt-4 border-t border-gray-100">
-          <button className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-200 font-medium text-sm">
+          <button
+            onClick={handleViewDetails}
+            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-200 font-medium text-sm"
+          >
             View Details
           </button>
         </div>

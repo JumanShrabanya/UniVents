@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendarCheck,
@@ -8,10 +9,13 @@ import {
   faEye,
   faEdit,
   faTrash,
+  faShare,
 } from "@fortawesome/free-solid-svg-icons";
 import { GetRegisteredParticipants } from "../services/GetRegisteredParticipants";
 
 const OrganizerEventCard = ({ item }) => {
+  const navigate = useNavigate();
+  const [copied, setCopied] = useState(false);
   const [registeredParticipants, setRegisteredParticipants] = useState([]);
   const [showParticipants, setShowParticipants] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -48,6 +52,33 @@ const OrganizerEventCard = ({ item }) => {
     setShowParticipants(!showParticipants);
   };
 
+  // Handle share functionality
+  const handleShare = async (e) => {
+    e.stopPropagation(); // Prevent card click
+    const eventUrl = `${window.location.origin}/event/${item._id}`;
+    try {
+      await navigator.clipboard.writeText(eventUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = eventUrl;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  // Handle navigation to event details page
+  const handleViewDetails = (e) => {
+    e.stopPropagation(); // Prevent card click
+    navigate(`/event/${item._id}`);
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-300">
       {/* Event Image */}
@@ -57,7 +88,18 @@ const OrganizerEventCard = ({ item }) => {
           alt={item.title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 flex gap-2">
+          <button
+            onClick={handleShare}
+            className={`p-2 rounded-lg transition-all duration-200 ${
+              copied
+                ? "bg-green-600 text-white"
+                : "bg-white/90 text-gray-700 hover:bg-white"
+            }`}
+          >
+            <FontAwesomeIcon icon={faShare} className="text-sm" />
+          </button>
+
           <div
             className={`px-3 py-1 rounded-full text-xs font-semibold ${
               item.registrationAvailable
@@ -145,11 +187,17 @@ const OrganizerEventCard = ({ item }) => {
         {/* Action Buttons */}
         <div className="flex gap-3">
           <button
-            onClick={toggleParticipants}
+            onClick={handleViewDetails}
             className="flex-1 flex items-center justify-center gap-2 bg-indigo text-white py-2 px-4 rounded-lg hover:bg-indigoHover transition-colors duration-200"
           >
             <FontAwesomeIcon icon={faEye} className="w-4" />
-            {showParticipants ? "Hide" : "View"} Participants
+            View Details
+          </button>
+          <button
+            onClick={toggleParticipants}
+            className="flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-2 px-3 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+          >
+            <FontAwesomeIcon icon={faUsers} className="w-4" />
           </button>
           <button className="flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-2 px-3 rounded-lg hover:bg-gray-200 transition-colors duration-200">
             <FontAwesomeIcon icon={faEdit} className="w-4" />

@@ -17,7 +17,7 @@ import LoaderAnimation from "./LoaderAnimation.jsx";
 import { AuthContext } from "../contexts/Authcontext.jsx";
 
 const categoryEnum = [
-  "Technical",
+  "Technology",
   "Cultural",
   "Sports",
   "Academic",

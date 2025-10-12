@@ -152,10 +152,10 @@ const createEvent = asyncHandler(async (req, res) => {
   }
 
   // Validate the category
-  const allCategories = Category.getPredefinedCategories();
-  if (!allCategories.includes(category)) {
-    throw new ApiError(400, "Invalid category.");
-  }
+  // const allCategories = Category.getPredefinedCategories();
+  // if (!allCategories.includes(category)) {
+  //   throw new ApiError(400, "Invalid category.");
+  // }
 
   // Fetch or create category
   let categoryDoc = await Category.findOne({ categoryTitle: category });
@@ -385,6 +385,46 @@ const showCategories = asyncHandler(async (req, res) => {
     res.status(404).json(new ApiError("No categories found!"));
   }
 });
+
+// to get individual event details by ID
+const getEventById = asyncHandler(async (req, res) => {
+  const { eventId } = req.params;
+
+  if (!eventId) {
+    throw new ApiError(400, "Event ID is required");
+  }
+
+  try {
+    const event = await Event.findById(eventId)
+      .populate({
+        path: "organizer",
+        select: "clubName collegeName",
+      })
+      .populate({
+        path: "category",
+        select: "categoryTitle",
+      });
+
+    if (!event) {
+      throw new ApiError(404, "Event not found");
+    }
+
+    res
+      .status(200)
+      .json(
+        new ApiResponse(200, event, "Event details retrieved successfully")
+      );
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    console.error("Error fetching event details:", error);
+    res
+      .status(500)
+      .json(new ApiResponse(500, null, "Error fetching event details"));
+  }
+});
+
 export {
   showEvents,
   createEvent,
@@ -392,4 +432,5 @@ export {
   registerForEvent,
   showCategories,
   checkRegistration,
+  getEventById,
 };
