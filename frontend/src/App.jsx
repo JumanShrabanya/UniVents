@@ -19,6 +19,7 @@ import ProfilePage from "./pages/ProfilePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { CheckRegistrationProvider } from "./contexts/CheckRegistrationContext";
 import VerifyEmail from "./components/VerifiyEmail";
+import EventDetailsPage from "./pages/EventDetailsPage";
 
 const App = () => {
   return (
@@ -77,6 +78,10 @@ const App = () => {
                         element={<EventsPage></EventsPage>}
                       ></Route>
                       <Route
+                        path="/event/:eventId"
+                        element={<EventDetailsPage></EventDetailsPage>}
+                      ></Route>
+                      <Route
                         path="/profile/:userId"
                         element={
                           <ProtectedRoute
@@ -107,3 +112,4 @@ const App = () => {
 };
 
 export default App;
+
