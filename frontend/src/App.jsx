@@ -20,6 +20,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { CheckRegistrationProvider } from "./contexts/CheckRegistrationContext";
 import VerifyEmail from "./components/VerifiyEmail";
 import EventDetailsPage from "./pages/EventDetailsPage";
+import OrganizerEventDetailsPage from "./pages/OrganizerEventDetailsPage";
 
 const App = () => {
   return (
@@ -76,6 +77,14 @@ const App = () => {
                       <Route
                         path="/events"
                         element={<EventsPage></EventsPage>}
+                      ></Route>
+                      <Route
+                        path="/dashboard/:userId/event/:eventId"
+                        element={
+                          <ProtectedRoute
+                            element={<OrganizerEventDetailsPage></OrganizerEventDetailsPage>}
+                          ></ProtectedRoute>
+                        }
                       ></Route>
                       <Route
                         path="/event/:eventId"
