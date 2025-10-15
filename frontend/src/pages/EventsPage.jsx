@@ -26,7 +26,7 @@ const EventsPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState("date"); // "date", "title", "organizer"
   const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
-  const [availabilityFilter, setAvailabilityFilter] = useState("all"); // "all", "open", "closed"
+  const [availabilityFilter, setAvailabilityFilter] = useState("open"); // default to open; options: "all", "open", "closed"
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -49,11 +49,12 @@ const EventsPage = () => {
   const fetchAllEvents = async (page = 1, limit = 10) => {
     setLoading(true);
     try {
+      const params = { page, limit };
+      if (availabilityFilter !== "all") {
+        params.registrationAvailable = availabilityFilter === "open"; // hint to backend
+      }
       const response = await axios.get("http://localhost:8000/api/v1/event/", {
-        params: {
-          page,
-          limit,
-        },
+        params,
       });
 
       const { events: fetchedEvents, pagination } = response.data.data;
@@ -81,12 +82,12 @@ const EventsPage = () => {
 
     setLoading(true);
     try {
+      const params = { search: searchQuery, page, limit };
+      if (availabilityFilter !== "all") {
+        params.registrationAvailable = availabilityFilter === "open";
+      }
       const response = await axios.get("http://localhost:8000/api/v1/event/", {
-        params: {
-          search: searchQuery,
-          page,
-          limit,
-        },
+        params,
       });
 
       const { events: fetchedEvents, pagination } = response.data.data;
@@ -129,7 +130,13 @@ const EventsPage = () => {
             event.description.toLowerCase().includes(query)
           );
         } else if (searchType === "college") {
-          return event.organizer?.college?.toLowerCase().includes(query);
+          // normalize potential shapes: organizer.collegeName, organizer.college, event.collegeName
+          const orgCollege = event.organizer?.collegeName || event.organizer?.college || "";
+          const eventCollege = event.collegeName || "";
+          return (
+            orgCollege.toLowerCase().includes(query) ||
+            eventCollege.toLowerCase().includes(query)
+          );
         }
         return true;
       });
@@ -171,7 +178,7 @@ const EventsPage = () => {
     setSearchType("title");
     setSortBy("date");
     setSortOrder("asc");
-    setAvailabilityFilter("all");
+    setAvailabilityFilter("open");
     setCurrentPage(1);
     fetchAllEvents(1, eventsPerPage);
   };
@@ -392,7 +399,7 @@ const EventsPage = () => {
               <h2 className="text-2xl font-bold text-gray-900">
                 {loading
                   ? "Searching..."
-                  : `${totalEvents} Event${totalEvents !== 1 ? "s" : ""} Found`}
+                  : `${filteredEvents.length} Event${filteredEvents.length !== 1 ? "s" : ""} Found`}
               </h2>
               {searchQuery && (
                 <p className="text-gray-600 mt-1">
