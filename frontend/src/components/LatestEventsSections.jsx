@@ -11,15 +11,29 @@ const LatestEventsSections = () => {
     navigate("/events");
   };
 
-  // Fetch the latest events
+  // Fetch the latest events (prefer 3 upcoming with registration open)
   const latestEvent = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/v1/event/events"
-      );
+      // Try the paginated endpoint first with filters
+      const paged = await axios.get("http://localhost:8000/api/v1/event/", {
+        params: { page: 1, limit: 3, registrationAvailable: true },
+      });
+      const pagedEvents = paged?.data?.data?.events || [];
+      if (pagedEvents.length > 0) {
+        setEvents(pagedEvents);
+        return;
+      }
 
-      // Slice the first 10 events
-      setEvents(response.data.data.slice(0, 10));
+      // Fallback to legacy list endpoint
+      const response = await axios.get("http://localhost:8000/api/v1/event/events");
+      const list = Array.isArray(response.data?.data) ? response.data.data : [];
+      const now = new Date();
+      const openUpcoming = list
+        .filter((e) => e?.registrationAvailable && e?.eventDate && new Date(e.eventDate) >= now)
+        .sort((a, b) => new Date(a.eventDate) - new Date(b.eventDate))
+        .slice(0, 3);
+
+      setEvents(openUpcoming.length > 0 ? openUpcoming : list.slice(0, 10));
     } catch (error) {
       setEvents([]); // Handle errors
     }
@@ -34,9 +48,9 @@ const LatestEventsSections = () => {
       <div className="flex justify-between items-center mb-10">
         <h2 className="text-indigo text-[1.6rem]">Latest Events</h2>
       </div>
-      <div className="flex lg:justify-between xl:justify-center items-center flex-wrap gap-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {events.map((item, index) => (
-          <EventCard key={index} item={item}></EventCard>
+          <EventCard key={index} item={item} />
         ))}
       </div>
       {/* Explore more button */}

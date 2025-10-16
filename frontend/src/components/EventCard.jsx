@@ -82,7 +82,7 @@ const EventCard = ({ item }) => {
   return (
     <div
       onClick={() => handleOpenRegisterCard(item)}
-      className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group"
+      className="w-full bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group"
     >
       {/* Image Section */}
       <div className="relative h-48 overflow-hidden">
