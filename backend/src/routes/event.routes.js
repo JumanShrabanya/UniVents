@@ -8,7 +8,7 @@ import {
   checkRegistration,
   getEventById,
 } from "../controllers/event.controller.js";
-import Authorization from "../middlewares/Authorization.middleware.js";
+import Authorization from "../middlewares/authorization.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJwt } from "../middlewares/auth.middleware.js";
 const router = Router();
