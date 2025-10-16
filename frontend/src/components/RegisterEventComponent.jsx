@@ -54,7 +54,7 @@ const RegisterEventComponent = () => {
 
     const eventId = eventData._id;
     const studentId = userDetails._id;
-    const apiUrl = `http://localhost:8000/app/alreadyRegistered`;
+    const apiUrl = `https://univents-backend.vercel.app/app/alreadyRegistered`;
     try {
       const response = await axios.post(
         apiUrl,
@@ -90,7 +90,7 @@ const RegisterEventComponent = () => {
       );
       return;
     }
-    const apiUrl = "http://localhost:8000/api/v1/event/events-register";
+    const apiUrl = "https://univents-backend.vercel.app/api/v1/event/events-register";
     try {
       const response = await axios.post(
         apiUrl,

@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
   const checkAuthStatus = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/api/v1/user/check-auth-status",
+        "https://univents-backend.vercel.app/api/v1/user/check-auth-status",
         {
           withCredentials: true,
         }

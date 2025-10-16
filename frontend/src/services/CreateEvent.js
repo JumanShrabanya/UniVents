@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiUrl = "http://localhost:8000/api/v1/event/create-event";
+const apiUrl = "https://univents-backend.vercel.app/api/v1/event/create-event";
 
 export const CreateEvent = async ({
   title,

@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const apiUrlParticipant =
-  "http://localhost:8000/api/v1/user/register-participant";
-const apiUrlOrg = "http://localhost:8000/api/v1/user/register-club";
+  "https://univents-backend.vercel.app/api/v1/user/register-participant";
+const apiUrlOrg = "https://univents-backend.vercel.app/api/v1/user/register-club";
 
 export const registerUser = async (
   { email, name, clubName, semester, password, collegeName, rollNo },

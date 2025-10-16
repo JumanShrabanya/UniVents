@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const RegisteredEvents = async () => {
-  const apiUrl = "http://localhost:8000/app/registered-events";
+  const apiUrl = "https://univents-backend.vercel.app/app/registered-events";
   try {
     const response = await axios.get(apiUrl, {
       withCredentials: true,

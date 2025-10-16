@@ -11,7 +11,7 @@ const VerifyEmail = () => {
     const verifyEmail = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/auth/verify-email/${token}`
+          `https://univents-backend.vercel.app/auth/verify-email/${token}`
         );
         setStatus(response.data.message);
         console.log("from the email response", response);

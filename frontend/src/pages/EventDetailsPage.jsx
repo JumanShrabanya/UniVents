@@ -30,7 +30,7 @@ const EventDetailsPage = () => {
       setLoading(true);
       setError("");
       try {
-        const res = await axios.get(`http://localhost:8000/api/v1/event/${eventId}`);
+        const res = await axios.get(`https://univents-backend.vercel.app/api/v1/event/${eventId}`);
         setEvent(res.data?.data || null);
       } catch (e) {
         setError(
@@ -65,7 +65,7 @@ const EventDetailsPage = () => {
         return;
       }
       try {
-        const apiUrl = `http://localhost:8000/app/alreadyRegistered`;
+        const apiUrl = `https://univents-backend.vercel.app/app/alreadyRegistered`;
         const response = await axios.post(
           apiUrl,
           { eventId: event._id, studentId: userDetails._id },
@@ -124,7 +124,7 @@ const EventDetailsPage = () => {
     }
 
     try {
-      const apiUrl = "http://localhost:8000/api/v1/event/events-register";
+      const apiUrl = "https://univents-backend.vercel.app/api/v1/event/events-register";
       const response = await axios.post(
         apiUrl,
         { eventId: event._id, studentId: userDetails._id },

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiUrl =
-  "http://localhost:8000/dashboard-organizer/get-registered-participants";
+  "https://univents-backend.vercel.app/dashboard-organizer/get-registered-participants";
 
 export const GetRegisteredParticipants = async (eventId) => {
   console.log(eventId);

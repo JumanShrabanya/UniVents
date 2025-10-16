@@ -76,7 +76,7 @@ const ProfileComponent = () => {
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");
 
-    const apiUrl = "http://localhost:8000/api/v1/user/logout";
+    const apiUrl = "https://univents-backend.vercel.app/api/v1/user/logout";
     try {
       // Ensure cookies are sent with the request
       const response = await axios.post(apiUrl, {}, { withCredentials: true });

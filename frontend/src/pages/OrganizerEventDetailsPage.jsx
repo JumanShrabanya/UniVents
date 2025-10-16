@@ -22,7 +22,7 @@ const OrganizerEventDetailsPage = () => {
       setError("");
       try {
         // fetch event details
-        const res = await axios.get(`http://localhost:8000/api/v1/event/${eventId}`);
+        const res = await axios.get(`https://univents-backend.vercel.app/api/v1/event/${eventId}`);
         setEvent(res.data?.data || null);
         // fetch registrations
         const regs = await GetRegisteredParticipants(eventId);

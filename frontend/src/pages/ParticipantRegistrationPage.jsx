@@ -106,7 +106,7 @@ const ParticipantRegistrationPage = () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/otp/register",
+        "https://univents-backend.vercel.app/api/v1/otp/register",
         {
           method: "POST",
           headers: {

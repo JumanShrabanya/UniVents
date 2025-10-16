@@ -103,7 +103,7 @@ const OTPVerificationPage = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/otp/verify", {
+      const response = await fetch("https://univents-backend.vercel.app/api/v1/otp/verify", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -150,7 +150,7 @@ const OTPVerificationPage = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/otp/resend", {
+      const response = await fetch("https://univents-backend.vercel.app/api/v1/otp/resend", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

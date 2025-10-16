@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const checkRegistration = async ({ eventId, studentId }) => {
-  const apiUrl = "http://localhost:8000/api/v1/event/check-registration";
+  const apiUrl = "https://univents-backend.vercel.app/api/v1/event/check-registration";
 
   try {
     const response = await axios.post(

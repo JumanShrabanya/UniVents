@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiUrl = "http://localhost:8000/api/v1/user/update-profile";
+const apiUrl = "https://univents-backend.vercel.app/api/v1/user/update-profile";
 
 export const UpdateProfile = async ({ payload, role }) => {
   try {

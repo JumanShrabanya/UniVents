@@ -3,7 +3,7 @@ import axios from "axios";
 export const CreatedEvents = async () => {
   try {
     const response = await axios.get(
-      "http://localhost:8000/dashboard-organizer/created-events",
+      "https://univents-backend.vercel.app/dashboard-organizer/created-events",
       { withCredentials: true }
     );
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiUrl = "http://localhost:8000/dashboard-organizer/update-event";
+const apiUrl = "https://univents-backend.vercel.app/dashboard-organizer/update-event";
 
 export const UpdateEventDetails = async (eventId, details) => {
   try {

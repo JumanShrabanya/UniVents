@@ -53,7 +53,7 @@ const EventsPage = () => {
       if (availabilityFilter !== "all") {
         params.registrationAvailable = availabilityFilter === "open"; // hint to backend
       }
-      const response = await axios.get("http://localhost:8000/api/v1/event/", {
+      const response = await axios.get("https://univents-backend.vercel.app/api/v1/event/", {
         params,
       });
 
@@ -86,7 +86,7 @@ const EventsPage = () => {
       if (availabilityFilter !== "all") {
         params.registrationAvailable = availabilityFilter === "open";
       }
-      const response = await axios.get("http://localhost:8000/api/v1/event/", {
+      const response = await axios.get("https://univents-backend.vercel.app/api/v1/event/", {
         params,
       });
 

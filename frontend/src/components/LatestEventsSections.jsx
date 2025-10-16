@@ -15,7 +15,7 @@ const LatestEventsSections = () => {
   const latestEvent = async () => {
     try {
       // Try the paginated endpoint first with filters
-      const paged = await axios.get("http://localhost:8000/api/v1/event/", {
+      const paged = await axios.get("https://univents-backend.vercel.app/api/v1/event/", {
         params: { page: 1, limit: 3, registrationAvailable: true },
       });
       const pagedEvents = paged?.data?.data?.events || [];
@@ -25,7 +25,7 @@ const LatestEventsSections = () => {
       }
 
       // Fallback to legacy list endpoint
-      const response = await axios.get("http://localhost:8000/api/v1/event/events");
+      const response = await axios.get("https://univents-backend.vercel.app/api/v1/event/events");
       const list = Array.isArray(response.data?.data) ? response.data.data : [];
       const now = new Date();
       const openUpcoming = list
