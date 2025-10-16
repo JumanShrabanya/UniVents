@@ -3,15 +3,22 @@ import { db_name } from "../constants.js";
 
 const connectDB = async () => {
   try {
-    const connectionInstance = await mongoose.connect(
-      `${process.env.MONGODB_URI}/${db_name}`
-    );
+    if (mongoose.connection.readyState === 1) {
+      return;
+    }
+
+    const baseUri = process.env.MONGODB_URI;
+    if (!baseUri) {
+      throw new Error("MONGODB_URI is not set");
+    }
+
+    const connectionInstance = await mongoose.connect(`${baseUri}/${db_name}`);
     console.log(
       `mongoDB conneted. DB Host: ${connectionInstance.connection.host}`
     );
   } catch (error) {
     console.error("error:", error);
-    process.exit(1);
+    throw error;
   }
 };
 

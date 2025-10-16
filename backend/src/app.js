@@ -3,10 +3,14 @@ import express from "express";
 import cookieParser from "cookie-parser";
 const app = express();
 
+const allowedOrigins = process.env.ALLOWED_ORIGIN
+  ? process.env.ALLOWED_ORIGIN.split(",")
+  : ["http://localhost:5173"];
+
 app.use(
   cors({
-    origin: "http://localhost:5173", // Your frontend origin
-    credentials: true, // Allow credentials like cookies
+    origin: allowedOrigins,
+    credentials: true,
   })
 );
 
