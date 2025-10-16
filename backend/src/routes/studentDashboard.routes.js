@@ -1,6 +1,6 @@
 import { Router } from "express";
-import Authentication from "../middlewares/Authentication.middleware.js";
 import Authorization from "../middlewares/Authorization.middleware.js";
+import { verifyJwt } from "../middlewares/auth.middleware.js";
 import {
   registerEvent,
   registeredEvents,
@@ -11,9 +11,9 @@ const router = Router();
 
 router
   .route("/register-event")
-  .post(Authentication, Authorization("student"), registerEvent);
+  .post(verifyJwt, Authorization("student"), registerEvent);
 
-router.route("/registered-events").get(Authentication, registeredEvents);
+router.route("/registered-events").get(verifyJwt, registeredEvents);
 router.route("/alreadyRegistered").post(isStudentRegistered);
 
 export default router;

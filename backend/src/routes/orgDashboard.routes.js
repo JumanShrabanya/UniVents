@@ -6,25 +6,25 @@ import {
   addWinners,
   registeredParticipants,
 } from "../controllers/organizer.controller.js";
-import Authentication from "../middlewares/Authentication.middleware.js";
 import Authorization from "../middlewares/Authorization.middleware.js";
+import { verifyJwt } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
 router
   .route("/event-details/:eventId")
-  .get(Authentication, Authorization("organizer"), showRegisteredParticipants);
+  .get(verifyJwt, Authorization("organizer"), showRegisteredParticipants);
 router
   .route("/update-event/:eventId")
-  .patch(Authentication, Authorization("organizer"), editEventDetails);
+  .patch(verifyJwt, Authorization("organizer"), editEventDetails);
 router
   .route("/created-events")
-  .get(Authentication, Authorization("organizer"), showCreatedEvents);
+  .get(verifyJwt, Authorization("organizer"), showCreatedEvents);
 router
   .route("/add-winners")
-  .post(Authentication, Authorization("organizer"), addWinners);
+  .post(verifyJwt, Authorization("organizer"), addWinners);
 router
   .route("/get-registered-participants")
-  .post(Authentication, Authorization("organizer"), registeredParticipants);
+  .post(verifyJwt, Authorization("organizer"), registeredParticipants);
 
 export default router;

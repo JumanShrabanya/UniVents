@@ -12,7 +12,6 @@ import {
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJwt } from "../middlewares/auth.middleware.js";
-import Authentication from "../middlewares/Authentication.middleware.js";
 
 const router = Router();
 
@@ -27,9 +26,9 @@ router.route("/register-participant").post(
   registerParticipant
 );
 router.route("/login").post(userLogin);
-router.route("/profile").get(Authentication, viewProfile);
-router.route("/update-profile").patch(Authentication, updateProfile);
-router.route("/check-auth-status").get(Authentication, checkAuthStatus);
+router.route("/profile").get(verifyJwt, viewProfile);
+router.route("/update-profile").patch(verifyJwt, updateProfile);
+router.route("/check-auth-status").get(verifyJwt, checkAuthStatus);
 // router.route("/check-auth-status").get((req, res) => {
 // res.json({ role: "student" });
 // });
